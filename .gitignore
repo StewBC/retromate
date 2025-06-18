@@ -1,0 +1,12 @@
+.vscode/
+
+# build artifacts
+build/
+
+# emulator configs
+altirra-debug.ini
+atari800-debug.cfg
+AppleWin.log
+.atari800.cfg
+
+.DS_Store
