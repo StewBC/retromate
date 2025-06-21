@@ -268,6 +268,4 @@ void plat_draw_text(uint8_t x, uint8_t y, const char *text, uint8_t len) {
 void plat_draw_update() {
 }
 
-#ifdef __APPLE2__
 #pragma code-name(pop)
-#endif

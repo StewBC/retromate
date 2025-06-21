@@ -173,6 +173,4 @@ void plat_core_shutdown() {
     hires_done();
 }
 
-#ifdef __APPLE2__
 #pragma code-name(pop)
-#endif

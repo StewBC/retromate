@@ -91,6 +91,4 @@ void plat_net_shutdown() {
     tcp_close();
 }
 
-#ifdef __APPLE2__
 #pragma code-name(pop)
-#endif
