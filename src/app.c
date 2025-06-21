@@ -14,6 +14,10 @@
 
 #define COMMAND_LENGTH 128
 
+#ifdef __APPLE2__
+#pragma code-name(push, "LOWCODE")
+#endif
+
 /*-----------------------------------------------------------------------*/
 static void app_terminal() {
     char command[COMMAND_LENGTH] = {0};
@@ -339,3 +343,7 @@ void app_user_input() {
             break;
     }
 }
+
+#ifdef __APPLE2__
+#pragma code-name(pop)
+#endif

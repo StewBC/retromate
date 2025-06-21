@@ -9,10 +9,6 @@
 
 #include "global.h"
 
-#ifdef __APPLE2__
-#pragma bss-name("LOWBSS")
-#endif
-
 /*-----------------------------------------------------------------------*/
 global_t global = {
     {

@@ -15,8 +15,10 @@
 
 #include "platA2.h"
 
-extern char *terminal_log_buffer;
-extern char *status_log_buffer;
+char terminal_log_buffer[80 * 23];
+char status_log_buffer[13 * 24];
+
+#pragma code-name(push, "LC")
 
 /*-----------------------------------------------------------------------*/
 void plat_core_active_term(bool active) {
@@ -65,10 +67,9 @@ void plat_core_init() {
     plat_draw_splash_screen();
     plat_draw_board();
 
-    if (videomode(VIDEOMODE_80COL) >= 0) {
+    if (videomode(VIDEOMODE_80COL) != -1) {
         terminal_display_width = 80;
     }
-    rebootafterexit();
 }
 
 /*-----------------------------------------------------------------------*/
@@ -171,3 +172,7 @@ uint8_t plat_core_mouse_to_menu_item(void) {
 void plat_core_shutdown() {
     hires_done();
 }
+
+#ifdef __APPLE2__
+#pragma code-name(pop)
+#endif

@@ -12,6 +12,8 @@
 
 #include "../global.h"
 
+#pragma code-name(push, "LC")
+
 /*-----------------------------------------------------------------------*/
 void plat_net_init() {
     unsigned char eth_init = ETH_INIT_DEFAULT;
@@ -88,3 +90,7 @@ void plat_net_send(const char *text) {
 void plat_net_shutdown() {
     tcp_close();
 }
+
+#ifdef __APPLE2__
+#pragma code-name(pop)
+#endif

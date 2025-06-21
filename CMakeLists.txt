@@ -7,7 +7,7 @@ cmake_minimum_required(VERSION 3.15)
 project(retromate C)
 
 # Find cl65 and figure out where the loader is
-find_program(CL65_EXEC cl65)
+find_program(CL65_EXEC cl65 DOC "Available at https://cc65.github.io/")
 if(NOT CL65_EXEC)
     message(WARNING "cl65 not found in PATH. Cannot build for Apple 2, c64 or Atari.")
 else()
@@ -21,17 +21,17 @@ else()
 endif()
     
 # Tools
-find_program(X64_EXECUTABLE NAMES x64sc x64 HINTS ENV VICE_HOME PATHS ENV PATH)
+find_program(X64_EXECUTABLE NAMES x64sc x64 HINTS ENV VICE_HOME PATHS ENV PATH DOC "Available at https://vice-emu.sourceforge.io/")
 message(STATUS "Path to C64 emulator=${X64_EXECUTABLE}")
-find_program(C1541_EXECUTABLE c1541 HINTS ENV VICE_HOME PATHS ENV PATH)
+find_program(C1541_EXECUTABLE c1541 HINTS ENV VICE_HOME PATHS ENV PATH DOC "Available at https://vice-emu.sourceforge.io/")
 message(STATUS "Path to c1541=${C1541_EXECUTABLE}")
-find_program(APPLEWIN_EXECUTABLE applewin AppleWin.exe HINTS ENV APPLEWIN_HOME PATHS ENV PATH)
+find_program(APPLEWIN_EXECUTABLE applewin AppleWin.exe HINTS ENV APPLEWIN_HOME PATHS ENV PATH DOC "Available at https://github.com/AppleWin/AppleWin")
 message(STATUS "Path to Apple 2 emulator=${APPLEWIN_EXECUTABLE}")
-find_program(CIDERPRESSII_EXECUTABLE cp2 HINTS ENV CP2_HOME PATHS ENV PATH)
+find_program(CIDERPRESSII_EXECUTABLE cp2 HINTS ENV CP2_HOME PATHS ENV PATH DOC "Available at https://ciderpress2.com/")
 message(STATUS "Path to CiderPress-II=${CIDERPRESSII_EXECUTABLE}")
-find_program(ATARI800_EXECUTABLE atari800 HINTS ENV ATARI800_HOME PATHS ENV PATH)
+find_program(ATARI800_EXECUTABLE atari800 HINTS ENV ATARI800_HOME PATHS ENV PATH DOC "Available at https://atari800.github.io/")
 message(STATUS "Path to Atari emulator=${ATARI800_EXECUTABLE}")
-find_program(DIR2ATR_EXECUTABLE dir2atr HINTS ENV DIR2ATR_HOME PATHS ENV PATH)
+find_program(DIR2ATR_EXECUTABLE dir2atr HINTS ENV DIR2ATR_HOME PATHS ENV PATH DOC "Available at https://www.horus.com/~hias/atari/")
 message(STATUS "Path to dir2atr=${DIR2ATR_EXECUTABLE}")
 
 # Output folders
@@ -95,7 +95,7 @@ function(add_retromate_target target sources bin_file disk_file)
 
     # Extra linker flags just for apple2
     if(${target} STREQUAL "apple2")
-        set(EXTRA_LINK_FLAGS "--start-addr" "0x4000" "-Wl" "-D,__HIMEM__=0xBF00" "-Wl" "-D,__LCADDR__=0xD000" "-Wl" "-D,__LCSIZE__=0x3000")
+        set(EXTRA_LINK_FLAGS "-C" "apple2-hgr.cfg" "-Wl" "-D,__HIMEM__=0xBF00")
     else()
         set(EXTRA_LINK_FLAGS "")
     endif()
@@ -108,7 +108,7 @@ function(add_retromate_target target sources bin_file disk_file)
     add_custom_command(
         OUTPUT ${BIN_DIR}/${bin_file}
         COMMAND ${CMAKE_COMMAND} -E echo "Building ${target}"
-        COMMAND cl65 -t ${target} --mapfile ${target}-map.map -O -I${IP65_INCLUDE} ${EXTRA_LINK_FLAGS} ${sources} ${IP65_LIBS} ${LINK_CFG_OPTION} -o ${BIN_DIR}/${bin_file}
+        COMMAND cl65 -t ${target} --mapfile ${target}.map -O -I${IP65_INCLUDE} ${EXTRA_LINK_FLAGS} ${sources} ${IP65_LIBS} ${LINK_CFG_OPTION} -o ${BIN_DIR}/${bin_file}
         DEPENDS ${ALL_DEPENDS}
         COMMENT "Building ${target}"
         VERBATIM
@@ -214,7 +214,7 @@ add_retromate_target(
 # --- Apple II ---
 set(APPLE2_SOURCES
     ${SHARED_SOURCES}
-    ${CMAKE_SOURCE_DIR}/src/apple2/buffers.s
+    ${CMAKE_SOURCE_DIR}/src/apple2/hgr.s
     ${CMAKE_SOURCE_DIR}/src/apple2/hiresA2.s
     ${CMAKE_SOURCE_DIR}/src/apple2/platA2core.c
     ${CMAKE_SOURCE_DIR}/src/apple2/platA2draw.c

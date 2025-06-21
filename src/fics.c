@@ -146,6 +146,10 @@ static void fics_format_stats_message(const char *message, int len, char delimit
     }
 }
 
+#ifdef __APPLE2__
+#pragma code-name(push, "LOWCODE")
+#endif
+
 /*-----------------------------------------------------------------------*/
 static const char *fics_next_number(const char **source, int *len, int *word_len, bool start_of_line) {
     const char *number_start;
@@ -658,3 +662,7 @@ void fics_tcp_recv(const unsigned char *buf, int len) {
         }
     }
 }
+
+#ifdef __APPLE2__
+#pragma code-name(pop)
+#endif

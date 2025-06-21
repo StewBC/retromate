@@ -14,8 +14,6 @@
 
 #include "platA2.h"
 
-#pragma code-name("LC")
-
 char rop_line[2][7] = {{0x00, 0x01, 0x03, 0x07, 0x0F, 0x1F, 0x3F},
     {0x00, 0x40, 0x60, 0x70, 0x78, 0x7C, 0x7E}
 };
@@ -36,6 +34,8 @@ uint8_t plat_mc2pc[9] = {
 };
 
 extern uint8_t terminal_display_width = SCREEN_TEXT_WIDTH;
+
+#pragma code-name(push, "LC")
 
 /*-----------------------------------------------------------------------*/
 // x in Character coords, y in Graphics coords
@@ -213,29 +213,13 @@ void plat_draw_set_text_bg_color(uint8_t) {
 
 /*-----------------------------------------------------------------------*/
 void plat_draw_splash_screen() {
-    uint8_t title1_len = strlen(global.text.title_line1);
-    uint8_t title2_len = strlen(global.text.title_line2);
-
-    // Clear the screen
-    plat_draw_clrscr();
-
     // Show the hires screen
     hires_init();
 
-    // Show credits and wait for key press
-    plat_draw_text((SCREEN_TEXT_WIDTH - title1_len) / 2, SCREEN_TEXT_HEIGHT / 2 - 1, global.text.title_line1, title1_len);
-    plat_draw_text((SCREEN_TEXT_WIDTH - title2_len) / 2, SCREEN_TEXT_HEIGHT / 2 + 1, global.text.title_line2, title2_len);
-
-    hires_draw(SCREEN_TEXT_WIDTH / 2 - 2, SCREEN_DISPLAY_HEIGHT / 2 - 50 - SQUARE_DISPLAY_HEIGHT / 2,
-               SQUARE_TEXT_WIDTH, SQUARE_DISPLAY_HEIGHT, ROP_CPY,
-               hires_pieces[KING - 1][SIDE_BLACK]);
-    hires_draw(SCREEN_TEXT_WIDTH / 2 - 2, SCREEN_DISPLAY_HEIGHT / 2 + 50 - SQUARE_DISPLAY_HEIGHT / 2,
-               SQUARE_TEXT_WIDTH, SQUARE_DISPLAY_HEIGHT, ROP_CPY,
-               hires_pieces[KING - 1][SIDE_WHITE]);
-
+    // Wait for key press
     plat_core_key_wait_any();
 
-    // Clear the screen again
+    // Clear the screen
     plat_draw_clrscr();
 }
 
@@ -283,3 +267,7 @@ void plat_draw_text(uint8_t x, uint8_t y, const char *text, uint8_t len) {
 /*-----------------------------------------------------------------------*/
 void plat_draw_update() {
 }
+
+#ifdef __APPLE2__
+#pragma code-name(pop)
+#endif

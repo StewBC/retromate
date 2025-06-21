@@ -126,7 +126,7 @@ DIR2ATR_HOME    - dir2atr
 ```
   
 I develop using Linux through WSL or Windows directly.  Note that if you are using WSL, you can launch windows executables using the full name, including the .exe extension.  That way, it is, for example, possible to use AppleWin.exe, on Windows, to run the application developed on WSL.  
-CP2 is CiderPress-II (cp2 is the command line tool for Apple 2 disk images) and is available here: https://github.com/fadden/CiderPress2  
+CP2 is CiderPress-II (cp2 is the command line tool for Apple 2 disk images) and is available here: https://ciderpress2.com/  
 dir2atr (Atari disk images tool) is available here: https://www.horus.com/~hias/atari/  (Windows exe in zip - `Atari Tools for Win32 (Windows)`; Otherwise source in `atariso-<date>.tar.gz`)  
 c1541 (C64 disk images tool) is part of the Vice Emulator distribution.    
 

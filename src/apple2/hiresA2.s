@@ -17,8 +17,7 @@
 VERSION  := $FBB3
 
 
-.segment "LC"
-; .rodata
+.rodata
 
 
 BASELO:
@@ -36,6 +35,9 @@ _hires_char_set:
 
 _hires_pieces:
 .incbin "pieces.bin"
+
+
+.code
 
 
 .proc   _hires_init
