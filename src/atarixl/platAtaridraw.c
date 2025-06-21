@@ -36,6 +36,8 @@ uint8_t plat_mc2pc[9] = {
 extern uint8_t terminal_display_width = SCREEN_TEXT_WIDTH;
 extern char *CHAR_ROM;
 
+#pragma code-name(push, "SHADOW_RAM2")
+
 /*-----------------------------------------------------------------------*/
 // x in Character coords, y in Graphics coords
 static void plat_draw_char(char x, char y, unsigned rop, char c) {
@@ -167,6 +169,10 @@ void plat_draw_highlight(uint8_t position, uint8_t color) {
     // }
 }
 
+#pragma code-name(pop)
+
+#pragma code-name(push, "SHADOW_RAM")
+
 /*-----------------------------------------------------------------------*/
 void plat_draw_log(tLog *log, uint8_t x, uint8_t y, bool) {
     int i;
@@ -285,3 +291,5 @@ void plat_draw_text(uint8_t x, uint8_t y, const char *text, uint8_t len) {
 /*-----------------------------------------------------------------------*/
 void plat_draw_update() {
 }
+
+#pragma code-name(pop)

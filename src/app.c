@@ -18,6 +18,10 @@
 #pragma code-name(push, "LOWCODE")
 #endif
 
+#ifdef __ATARIXL__
+#pragma code-name(push, "SHADOW_RAM")
+#endif
+
 /*-----------------------------------------------------------------------*/
 static void app_terminal() {
     char command[COMMAND_LENGTH] = {0};
@@ -345,5 +349,9 @@ void app_user_input() {
 }
 
 #ifdef __APPLE2__
+#pragma code-name(pop)
+#endif
+
+#ifdef __ATARIXL__
 #pragma code-name(pop)
 #endif

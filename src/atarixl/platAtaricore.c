@@ -21,8 +21,10 @@
 #define CONTROL_KEY     4
 
 char *CHAR_ROM;
-extern char *terminal_log_buffer;
-extern char *status_log_buffer;
+char terminal_log_buffer[80 * 23];
+char status_log_buffer[13 * 24];
+
+#pragma code-name(push, "SHADOW_RAM2")
 
 /*-----------------------------------------------------------------------*/
 void plat_core_active_term(bool active) {
@@ -202,3 +204,5 @@ uint8_t plat_core_mouse_to_menu_item(void) {
 void plat_core_shutdown() {
     __asm__("jmp 64738");
 }
+
+#pragma code-name(pop)

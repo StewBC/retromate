@@ -14,28 +14,13 @@
 
 #include <atari.h>
 
+#pragma code-name(push, "SHADOW_RAM")
+
 /*-----------------------------------------------------------------------*/
 void plat_net_init() {
-    unsigned char eth_init = ETH_INIT_DEFAULT;
-
-#ifdef __APPLE2x__
-    {
-        int file;
-
-        // printf("Setting slot ");
-        file = open("ethernet.slot", O_RDONLY);
-        if (file != -1) {
-            read(file, &eth_init, 1);
-            close(file);
-            eth_init &= 7;
-        }
-        // printf("- %u\n\n", eth_init);
-    }
-#endif
-
     log_add_line(&global.view.terminal, "Initializing Network", -1);
     plat_draw_log(&global.view.terminal, 0, 0, false);
-    if (ip65_init(eth_init)) {
+    if (ip65_init(ETH_INIT_DEFAULT)) {
         app_error(true, ip65_strerror(ip65_error));
     }
 }
@@ -91,3 +76,5 @@ void plat_net_send(const char *text) {
 void plat_net_shutdown() {
     tcp_close();
 }
+
+#pragma code-name(pop)

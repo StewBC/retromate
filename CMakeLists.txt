@@ -234,7 +234,6 @@ add_retromate_target(
 # --- atarixl ---
 set(ATARI_SOURCES
     ${SHARED_SOURCES}
-    ${CMAKE_SOURCE_DIR}/src/atarixl/buffers.s
     ${CMAKE_SOURCE_DIR}/src/atarixl/dataAtari.c
     ${CMAKE_SOURCE_DIR}/src/atarixl/hiresAtari.s
     ${CMAKE_SOURCE_DIR}/src/atarixl/platAtaricore.c
