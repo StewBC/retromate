@@ -195,7 +195,6 @@ endfunction()
 # --- C64 ---
 set(C64_SOURCES
     ${SHARED_SOURCES}
-    ${CMAKE_SOURCE_DIR}/src/c64/buffers.s
     ${CMAKE_SOURCE_DIR}/src/c64/dataC64.c
     ${CMAKE_SOURCE_DIR}/src/c64/hiresC64.s
     ${CMAKE_SOURCE_DIR}/src/c64/platC64core.c

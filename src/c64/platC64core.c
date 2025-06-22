@@ -20,8 +20,8 @@
 #define COMMODORE_KEY   2
 #define CONTROL_KEY     4
 
-extern char *terminal_log_buffer;
-extern char *status_log_buffer;
+char terminal_log_buffer[80 * 23];
+char status_log_buffer[13 * 24];
 
 /*-----------------------------------------------------------------------*/
 void plat_core_active_term(bool active) {
