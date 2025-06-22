@@ -8,6 +8,7 @@
  */
 
 #include <string.h>
+#include <peekpoke.h>
 #include <ip65.h>
 
 #include "../global.h"
@@ -16,26 +17,15 @@
 
 /*-----------------------------------------------------------------------*/
 void plat_net_init() {
-    unsigned char eth_init = ETH_INIT_DEFAULT;
-
-#ifdef __APPLE2x__
-    {
-        int file;
-
-        // printf("Setting slot ");
-        file = open("ethernet.slot", O_RDONLY);
-        if (file != -1) {
-            read(file, &eth_init, 1);
-            close(file);
-            eth_init &= 7;
-        }
-        // printf("- %u\n\n", eth_init);
-    }
-#endif
+    // ProDOS 8 Technical Reference Manual
+    //     5.1.5 - Switching System Programs
+    //         The complete or partial pathname of the system program
+    //         is stored at $280, starting with a length byte.
+    unsigned char eth_slot = PEEK(0x281 + PEEK(0x280) - 1);
 
     log_add_line(&global.view.terminal, "Initializing Network", -1);
     plat_draw_log(&global.view.terminal, 0, 0, false);
-    if (ip65_init(eth_init)) {
+    if (ip65_init(eth_slot & 7)) {
         app_error(true, ip65_strerror(ip65_error));
     }
 }

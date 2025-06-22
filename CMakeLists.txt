@@ -6,6 +6,8 @@ endif()
 cmake_minimum_required(VERSION 3.15)
 project(retromate C)
 
+set(A2_SLOT "3" CACHE STRING "Apple II slot number")
+
 # Find cl65 and figure out where the loader is
 find_program(CL65_EXEC cl65 DOC "Available at https://cc65.github.io/")
 if(NOT CL65_EXEC)
@@ -123,15 +125,15 @@ function(add_retromate_target target sources bin_file disk_file)
             COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/assets/prodos.po ${DISK_DIR}/${disk_file}
 
             # Copy the files with names for the tool (.as = apple single; #xxyyyy for type and aux)
-            COMMAND ${CMAKE_COMMAND} -E copy "${LOADER_PATH}" "bin/rmate.system#FF2000"
-            COMMAND ${CMAKE_COMMAND} -E copy "${BIN_DIR}/${bin_file}" "bin/rmate.as"
+            COMMAND ${CMAKE_COMMAND} -E copy "${LOADER_PATH}" "bin/rmate${A2_SLOT}.system#FF2000"
+            COMMAND ${CMAKE_COMMAND} -E copy "${BIN_DIR}/${bin_file}" "bin/rmate${A2_SLOT}.as"
 
             # Add to disk (no path!)
-            COMMAND ${CIDERPRESSII_EXECUTABLE} add --strip-paths "${DISK_DIR}/${disk_file}" "bin/rmate.system#FF2000"
-            COMMAND ${CIDERPRESSII_EXECUTABLE} add --strip-paths "${DISK_DIR}/${disk_file}" "bin/rmate.as"
+            COMMAND ${CIDERPRESSII_EXECUTABLE} add --strip-paths "${DISK_DIR}/${disk_file}" "bin/rmate${A2_SLOT}.system#FF2000"
+            COMMAND ${CIDERPRESSII_EXECUTABLE} add --strip-paths "${DISK_DIR}/${disk_file}" "bin/rmate${A2_SLOT}.as"
 
             # Clean up renamed/attribute-tagged files for Cadius
-            COMMAND ${CMAKE_COMMAND} -E rm -f "bin/rmate.as" "bin/rmate.system#FF2000"
+            COMMAND ${CMAKE_COMMAND} -E rm -f "bin/rmate${A2_SLOT}.as" "bin/rmate${A2_SLOT}.system#FF2000"
 
             DEPENDS ${BIN_DIR}/${bin_file}
             COMMENT "Disk image: ${disk_file}"
@@ -248,6 +250,7 @@ add_retromate_target(
     ${ATARI800_EXECUTABLE} ${DISK_REL_PATH}.atr
 )
 
+if(0)
 # --- Native SDL2 ---
 find_package(SDL2 CONFIG REQUIRED)
 find_package(SDL2_ttf CONFIG REQUIRED)
@@ -276,3 +279,4 @@ add_custom_target(sdl2_test
     DEPENDS sdl2
     COMMENT "Running SDL2 native test: $<TARGET_FILE:sdl2>"
 )
+endif()
