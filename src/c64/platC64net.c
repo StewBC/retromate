@@ -52,13 +52,12 @@ void plat_net_connect(const char *server_name, int server_port) {
 
 /*-----------------------------------------------------------------------*/
 bool plat_net_update() {
-    // SQW
-    // if (ip65_process()) {
-    //     // I am not sure what erors could be returned here
-    //     if (ip65_error >= IP65_ERROR_PORT_IN_USE) {
-    //         return 1;
-    //     }
-    // }
+    if (ip65_process()) {
+        // I am not sure what erors could be returned here
+        if (ip65_error >= IP65_ERROR_PORT_IN_USE) {
+            return 1;
+        }
+    }
     return 0;
 }
 
