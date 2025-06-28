@@ -55,13 +55,14 @@ enum {
 
 typedef struct SDL_Renderer SDL_Renderer;
 typedef struct SDL_Window SDL_Window;
-typedef struct _TTF_Font TTF_Font;
+typedef struct TTF_Font TTF_Font;
 typedef struct SDL_Texture SDL_Texture;
 
 typedef struct _sdl {
     SDL_Renderer *renderer;
     SDL_Window *window;
     TTF_Font *font;
+    SDL_Texture *framebuffer;
     SDL_Texture *piece_texture;
     uint32_t draw_color;
     uint32_t text_bg_color;

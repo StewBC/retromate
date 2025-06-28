@@ -11,7 +11,7 @@ set(A2_SLOT "3" CACHE STRING "Apple II slot number")
 # Find cl65 and figure out where the loader is
 find_program(CL65_EXEC cl65 DOC "Available at https://cc65.github.io/")
 if(NOT CL65_EXEC)
-    message(WARNING "cl65 not found in PATH. Cannot build for Apple 2, c64 or Atari.")
+    message(WARNING "cl65 not found in PATH. Cannot build for Apple 2, C64 or Atari.")
 else()
     execute_process(
         COMMAND ${CL65_EXEC} --print-target-path
@@ -23,17 +23,17 @@ else()
 endif()
     
 # Tools
-find_program(X64_EXECUTABLE NAMES x64sc x64 HINTS ENV VICE_HOME PATHS ENV PATH DOC "Available at https://vice-emu.sourceforge.io/")
+find_program(X64_EXECUTABLE NAMES x64sc x64 x64sc.exe x64.exe HINTS ENV VICE_HOME PATHS ENV PATH DOC "Available at https://vice-emu.sourceforge.io/")
 message(STATUS "Path to C64 emulator=${X64_EXECUTABLE}")
-find_program(C1541_EXECUTABLE c1541 HINTS ENV VICE_HOME PATHS ENV PATH DOC "Available at https://vice-emu.sourceforge.io/")
+find_program(C1541_EXECUTABLE c1541 c1541.exe HINTS ENV VICE_HOME PATHS ENV PATH DOC "Available at https://vice-emu.sourceforge.io/")
 message(STATUS "Path to c1541=${C1541_EXECUTABLE}")
 find_program(APPLEWIN_EXECUTABLE applewin AppleWin.exe HINTS ENV APPLEWIN_HOME PATHS ENV PATH DOC "Available at https://github.com/AppleWin/AppleWin")
 message(STATUS "Path to Apple 2 emulator=${APPLEWIN_EXECUTABLE}")
-find_program(CIDERPRESSII_EXECUTABLE cp2 HINTS ENV CP2_HOME PATHS ENV PATH DOC "Available at https://ciderpress2.com/")
+find_program(CIDERPRESSII_EXECUTABLE cp2 cp2.exe HINTS ENV CP2_HOME PATHS ENV PATH DOC "Available at https://ciderpress2.com/")
 message(STATUS "Path to CiderPress-II=${CIDERPRESSII_EXECUTABLE}")
-find_program(ATARI800_EXECUTABLE atari800 HINTS ENV ATARI800_HOME PATHS ENV PATH DOC "Available at https://atari800.github.io/")
-message(STATUS "Path to Atari emulator=${ATARI800_EXECUTABLE}")
-find_program(DIR2ATR_EXECUTABLE dir2atr HINTS ENV DIR2ATR_HOME PATHS ENV PATH DOC "Available at https://www.horus.com/~hias/atari/")
+find_program(ATARI_EXECUTABLE Altirra64 Altirra Altirra64.exe Altirra.exe HINTS ENV ATARI_HOME PATHS ENV PATH DOC "Available at https://www.virtualdub.org/altirra.html")
+message(STATUS "Path to Atari emulator=${ATARI_EXECUTABLE}")
+find_program(DIR2ATR_EXECUTABLE dir2atr dir2atr.exe HINTS ENV DIR2ATR_HOME PATHS ENV PATH DOC "Available at https://www.horus.com/~hias/atari/")
 message(STATUS "Path to dir2atr=${DIR2ATR_EXECUTABLE}")
 
 # Output folders
@@ -247,10 +247,9 @@ add_retromate_target(
     "${ATARI_SOURCES}"
     retromate.xex
     retromate.atr
-    ${ATARI800_EXECUTABLE} ${DISK_REL_PATH}.atr
+    ${ATARI_EXECUTABLE} ${DISK_REL_PATH}.atr
 )
 
-if(0)
 # --- Native SDL2 ---
 find_package(SDL2 CONFIG REQUIRED)
 find_package(SDL2_ttf CONFIG REQUIRED)
@@ -279,4 +278,3 @@ add_custom_target(sdl2_test
     DEPENDS sdl2
     COMMENT "Running SDL2 native test: $<TARGET_FILE:sdl2>"
 )
-endif()

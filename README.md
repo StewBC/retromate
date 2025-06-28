@@ -25,7 +25,7 @@ Quit will terminate the application.  On the Apple II, this will reboot the mach
 ## Online  
 There are several game options to choose from, which are described below.  The default is a standard unrated game of about 15 minutes against any skill level opponent.  In my experience, most people on FICS play Blitz, and these games are around 3 to 5 minutes.
   
-### Game Settings  
+### Game Settings    
 The first menu option I will cover is Game Settings.  
 The game types standard, blitz, lightning and untimed are regular chess games, with different time limits.  
 The game types crazyhouse, wild (with sub types wild 0-5, 8, 8a and fr) and suicide are variations on chess.  
@@ -93,25 +93,44 @@ The SDL2 version supports a mouse in menus and the game board.  Left click is th
   
 ## Known Bugs & Issues  
 None of the 8-bit versions currently work.  
-* Apple 2  - Fails with Error $56 at load time  
-* Atari xl - Segment 'DATA' overflows memory area 'MAIN' - Need to figure out the shadow ram, I think  
-* C64      - Runs but menu doesn't show up  
+* Apple 2  - Works
+* Atari xl - Sending data via IP65 seems not to work  
+* C64      - RRNet times out getting an IP address  
 I have been unable to get RRNet working so there may be bigger issues, other than the reorg I made.
-When I excluded IP65 from the Atari, I could see it working (rendering) and the C64 also was running earlier.
-The SDL2 version still works well.
+The SDL2 version works well.
 
 ## Building the game
-The build system is CMake based.  In the retromate folder, use the commands  
+The build system is CMake based.  
+  
+SDL2 must be installed, and ready to work with CMake.  To install SDL2 with vcpkg, first install vcpkg.  I used the guide here `https://learn.microsoft.com/en-us/vcpkg/get_started/get-started?pivots=shell-bash`  Notice at the top the toggle between PowerShell, CMD and Bash.  
+Basically, for me it looked like this:  
+```
+# I had previously installed (at least) this already: build-essential cmake ninja-build
+# I still needed curl and libtool
+sudo apt install curl libtool
+git clone https://github.com/microsoft/vcpkg.git
+cd vcpkg && ./bootstrap-vcpkg.sh
+# Insert your own path to where you just installed (cloned to) vcpkg, in the export, below.
+# This path is where I have it, your path will differ:
+# I also added these 2 statements to my ~/.bashrc file, so they are always set
+export VCPKG_ROOT=/home/swessels/develop/github/external/vcpkg
+export PATH=$PATH:$VCPKG_ROOT
+vcpkg install sdl2
+vcpkg install sdl2-ttf
+vcpkg install sdl2-image
+```
+  
+In the retromate folder, use the commands  
 ```
 mkdir build
 cd build
-cmake .. -G "Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE=/home/swessels/develop/github/external/vcpkg/scripts/buildsystems/vcpkg.cmake
+# The "Unix Makefiles", below, could also be any of the methods that will work for you
+# such as "Ninja" or "NMake Makefiles"
+cmake .. -G "Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake
+# If using ninja, this is not make but ninja (or nmake if using NMake Makefiles)
 make
 ```
-You could also use `-G "Ninja"` if you use the `ninja` system.  
 The targets are `atarixl`, `c64`, `apple2` and `sdl2` and each of these has a _test target - example `apple2_test` - that will attempt to run the game in (in an emulator if needed). In other words you can use `make c64_test` to build and run the c64 version in vice (x64sc or x64), if the emulator was found in the configure stage.  
-  
-On Windows, I have found `-G "NMake Makefiles"`, and then `nmake` (or `nmake <target>`) to work well.
   
 I use VS Code with the CMake Tools extension, and this also works very well.  
   
@@ -121,13 +140,13 @@ Path asnd what it searches for
 VICE_HOME       - x64sc x64 & c1541
 APPLEWIN_HOME   - applewin AppleWin.exe
 CP2_HOME        - cp2
-ATARI800_HOME   - atari800
+ATARI_HOME      - Altirra
 DIR2ATR_HOME    - dir2atr
 ```
   
-I develop using Linux through WSL or Windows directly.  Note that if you are using WSL, you can launch windows executables using the full name, including the .exe extension.  That way, it is, for example, possible to use AppleWin.exe, on Windows, to run the application developed on WSL.  
+I mostly develop using Linux through WSL or Windows directly.  Note that if you are using WSL, you can launch windows executables using the full name, including the .exe extension.  That way, it is, for example, possible to use AppleWin.exe, under Windows, to run the application developed on WSL.  
 CP2 is CiderPress-II (cp2 is the command line tool for Apple 2 disk images) and is available here: https://ciderpress2.com/  
-dir2atr (Atari disk images tool) is available here: https://www.horus.com/~hias/atari/  (Windows exe in zip - `Atari Tools for Win32 (Windows)`; Otherwise source in `atariso-<date>.tar.gz`)  
+dir2atr (Atari disk images tool) is available here: https://www.horus.com/~hias/atari/  (Windows exe in zip - `Atari Tools for Win32 (Windows)`; Otherwise source in `atariso-<date>.tar.gz` - If `make` in atariso* folder doesn't work to build dir2atr, try `make dir2atr` in the `tools` sub-folder.)  
 c1541 (C64 disk images tool) is part of the Vice Emulator distribution.    
 
 

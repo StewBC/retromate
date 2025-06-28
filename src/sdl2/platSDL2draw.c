@@ -52,6 +52,7 @@ sdl_t sdl = {
     NULL,           // window;
     NULL,           // renderer;
     NULL,           // font;
+    NULL,           // framebuffer;
     NULL,           // piece_texture;
     COLOR_WHITE,    // draw_color;
     COLOR_GREEN,    // text_bg_color
@@ -337,5 +338,12 @@ void plat_draw_text(uint8_t x, uint8_t y, const char *text, uint8_t len) {
 
 /*-----------------------------------------------------------------------*/
 void plat_draw_update(void) {
+    // Remove sdl.framebuffer as the drawing target
+    SDL_SetRenderTarget(sdl.renderer, NULL);
+    // Copy the texture (sdl.framebuffer) to the window
+    SDL_RenderCopy(sdl.renderer, sdl.framebuffer, NULL, NULL);
+    // present the window
     SDL_RenderPresent(sdl.renderer);
+    // Set sdl.framebuffer as the target for draw commands, again
+    SDL_SetRenderTarget(sdl.renderer, sdl.framebuffer);
 }

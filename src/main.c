@@ -9,8 +9,6 @@
 
 #include "global.h"
 
-#include <conio.h>
-
 /*-----------------------------------------------------------------------*/
 int main() {
     plat_core_init();

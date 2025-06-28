@@ -90,6 +90,23 @@ void plat_core_init(void) {
 
     sdl.renderer = SDL_CreateRenderer(sdl.window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
+    // Use a texture as the "background" - this works with the 8-bit design of
+    // drawing as little as possible - the texture captures the cumulative drawing
+    // over frames
+    sdl.framebuffer = SDL_CreateTexture(
+    sdl.renderer,
+    SDL_PIXELFORMAT_RGBA8888,
+    SDL_TEXTUREACCESS_TARGET,
+    SCREEN_DISPLAY_WIDTH,
+    SCREEN_DISPLAY_HEIGHT
+    );
+    if(!sdl.framebuffer) {
+        printf("error: framebuffer texture is null\n");
+        exit(1);
+    }
+    // Set the texture as the target for drawing commands
+    SDL_SetRenderTarget(sdl.renderer, sdl.framebuffer);
+
     plat_load_assets_from_memory();
     SDL_StartTextInput();
 
@@ -146,7 +163,7 @@ uint8_t plat_core_key_input(input_event_t *evt) {
                 return 1;
                 break;
 
-            case SDL_KEYDOWN:
+            case SDL_KEYDOWN: {
                 SDL_Keycode k = e.key.keysym.sym;
                 switch (k) {
                     case SDLK_ESCAPE:
@@ -188,6 +205,7 @@ uint8_t plat_core_key_input(input_event_t *evt) {
                         }
                 }
                 break;
+            }
         }
     }
 
