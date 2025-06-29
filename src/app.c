@@ -338,7 +338,7 @@ void app_user_input() {
             input_text(global.view.say_buffer + 4, sizeof(global.view.say_buffer) - 5, FILTER_ALLOW_ALL);
             if(global.view.say_buffer[4]) {
                 plat_net_send(global.view.say_buffer);
-                // Terminate the string for nextg chat
+                // Terminate the string for next chat
                 global.view.say_buffer[4] = '\0';
             }
             break;

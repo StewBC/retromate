@@ -127,6 +127,8 @@ void input_text(char *buffer, uint8_t buffer_len, uint8_t filter) {
 //----------------------------------------------------------------------------
 uint8_t input_text_callback(menu_t *m, void *data) {
     menu_item_t *item = (menu_item_t *)data;
+    UNUSED(m);
+
     input_text(item->edit_target, item->edit_maxlen, item->filter);
     if (item->filter == FILTER_NUM && item->submenu) {
         *(int *)item->submenu = atoi(item->edit_target);

@@ -293,6 +293,10 @@ static void fics_tcb_login(const char *buf, int len, const char *match) {
 
 /*-----------------------------------------------------------------------*/
 static void fics_tcb_online(const char *buf, int len, const char *match) {
+    UNUSED(buf);
+    UNUSED(len);
+    UNUSED(match);
+
     // Stop the trigger callbacks
     fics_set_trigger_callback(NULL, NULL);
     // Add a regular data callback
@@ -361,7 +365,7 @@ static void fics_ndcb_sought_list(const char *buf, int len) {
     const char *parse_point = buf;
     int prev_lines_processed = 0;
     int lines_processed = 0;
-    uint16_t rating_delta = 65535;
+    uint16_t rating_delta = -1;
 
     while (len) {
         if (prev_lines_processed != lines_processed) {

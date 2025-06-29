@@ -284,7 +284,6 @@ uint8_t menu_tick() {
         for (i = 0; i < m->num_items; i++) {
             menu_item_t *item = &m->menu_items[i];
             if (item->item_state != MENU_STATE_HIDDEN) {
-                uint8_t draw_flag;
                 global.view.mc.iy += 1 + m->item_spacing;
                 menu_show_item(item, MENU_ITEM_DRAW);
             }

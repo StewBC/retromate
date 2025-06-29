@@ -41,6 +41,8 @@ static uint8_t ui_set_rating_callback(menu_t *m, void *data) {
 static uint8_t ui_set_wild_type_callback(menu_t *m, void *data) {
     menu_item_t *item = (menu_item_t *)data;
     uint8_t selected = item->selected;
+    UNUSED(m);
+
     global.ui.my_game_type = wild_variants[selected];
     return global.view.mc.df;
 }
@@ -50,6 +52,8 @@ static uint8_t ui_set_game_type_callback(menu_t *m, void *data) {
     uint8_t retval = global.view.mc.df;
     menu_item_t *item = (menu_item_t *)data;
     uint8_t selected = item->selected;
+    UNUSED(m);
+
     global.ui.my_game_type = ui_game_types[selected];
     if (selected == GAME_TYPE_WILD) {
         m->menu_items[UI_SETTINGS_WILD_VARIANTS].item_state = MENU_STATE_ENABLED;
@@ -72,6 +76,8 @@ static uint8_t ui_set_game_type_callback(menu_t *m, void *data) {
 //----------------------------------------------------------------------------
 static uint8_t ui_toggle_rated_callback(menu_t *m, void *data) {
     menu_item_t *item = (menu_item_t *)data;
+    UNUSED(m);
+
     // for sought
     global.ui.my_rating_type[0] = ui_rating_type[item->selected];
     // for seek
