@@ -16,6 +16,23 @@
 
 #pragma code-name(push, "SHADOW_RAM")
 
+static char send_buffer[80];
+
+/*-----------------------------------------------------------------------*/
+static int plat_net_make_ascii(char *text) {
+    char i = 0;
+    while(*text) {
+        char c = *text++;
+        if(c == 0x9b) {
+            send_buffer[i++] = 0x0a;
+        } else {
+            send_buffer[i++] = c;
+        }
+    }
+    send_buffer[i++] = '\x0a';
+    return i;
+}
+
 /*-----------------------------------------------------------------------*/
 void plat_net_init() {
     log_add_line(&global.view.terminal, "Initializing Network", -1);
@@ -65,10 +82,9 @@ bool plat_net_update() {
 
 /*-----------------------------------------------------------------------*/
 void plat_net_send(const char *text) {
-    int len = strlen(text);
+    int len = plat_net_make_ascii(text);
     log_add_line(&global.view.terminal, text, len);
-    tcp_send((unsigned char *)text, len);
-    tcp_send((unsigned char *)"\n", 1);
+    tcp_send((unsigned char *)send_buffer, len);
 }
 
 /*-----------------------------------------------------------------------*/

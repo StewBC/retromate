@@ -148,6 +148,7 @@ void plat_draw_clrscr() {
 void plat_draw_highlight(uint8_t position, uint8_t color) {
     uint8_t y = position / 8;
     uint8_t x = position & 7;
+    UNUSED(color);
 
     // if (color) {
         hires_mask(2 + x * SQUARE_TEXT_WIDTH, 2 + y * SQUARE_DISPLAY_HEIGHT + 4,
@@ -195,7 +196,6 @@ void plat_draw_log(tLog *log, uint8_t x, uint8_t y, bool) {
         log_render += 20 * shift;
     }
 
-    plat_core_log_lock_mem();
     for (i = 0; i < log->size; ++i) {
         plat_draw_text(x, y++, log_render, width);
         log_render += log->cols;
@@ -203,7 +203,6 @@ void plat_draw_log(tLog *log, uint8_t x, uint8_t y, bool) {
             log_render = log->buffer + (log_render - log_end);
         }
     }
-    plat_core_log_unlock_mem();
 }
 
 /*-----------------------------------------------------------------------*/

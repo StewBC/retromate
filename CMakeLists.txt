@@ -98,6 +98,8 @@ function(add_retromate_target target sources bin_file disk_file)
     # Extra linker flags just for apple2
     if(${target} STREQUAL "apple2")
         set(EXTRA_LINK_FLAGS "-C" "apple2-hgr.cfg" "-Wl" "-D,__HIMEM__=0xBF00")
+    elseif(${target} STREQUAL "c64")
+        set(EXTRA_LINK_FLAGS "-Wl" "-D,__HIMEM__=0xC000")
     else()
         set(EXTRA_LINK_FLAGS "")
     endif()
@@ -209,7 +211,7 @@ add_retromate_target(
     "${C64_SOURCES}"
     retromate.prg
     retromate.d64
-    ${X64_EXECUTABLE} -autostart ${DISK_DIR}/retromate.d64
+    ${X64_EXECUTABLE} -autostart ${BIN_DIR}/retromate.prg
 )
 
 # --- Apple II ---
@@ -247,7 +249,7 @@ add_retromate_target(
     "${ATARI_SOURCES}"
     retromate.xex
     retromate.atr
-    ${ATARI_EXECUTABLE} ${DISK_REL_PATH}.atr
+    ${ATARI_EXECUTABLE} ${BIN_DIR}/retromate.xex
 )
 
 # --- Native SDL2 ---

@@ -11,12 +11,11 @@
 
 /*-----------------------------------------------------------------------*/
 int main() {
-    plat_core_init();
-
     log_init(&global.view.terminal, 80, plat_core_get_rows() - 1);
     log_init(&global.view.info_panel, plat_core_get_cols() - plat_core_get_status_x(), plat_core_get_rows());
-
+    
     plat_net_init();
+    plat_core_init();
 
     global.view.info_panel.clip = true;
     app_set_state(APP_STATE_OFFLINE);

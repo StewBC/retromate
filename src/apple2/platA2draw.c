@@ -187,7 +187,6 @@ void plat_draw_log(tLog *log, uint8_t x, uint8_t y, bool) {
         log_render += 20 * shift;
     }
 
-    plat_core_log_lock_mem();
     for (i = 0; i < log->size; ++i) {
         plat_draw_text(x, y++, log_render, width);
         log_render += log->cols;
@@ -195,7 +194,6 @@ void plat_draw_log(tLog *log, uint8_t x, uint8_t y, bool) {
             log_render = log->buffer + (log_render - log_end);
         }
     }
-    plat_core_log_unlock_mem();
 }
 
 /*-----------------------------------------------------------------------*/

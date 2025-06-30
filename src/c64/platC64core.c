@@ -20,8 +20,8 @@
 #define COMMODORE_KEY   2
 #define CONTROL_KEY     4
 
-char terminal_log_buffer[80 * 23];
-char status_log_buffer[13 * 24];
+char terminal_log_buffer[80 * 24];
+char status_log_buffer[13 * 25];
 
 /*-----------------------------------------------------------------------*/
 void plat_core_active_term(bool active) {
@@ -71,12 +71,11 @@ void plat_core_hires(bool on) {
         VIC.ctrl1 = (VIC.ctrl1 & 0xBF) | 0x20;
         VIC.ctrl2 = (VIC.ctrl2 & 0xEF);
     } else {
-        // __asm__("jmp 64738");
         // Turn HiRes off
         // Select the bank
         CIA2.pra = 151; 
         // Set the location of the Screen (color) and bitmap (0 or 8192 only)
-        VIC.addr = 21;
+        VIC.addr = 23;
 
         // Turn on HiRes mode
         VIC.ctrl1 = 27;
@@ -93,23 +92,18 @@ void plat_core_init() {
     plat_core_hires(true);
 
     // Turn off the timer
-	CIA1.cra &= 0xfe;
-	// CHAREN - Map characters into CPU
-	*(char*)0x01 &= 0xfb;
-	// Copy the standard font to where the char font will live
-	memcpy((char*)CHARMAP_RAM, (char*)CHARMAP_ROM+256*8,256*8);
-	// Unmap character rom from CPU
-	*(char*)0x01 |= 0x04;
-	// Turn timer back on
-	CIA1.cra |= 0x01;
+    CIA1.cra &= 0xfe;
+    // CHAREN - Map characters into CPU
+    *(char*)0x01 &= 0xfb;
+    // Copy the standard font to where the char font will live
+    memcpy((char*)CHARMAP_RAM, (char*)CHARMAP_ROM+256*8,256*8);
+    // Unmap character rom from CPU
+    *(char*)0x01 |= 0x04;
+    // Turn timer back on
+    CIA1.cra |= 0x01;
 
     plat_draw_splash_screen();
     plat_draw_board();
-
-    // if (videomode(VIDEOMODE_80COL) >= 0) {
-    //     terminal_display_width = 80;
-    // }
-    // rebootafterexit();
 }
 
 /*-----------------------------------------------------------------------*/
@@ -198,20 +192,12 @@ void plat_core_log_free_mem(char *mem) {
 }
 
 /*-----------------------------------------------------------------------*/
-void plat_core_log_lock_mem() {
-}
-
-/*-----------------------------------------------------------------------*/
 char *plat_core_log_malloc(unsigned int size) {
     if (size == (80 * 24)) {
         return terminal_log_buffer;
     }
     return status_log_buffer;
 }    
-
-/*-----------------------------------------------------------------------*/
-void plat_core_log_unlock_mem() {
-}
 
 /*-----------------------------------------------------------------------*/
 uint8_t plat_core_mouse_to_cursor(void) {

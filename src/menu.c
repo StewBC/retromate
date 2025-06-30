@@ -147,6 +147,7 @@ static void menu_cache(menu_t *m) {
     if (length > global.view.mc.w) {
         global.view.mc.w = length;
     }
+
     // 1 for title
     height++;
     // 2 for the frame + content spacing + content

@@ -16,10 +16,6 @@
 
 #include "platAtari.h"
 
-#define MODKEY  (*(char*)653)
-#define COMMODORE_KEY   2
-#define CONTROL_KEY     4
-
 char *CHAR_ROM;
 char terminal_log_buffer[80 * 23];
 char status_log_buffer[13 * 24];
@@ -30,7 +26,6 @@ char status_log_buffer[13 * 24];
 void plat_core_active_term(bool active) {
     if (active) {
         plat_core_hires(false);
-        // atari.draw_colors = COLOR_GREEN; // COLOR_BLACK<<4|COLOR_GREEN
         global.view.terminal_active = 1;
     } else {
         plat_core_hires(true);
@@ -45,9 +40,6 @@ void plat_core_exit() {
 
 /*-----------------------------------------------------------------------*/
 uint8_t plat_core_get_cols(void) {
-    // if (global.view.terminal_active) {
-    //     return terminal_display_width;
-    // }
     return SCREEN_TEXT_WIDTH;
 }
 
@@ -58,8 +50,8 @@ uint8_t plat_core_get_rows(void) {
 
 /*-----------------------------------------------------------------------*/
 uint8_t plat_core_get_status_x(void) {
-    // The accoutrements (1..8) takes 1 char + the board + 1 extra
-    return 2 + SQUARE_TEXT_WIDTH * 8;
+    // The accoutrements (1..8) takes 1 char + the board + frame (2)
+    return 3 + SQUARE_TEXT_WIDTH * 8;
 }
 
 /*-----------------------------------------------------------------------*/
@@ -75,15 +67,15 @@ void plat_core_hires(bool on) {
 /*-----------------------------------------------------------------------*/
 void plat_core_init() {
     // Assign a character that is in both hires and text, good as a cursor
-    CHAR_ROM = *(char*)0x02F4 * 256;
+    CHAR_ROM = (char*)(*(char*)0x02F4 * 256);
     global.view.cursor_char[0] = 160;
 
     plat_draw_clrscr();
     plat_core_hires(true);
 
-    _setcolor(1,0xc,0xf);	// Pixel %1 color
-	_setcolor(2,0xc,0x7);	// Pixel %0 color
-	_setcolor(4,0xC,0x7); 	// border color
+    _setcolor(1,0xc,0xf);    // Pixel %1 color
+    _setcolor(2,0xc,0x7);    // Pixel %0 color
+    _setcolor(4,0xC,0x7);    // border color
 
     plat_draw_splash_screen();
     plat_draw_board();
@@ -101,57 +93,44 @@ uint8_t plat_core_key_input(input_event_t *evt) {
     }
 
     k = cgetc();
-    mod = MODKEY;
     evt->key_value = k;
     switch (k) {
-        case 3:  // esc
+        case 27:  // esc
             evt->code = INPUT_BACK;
             return 1;
-        case 13:  // return
+        case 155:  // return
             evt->code = INPUT_SELECT;
             return 1;
-        case 157:   // crsr left
+        case 30:   // crsr left
             evt->code = INPUT_LEFT;
             return 1;
-        case 29:  // crsr right
+        case 31:  // crsr right
             evt->code = INPUT_RIGHT;
             return 1;
-        case 145:  // crsr up
+        case 28:  // crsr up
             evt->code = INPUT_UP;
             return 1;
-        case 17:  // crsr down
+        case 29:  // crsr down
             evt->code = INPUT_DOWN;
             return 1;
-        case 9:   // tab
-        case 84: // CTRL-T
-            if(mod & CONTROL_KEY) {
-                evt->code = INPUT_VIEW_TOGGLE;
-                return 1;
-            }
-            goto justakey;
-        case 79: // CRTL+O
-            if(mod & CONTROL_KEY) {
-                evt->code = INPUT_VIEW_PAN_LEFT;
-                return 1;
-            }
-            goto justakey;
-        case 80: // CTRL+P
-            if(mod & CONTROL_KEY) {
-                evt->code = INPUT_VIEW_PAN_RIGHT;
-                return 1;
-            }
-            goto justakey;
-        case 83:
-            if(mod & CONTROL_KEY) {
-                evt->code = INPUT_SAY;
-                return 1;
-            }
-            goto justakey;
-        case 20: // DEL
+        case 127:   // tab
+        case 20: // CTRL-T
+            evt->code = INPUT_VIEW_TOGGLE;
+            return 1;
+        case 15: // CRTL+O
+            evt->code = INPUT_VIEW_PAN_LEFT;
+            return 1;
+        case 16: // CTRL+P
+            evt->code = INPUT_VIEW_PAN_RIGHT;
+            return 1;
+        case 19: // CTRL+S
+            evt->code = INPUT_SAY;
+            return 1;
+        case 126: // DEL
+        case 254: // DEL
             evt->code = INPUT_BACKSPACE;
             return 1;
         default:  // any other key
-justakey:
             evt->code = INPUT_KEY;
     }
 
@@ -172,10 +151,7 @@ void plat_core_key_wait_any() {
 
 /*-----------------------------------------------------------------------*/
 void plat_core_log_free_mem(char *mem) {
-}
-
-/*-----------------------------------------------------------------------*/
-void plat_core_log_lock_mem() {
+    UNUSED(mem);
 }
 
 /*-----------------------------------------------------------------------*/
@@ -185,10 +161,6 @@ char *plat_core_log_malloc(unsigned int size) {
     }
     return status_log_buffer;
 }    
-
-/*-----------------------------------------------------------------------*/
-void plat_core_log_unlock_mem() {
-}
 
 /*-----------------------------------------------------------------------*/
 uint8_t plat_core_mouse_to_cursor(void) {
@@ -202,7 +174,6 @@ uint8_t plat_core_mouse_to_menu_item(void) {
 
 /*-----------------------------------------------------------------------*/
 void plat_core_shutdown() {
-    __asm__("jmp 64738");
 }
 
 #pragma code-name(pop)

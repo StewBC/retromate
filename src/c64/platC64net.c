@@ -14,6 +14,29 @@
 
 #include <c64.h>
 
+static char send_buffer[80];
+
+/*-----------------------------------------------------------------------*/
+static int plat_net_make_ascii(char *text) {
+    char i = 0;
+    while(*text) {
+        char c = *text;
+        if(c == 0x0d) {
+            send_buffer[i++] = 0x0a;
+        }
+        if(c < 65 || c > 218) {
+            send_buffer[i++] = c;
+        } else if(c >= 193) {
+            send_buffer[i++] = c & ~128;
+        } else if(c <= 90) {
+            send_buffer[i++] = c | 32;
+        }
+        text++;
+    }
+    send_buffer[i++] = '\x0a';
+    return i;
+}
+
 /*-----------------------------------------------------------------------*/
 void plat_net_init() {
     log_add_line(&global.view.terminal, "Initializing Network", -1);
@@ -63,10 +86,9 @@ bool plat_net_update() {
 
 /*-----------------------------------------------------------------------*/
 void plat_net_send(const char *text) {
-    int len = strlen(text);
-    log_add_line(&global.view.terminal, text, len);
-    tcp_send((unsigned char *)text, len);
-    tcp_send((unsigned char *)"\n", 1);
+    int len = plat_net_make_ascii(text);
+    log_add_line(&global.view.terminal, send_buffer, len);
+    tcp_send((unsigned char *)send_buffer, len);
 }
 
 /*-----------------------------------------------------------------------*/

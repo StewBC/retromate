@@ -16,9 +16,9 @@
 
 .rodata
 
-.define VIC_BASE_RAM			$C000
-.define SCREEN_RAM				VIC_BASE_RAM + $2000
-.define CHARMAP_RAM         VIC_BASE_RAM + $2800
+.define VIC_BASE_RAM    $C000
+.define SCREEN_RAM      VIC_BASE_RAM + $2000
+.define CHARMAP_RAM     VIC_BASE_RAM + $2800
 
 BASELO:
     .repeat 25, I
@@ -84,11 +84,10 @@ CBASEHI:
 :       sta xofflo+1
 
         sei         ; stop interrupts
-        lda 1       ; kernel out
-        and #$FD
+        lda #$34    ; Basic ROM off; Kernal ROM off; I/O off
         sta 1
 
-        ldy #$00   ; source index
+        ldy #$00
         ldx ypos+1      ; start row
 yloop:  clc
 xofflo: lda #$FF        ; Patched
@@ -98,7 +97,7 @@ xoffhi: lda #$FF        ; Patched
         adc BASEHI,x
         sta dst+2
 
-xpos:   lda #$FF
+xpos:   lda #$FF        ; Patched
         sta xcurr+1
 xloop:  ldx #0          ; do one character column
 src:    lda $ffff,y ; Patched
@@ -110,14 +109,13 @@ dst:    sta $ffff,x ; Patched
         cpx #8
         bne src
         
-        lda dst+1 ; next col
         clc
+        lda dst+1 ; next col
         adc #8
         sta dst+1
         bcc :+
         inc dst+2
-: clc
-        inc xcurr+1
+:       inc xcurr+1
 xcurr:  ldx #$FF        ; Patched 
 xmax:   cpx #$FF    ; Patched
         bne xloop
@@ -126,8 +124,7 @@ ypos:   ldx #$FF    ; Patched
 ymax:   cpx #$FF    ; Patched
         bne yloop
 
-        lda 1       ; kernel in
-        ora #$02
+        lda #$36    ; Basic ROM off; Kernal ROM on; I/O on
         sta 1
         cli         ; resume interrupts
 
@@ -155,7 +152,7 @@ ymax:   cpx #$FF    ; Patched
         jsr popa    ; 'xpos'
         sta xpos+1
 
-        clc
+        ; clc
         adc xmax+1
         sta xmax+1
         
@@ -171,13 +168,12 @@ ymax:   cpx #$FF    ; Patched
         rol xoffhi+1
 :       sta xofflo+1
 
-        sei         ; stop interrupts
-        lda 1       ; kernel out
-        and #$FD
+        sei
+        lda #$34
         sta 1
 
         ldy ypos+1
-yloop:  clc
+        ; clc
 xofflo: lda #$FF ; Patched
         adc BASELO,y
         sta src+1
@@ -195,9 +191,10 @@ rop:    nop
 dst:    sta $ffff,y ; Patched
         dey
         bpl src
+        clc       ; probably uneccesary but maybe rop set it
         lda src+1 ; adjust src & dest 
-        adc #8  ; since the screen > 256 in x
-        sta src+1
+        adc #8    ; next col is 8 away
+        sta src+1 ; and screen > 256 wide
         bcc :+
         inc src+2
         clc
@@ -206,19 +203,17 @@ dst:    sta $ffff,y ; Patched
         sta dst+1
         bcc :+
         inc dst+2
-        clc
 :       inx         ; next column
 xmax:   cpx #$FF    ; Patched
         bne xloop
         inc ypos+1
 ypos:   ldy #$FF    ; Patched
 ymax:   cpy #$FF    ; Patched
-        bne yloop
+        bne xofflo
 
-        lda 1       ; kernel in
-        ora #$02
+        lda #$36
         sta 1
-        cli         ; resume interrupts
+        cli
 
         rts
 .endproc
@@ -227,8 +222,7 @@ ymax:   cpy #$FF    ; Patched
 
 .proc _hires_color
 
-        ; stx color+1     ; 'rop' hi
-        sta color+1   ; 'rop' lo
+        sta color+1   ; color
 
         jsr popa    ; 'ysize'
         sta ymax+1
@@ -238,7 +232,6 @@ ymax:   cpy #$FF    ; Patched
 
         jsr popa    ; 'ypos'
         sta ypos+1
-        tay
 
         clc
         adc ymax+1
@@ -247,13 +240,12 @@ ymax:   cpy #$FF    ; Patched
         jsr popa    ; 'xpos'
         sta xpos+1
 
-        clc
+        ; clc
         adc xmax+1
         sta xmax+1
 
-        sei         ; stop interrupts
-        lda 1       ; kernel out
-        and #$FD
+        sei
+        lda #$34
         sta 1
 
 ypos:   ldy #$FF    ; Patched
@@ -262,7 +254,7 @@ yloop:  lda CBASELO,y
         lda CBASEHI,y
         sta dst+2
 
-color:  lda #$15    ; Patched
+color:  lda #$FF    ; Patched
 xpos:   ldx #$FF    ; Patched
 dst:    sta $FFFF,x ; Patched
         inx
@@ -273,10 +265,9 @@ xmax:   cpx #$FF    ; Patched
 ymax:   cpy #$FF    ; Patched
         bne yloop
 
-        lda 1       ; kernel in
-        ora #$02
+        lda #$36
         sta 1
-        cli         ; resume interrupts
+        cli
 
         rts
 .endproc

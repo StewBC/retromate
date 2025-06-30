@@ -2,6 +2,9 @@
 
 # build artifacts
 build/
+assets/
+!assets/pieces.png
+!assets/prodos.prodos
 
 # emulator configs
 altirra-debug.ini

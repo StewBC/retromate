@@ -207,7 +207,6 @@ void plat_draw_log(tLog *log, uint8_t x, uint8_t y, bool) {
         log_render += 20 * shift;
     }
 
-    plat_core_log_lock_mem();
     for (i = 0; i < log->size; ++i) {
         plat_draw_text(x, y++, log_render, width);
         log_render += log->cols;
@@ -215,7 +214,6 @@ void plat_draw_log(tLog *log, uint8_t x, uint8_t y, bool) {
             log_render = log->buffer + (log_render - log_end);
         }
     }
-    plat_core_log_unlock_mem();
 }
 
 /*-----------------------------------------------------------------------*/
@@ -290,7 +288,11 @@ void plat_draw_text(uint8_t x, uint8_t y, const char *text, uint8_t len) {
     if (global.view.terminal_active) {
         gotoxy(x, y);
         while (len--) {
-            cputc(*text++);
+            // cputc(*text++);
+            char c = *text++;
+            if(c >= 65 && c < 91) c |= 32;
+            else if(c >= 97 && c < 123) c &= ~32;
+            cputc(c);
         }
     } else {
         while (len) {

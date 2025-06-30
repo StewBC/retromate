@@ -48,14 +48,5 @@ void hires_draw(char xpos,    char ypos,
 void hires_mask(char xpos,    char ypos,
                 char xsize,   char ysize,
                 unsigned rop);
-// void hires_color(char xpos,   char ypos,
-//                 char xsize,   char ysize,
-//                 char rop);
-
-// typedef struct _atari {
-//     uint32_t draw_colors;
-// } atari_t;
-
-// extern atari_t atari;
 
 #endif //_PLATATARI_H_

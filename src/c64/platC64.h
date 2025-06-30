@@ -27,11 +27,11 @@ extern uint8_t terminal_display_width;
 #define SQUARE_DISPLAY_HEIGHT   (SQUARE_TEXT_HEIGHT * CHARACTER_HEIGHT)
 #define BOARD_DISPLAY_HEIGHT    (SQUARE_DISPLAY_HEIGHT * 8)
 
-#define VIC_BASE_RAM			(0xC000)
-#define BITMAP_OFFSET			(0x0000)
-#define CHARMAP_ROM				(0xD000)
-#define SCREEN_RAM				((char*)VIC_BASE_RAM + 0x2000)
-#define CHARMAP_RAM				((char*)VIC_BASE_RAM + 0x2800)
+#define VIC_BASE_RAM            (0xC000)
+#define BITMAP_OFFSET           (0x0000)
+#define CHARMAP_ROM             (0xD000)
+#define SCREEN_RAM              ((char*)VIC_BASE_RAM + 0x2000)
+#define CHARMAP_RAM             ((char*)VIC_BASE_RAM + 0x2800)
 
 #define ROP_CONST(val)          0xA900|(val)
 #define ROP_BLACK               0xA900
@@ -53,7 +53,7 @@ void hires_mask(char xpos,    char ypos,
                 unsigned rop);
 void hires_color(char xpos,   char ypos,
                 char xsize,   char ysize,
-                char rop);
+                char color);
 
 typedef struct _c64 {
     uint32_t draw_colors;

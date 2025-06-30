@@ -58,9 +58,7 @@ void log_init(tLog *log, uint8_t width, uint8_t height) {
         // If you can't get the mem for a log, then you can only quit
         plat_core_exit();
     }
-    plat_core_log_lock_mem();
     memset(log->buffer, ' ', log->buffer_size);
-    plat_core_log_unlock_mem();
 }
 
 /*-----------------------------------------------------------------------*/
@@ -69,8 +67,6 @@ void log_add_line(tLog *log, const char *text, int text_len) {
     const char *p = text;
     const char *line_start;
     const char *newline;
-
-    plat_core_log_lock_mem();
 
     remaining = (text_len < 0) ? strlen(text) : text_len;
     if (log->clip) {
@@ -119,7 +115,6 @@ void log_add_line(tLog *log, const char *text, int text_len) {
             }
         }
     }
-    plat_core_log_unlock_mem();
     log->modified = true;
 }
 
