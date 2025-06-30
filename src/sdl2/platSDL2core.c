@@ -94,13 +94,13 @@ void plat_core_init(void) {
     // drawing as little as possible - the texture captures the cumulative drawing
     // over frames
     sdl.framebuffer = SDL_CreateTexture(
-    sdl.renderer,
-    SDL_PIXELFORMAT_RGBA8888,
-    SDL_TEXTUREACCESS_TARGET,
-    SCREEN_DISPLAY_WIDTH,
-    SCREEN_DISPLAY_HEIGHT
-    );
-    if(!sdl.framebuffer) {
+                          sdl.renderer,
+                          SDL_PIXELFORMAT_RGBA8888,
+                          SDL_TEXTUREACCESS_TARGET,
+                          SCREEN_DISPLAY_WIDTH,
+                          SCREEN_DISPLAY_HEIGHT
+                      );
+    if (!sdl.framebuffer) {
         printf("error: framebuffer texture is null\n");
         exit(1);
     }
@@ -198,8 +198,8 @@ uint8_t plat_core_key_input(input_event_t *evt) {
                         evt->code = INPUT_BACKSPACE;
                         return 1;
 
-                        case SDLK_s:
-                        if(e.key.keysym.mod & KMOD_CTRL) {
+                    case SDLK_s:
+                        if (e.key.keysym.mod & KMOD_CTRL) {
                             evt->code = INPUT_SAY;
                             return 1;
                         }

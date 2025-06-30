@@ -61,7 +61,7 @@ uint8_t plat_core_get_status_x(void) {
 
 /*-----------------------------------------------------------------------*/
 void plat_core_hires(bool on) {
-    if(on) {
+    if (on) {
         // Select the bank
         CIA2.pra = (CIA2.pra & 0xFC) | (3 - (VIC_BASE_RAM >> 14));
         // Set the location of the Screen (color) and bitmap (0 or 8192 only)
@@ -73,7 +73,7 @@ void plat_core_hires(bool on) {
     } else {
         // Turn HiRes off
         // Select the bank
-        CIA2.pra = 151; 
+        CIA2.pra = 151;
         // Set the location of the Screen (color) and bitmap (0 or 8192 only)
         VIC.addr = 23;
 
@@ -94,11 +94,11 @@ void plat_core_init() {
     // Turn off the timer
     CIA1.cra &= 0xfe;
     // CHAREN - Map characters into CPU
-    *(char*)0x01 &= 0xfb;
+    *(char *)0x01 &= 0xfb;
     // Copy the standard font to where the char font will live
-    memcpy((char*)CHARMAP_RAM, (char*)CHARMAP_ROM+256*8,256*8);
+    memcpy((char *)CHARMAP_RAM, (char *)CHARMAP_ROM + 256 * 8, 256 * 8);
     // Unmap character rom from CPU
-    *(char*)0x01 |= 0x04;
+    *(char *)0x01 |= 0x04;
     // Turn timer back on
     CIA1.cra |= 0x01;
 
@@ -140,25 +140,25 @@ uint8_t plat_core_key_input(input_event_t *evt) {
             return 1;
         case 9:   // tab
         case 84: // CTRL-T
-            if(mod & CONTROL_KEY) {
+            if (mod & CONTROL_KEY) {
                 evt->code = INPUT_VIEW_TOGGLE;
                 return 1;
             }
             goto justakey;
         case 79: // CRTL+O
-            if(mod & CONTROL_KEY) {
+            if (mod & CONTROL_KEY) {
                 evt->code = INPUT_VIEW_PAN_LEFT;
                 return 1;
             }
             goto justakey;
         case 80: // CTRL+P
-            if(mod & CONTROL_KEY) {
+            if (mod & CONTROL_KEY) {
                 evt->code = INPUT_VIEW_PAN_RIGHT;
                 return 1;
             }
             goto justakey;
         case 83:
-            if(mod & CONTROL_KEY) {
+            if (mod & CONTROL_KEY) {
                 evt->code = INPUT_SAY;
                 return 1;
             }
@@ -197,7 +197,7 @@ char *plat_core_log_malloc(unsigned int size) {
         return terminal_log_buffer;
     }
     return status_log_buffer;
-}    
+}
 
 /*-----------------------------------------------------------------------*/
 uint8_t plat_core_mouse_to_cursor(void) {

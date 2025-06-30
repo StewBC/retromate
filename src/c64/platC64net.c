@@ -19,16 +19,16 @@ static char send_buffer[80];
 /*-----------------------------------------------------------------------*/
 static int plat_net_make_ascii(char *text) {
     char i = 0;
-    while(*text) {
+    while (*text) {
         char c = *text;
-        if(c == 0x0d) {
+        if (c == 0x0d) {
             send_buffer[i++] = 0x0a;
         }
-        if(c < 65 || c > 218) {
+        if (c < 65 || c > 218) {
             send_buffer[i++] = c;
-        } else if(c >= 193) {
+        } else if (c >= 193) {
             send_buffer[i++] = c & ~128;
-        } else if(c <= 90) {
+        } else if (c <= 90) {
             send_buffer[i++] = c | 32;
         }
         text++;

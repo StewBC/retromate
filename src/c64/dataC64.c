@@ -12,8 +12,7 @@
 /*-----------------------------------------------------------------------*/
 // C64 specific graphics for the chess pieces
 // 72 = 8 rows (character heigt) * 3 colomns (width) * 3 (character lines [of 8 rows and 3 columns each])
-char hires_pieces[6][2][SQUARE_TEXT_WIDTH * SQUARE_DISPLAY_HEIGHT] =
-{
+char hires_pieces[6][2][SQUARE_TEXT_WIDTH * SQUARE_DISPLAY_HEIGHT] = {
     {
         {
             0x00, 0x00, 0x1E, 0x12, 0x12, 0x13, 0x10, 0x08,

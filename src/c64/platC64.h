@@ -52,8 +52,8 @@ void hires_mask(char xpos,    char ypos,
                 char xsize,   char ysize,
                 unsigned rop);
 void hires_color(char xpos,   char ypos,
-                char xsize,   char ysize,
-                char color);
+                 char xsize,  char ysize,
+                 char color);
 
 typedef struct _c64 {
     uint32_t draw_colors;

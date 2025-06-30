@@ -21,9 +21,9 @@ static char send_buffer[80];
 /*-----------------------------------------------------------------------*/
 static int plat_net_make_ascii(char *text) {
     char i = 0;
-    while(*text) {
+    while (*text) {
         char c = *text++;
-        if(c == 0x9b) {
+        if (c == 0x9b) {
             send_buffer[i++] = 0x0a;
         } else {
             send_buffer[i++] = c;

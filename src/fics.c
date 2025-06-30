@@ -330,7 +330,7 @@ static void fics_ndcb_login_flow(const char *buf, int len) {
     while (len > 0) {
         char character = *parse_point;
         if (character == FICS_DATA_PASSWORD[0] && 0 == strncmp(parse_point, FICS_DATA_PASSWORD, (sizeof(FICS_DATA_PASSWORD) - 1))) {
-            if(ui_pregame_menu_options_menu.menu_items[UI_LOGIN_OPTIONS_REGISTERED].selected == 1) {
+            if (ui_pregame_menu_options_menu.menu_items[UI_LOGIN_OPTIONS_REGISTERED].selected == 1) {
                 // Prompting for a password on a registered account
                 plat_net_send(global.ui.user_password);
             } else {
@@ -348,7 +348,7 @@ static void fics_ndcb_login_flow(const char *buf, int len) {
             error_string = "Invalid password";
             break;
         } else if (character == FICS_TRIGGER_LOGGED_IN[0] && 0 == strncmp(parse_point, FICS_TRIGGER_LOGGED_IN, (sizeof(FICS_TRIGGER_LOGGED_IN) - 1))) {
-            if(ui_pregame_menu_options_menu.menu_items[UI_LOGIN_OPTIONS_REGISTERED].selected == 1) {
+            if (ui_pregame_menu_options_menu.menu_items[UI_LOGIN_OPTIONS_REGISTERED].selected == 1) {
                 // User name isn't registered, but was available, but that's not what the user wanted, so go offline
                 login_error = true;
                 error_string = "Not a registered account";
@@ -362,7 +362,7 @@ static void fics_ndcb_login_flow(const char *buf, int len) {
         parse_point++;
     }
 
-    if(login_error) {
+    if (login_error) {
         app_error(false, error_string);
         fics_set_trigger_callback(NULL, NULL);
         plat_net_shutdown();
@@ -540,7 +540,7 @@ static void fics_ndcb_update_from_server(const char *buf, int len) {
                 }
             }
             if (ui_in_game_menu.menu_items[UI_MENU_INGAME_NEW].item_state == MENU_STATE_ENABLED ||
-                ui_in_game_menu.menu_items[UI_MENU_INGAME_STOP_SEEK].item_state == MENU_STATE_ENABLED) {
+                    ui_in_game_menu.menu_items[UI_MENU_INGAME_STOP_SEEK].item_state == MENU_STATE_ENABLED) {
                 if (global.view.info_panel.size > FICS_STATSLOG_MSG_ROW) {
                     plat_draw_clear_statslog_area(FICS_STATSLOG_MSG_ROW);
                 }
@@ -622,10 +622,10 @@ static void fics_ndcb_update_from_server(const char *buf, int len) {
 /*-----------------------------------------------------------------------*/
 void fics_init() {
     plat_net_connect(global.ui.server_name, global.ui.server_port);
-    if(ui_pregame_menu_options_menu.menu_items[UI_LOGIN_OPTIONS_REGISTERED].selected == 1 &&
-        !global.ui.user_password[0]) {
-            app_error(false, "Empty Password");
-            app_set_state(APP_STATE_OFFLINE);
+    if (ui_pregame_menu_options_menu.menu_items[UI_LOGIN_OPTIONS_REGISTERED].selected == 1 &&
+            !global.ui.user_password[0]) {
+        app_error(false, "Empty Password");
+        app_set_state(APP_STATE_OFFLINE);
     } else {
         fics_set_trigger_callback(FICS_TRIGGER_LOGIN, fics_tcb_login);
     }
@@ -648,12 +648,12 @@ uint8_t fics_letter_to_piece(char letter) {
 /*-----------------------------------------------------------------------*/
 void fics_play(bool use_seek) {
     ui_in_game_menu.menu_items[UI_MENU_INGAME_NEW].item_state = MENU_STATE_HIDDEN;
-    if(use_seek) {
+    if (use_seek) {
         ui_in_game_menu.menu_items[UI_MENU_INGAME_STOP_SEEK].item_state = MENU_STATE_ENABLED;
-        if(!(global.view.mc.df & MENU_DRAW_HIDDEN)) {
+        if (!(global.view.mc.df & MENU_DRAW_HIDDEN)) {
             global.view.mc.df = MENU_DRAW_REDRAW;
         }
-        if(global.ui.my_game_type[1] == 'u' || global.ui.my_game_type[1] == 'i' || global.ui.my_game_type[1] == 'r') {
+        if (global.ui.my_game_type[1] == 'u' || global.ui.my_game_type[1] == 'i' || global.ui.my_game_type[1] == 'r') {
             strcpy(&global.setup.seek_cmd[5], global.ui.my_game_type);
             plat_net_send(global.setup.seek_cmd);
         }

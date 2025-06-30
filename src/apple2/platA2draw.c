@@ -146,14 +146,14 @@ void plat_draw_highlight(uint8_t position, uint8_t color) {
     uint8_t x = position & 7;
 
     // if (color) {
-        hires_mask(2 + x * SQUARE_TEXT_WIDTH, 2 + y * SQUARE_DISPLAY_HEIGHT + 4,
-                1, SQUARE_DISPLAY_HEIGHT - 2 * 4, ROP_XOR(rop_line[0][4]));
-        hires_mask(2 + x * SQUARE_TEXT_WIDTH + SQUARE_TEXT_WIDTH - 1, 2 + y * SQUARE_DISPLAY_HEIGHT + 4,
-                1, SQUARE_DISPLAY_HEIGHT - 2 * 4, ROP_XOR(rop_line[1][4]));
-        hires_mask(2 + x * SQUARE_TEXT_WIDTH, 2 + y * SQUARE_DISPLAY_HEIGHT,
-                SQUARE_TEXT_WIDTH, 4, ROP_XOR(0x7F));
-        hires_mask(2 + x * SQUARE_TEXT_WIDTH, 2 + y * SQUARE_DISPLAY_HEIGHT + SQUARE_DISPLAY_HEIGHT - 4,
-                SQUARE_TEXT_WIDTH, 4, ROP_XOR(0x7F));
+    hires_mask(2 + x * SQUARE_TEXT_WIDTH, 2 + y * SQUARE_DISPLAY_HEIGHT + 4,
+               1, SQUARE_DISPLAY_HEIGHT - 2 * 4, ROP_XOR(rop_line[0][4]));
+    hires_mask(2 + x * SQUARE_TEXT_WIDTH + SQUARE_TEXT_WIDTH - 1, 2 + y * SQUARE_DISPLAY_HEIGHT + 4,
+               1, SQUARE_DISPLAY_HEIGHT - 2 * 4, ROP_XOR(rop_line[1][4]));
+    hires_mask(2 + x * SQUARE_TEXT_WIDTH, 2 + y * SQUARE_DISPLAY_HEIGHT,
+               SQUARE_TEXT_WIDTH, 4, ROP_XOR(0x7F));
+    hires_mask(2 + x * SQUARE_TEXT_WIDTH, 2 + y * SQUARE_DISPLAY_HEIGHT + SQUARE_DISPLAY_HEIGHT - 4,
+               SQUARE_TEXT_WIDTH, 4, ROP_XOR(0x7F));
     // } else {
     //     uint8_t val = x & 1;
     //     hires_mask(2 + x * SQUARE_TEXT_WIDTH, 2 + y * SQUARE_DISPLAY_HEIGHT,

@@ -56,7 +56,7 @@ uint8_t plat_core_get_status_x(void) {
 
 /*-----------------------------------------------------------------------*/
 void plat_core_hires(bool on) {
-    if(on) {
+    if (on) {
         hires_init();
     } else {
         hires_done();
@@ -67,15 +67,15 @@ void plat_core_hires(bool on) {
 /*-----------------------------------------------------------------------*/
 void plat_core_init() {
     // Assign a character that is in both hires and text, good as a cursor
-    CHAR_ROM = (char*)(*(char*)0x02F4 * 256);
+    CHAR_ROM = (char *)(*(char *)0x02F4 * 256);
     global.view.cursor_char[0] = 160;
 
     plat_draw_clrscr();
     plat_core_hires(true);
 
-    _setcolor(1,0xc,0xf);    // Pixel %1 color
-    _setcolor(2,0xc,0x7);    // Pixel %0 color
-    _setcolor(4,0xC,0x7);    // border color
+    _setcolor(1, 0xc, 0xf);  // Pixel %1 color
+    _setcolor(2, 0xc, 0x7);  // Pixel %0 color
+    _setcolor(4, 0xC, 0x7);  // border color
 
     plat_draw_splash_screen();
     plat_draw_board();
@@ -160,7 +160,7 @@ char *plat_core_log_malloc(unsigned int size) {
         return terminal_log_buffer;
     }
     return status_log_buffer;
-}    
+}
 
 /*-----------------------------------------------------------------------*/
 uint8_t plat_core_mouse_to_cursor(void) {

@@ -41,10 +41,10 @@ extern char *CHAR_ROM;
 /*-----------------------------------------------------------------------*/
 // x in Character coords, y in Graphics coords
 static void plat_draw_char(char x, char y, unsigned rop, char c) {
-    if(c < 'a' || c > 'z') {
+    if (c < 'a' || c > 'z') {
         c -= 32;
     }
-    hires_draw(x, y, 1, 8, rop, CHAR_ROM+c*8);
+    hires_draw(x, y, 1, 8, rop, CHAR_ROM + c * 8);
 }
 
 /*-----------------------------------------------------------------------*/
@@ -151,14 +151,14 @@ void plat_draw_highlight(uint8_t position, uint8_t color) {
     UNUSED(color);
 
     // if (color) {
-        hires_mask(2 + x * SQUARE_TEXT_WIDTH, 2 + y * SQUARE_DISPLAY_HEIGHT + 4,
-                1, SQUARE_DISPLAY_HEIGHT - 2 * 4, ROP_XOR(rop_line[0][4]));
-        hires_mask(2 + x * SQUARE_TEXT_WIDTH + SQUARE_TEXT_WIDTH - 1, 2 + y * SQUARE_DISPLAY_HEIGHT + 4,
-                1, SQUARE_DISPLAY_HEIGHT - 2 * 4, ROP_XOR(rop_line[1][4]));
-        hires_mask(2 + x * SQUARE_TEXT_WIDTH, 2 + y * SQUARE_DISPLAY_HEIGHT,
-                SQUARE_TEXT_WIDTH, 4, ROP_XOR(0x7F));
-        hires_mask(2 + x * SQUARE_TEXT_WIDTH, 2 + y * SQUARE_DISPLAY_HEIGHT + SQUARE_DISPLAY_HEIGHT - 4,
-                SQUARE_TEXT_WIDTH, 4, ROP_XOR(0x7F));
+    hires_mask(2 + x * SQUARE_TEXT_WIDTH, 2 + y * SQUARE_DISPLAY_HEIGHT + 4,
+               1, SQUARE_DISPLAY_HEIGHT - 2 * 4, ROP_XOR(rop_line[0][4]));
+    hires_mask(2 + x * SQUARE_TEXT_WIDTH + SQUARE_TEXT_WIDTH - 1, 2 + y * SQUARE_DISPLAY_HEIGHT + 4,
+               1, SQUARE_DISPLAY_HEIGHT - 2 * 4, ROP_XOR(rop_line[1][4]));
+    hires_mask(2 + x * SQUARE_TEXT_WIDTH, 2 + y * SQUARE_DISPLAY_HEIGHT,
+               SQUARE_TEXT_WIDTH, 4, ROP_XOR(0x7F));
+    hires_mask(2 + x * SQUARE_TEXT_WIDTH, 2 + y * SQUARE_DISPLAY_HEIGHT + SQUARE_DISPLAY_HEIGHT - 4,
+               SQUARE_TEXT_WIDTH, 4, ROP_XOR(0x7F));
     // } else {
     //     uint8_t val = x & 1;
     //     hires_mask(2 + x * SQUARE_TEXT_WIDTH, 2 + y * SQUARE_DISPLAY_HEIGHT,
