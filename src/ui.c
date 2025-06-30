@@ -106,8 +106,12 @@ static uint8_t ui_toggle_sought_callback(menu_t *m, void *data) {
 }
 
 //----------------------------------------------------------------------------
+#include <stdio.h>
 void ui_set_item_target(menu_item_t *item, uint8_t variable, char *value_str) {
-    strcpy(item->edit_target, value_str);
+    if(item->edit_target != value_str) {
+        // Don't attempt to do an overlapped copy ie strcpy(ptr, ptr)
+        strcpy(item->edit_target, value_str);
+    }
     *(int *)item->submenu = atoi(value_str);
     // Redraw the item only because it will absolutely fit in the menu
     menu_show_item(item, MENU_ITEM_DRAW_ACTION_ONLY);
@@ -154,7 +158,7 @@ menu_item_t ui_settings_menu_items[] = {
     { "Start Time", MENU_ITEM_CALLBACK, MENU_STATE_HIDDEN, 0, 0, 0, global.setup.starting_time_srt, sizeof(global.setup.starting_time_srt), FILTER_NUM, (menu_t *) &global.setup.starting_time, input_text_callback},
     { "Incremental Time", MENU_ITEM_CALLBACK, MENU_STATE_HIDDEN, 0, 0, 0, global.setup.incremental_time_str, sizeof(global.setup.incremental_time_str), FILTER_NUM, (menu_t *) &global.setup.incremental_time, input_text_callback},
     { "Min Rating Match", MENU_ITEM_CALLBACK, MENU_STATE_HIDDEN, 0, 0, 0, global.setup.min_rating_str, sizeof(global.setup.min_rating_str), FILTER_NUM, (menu_t *) &global.setup.min_rating, ui_set_rating_callback},
-    { "Max Rating Match", MENU_ITEM_CALLBACK, MENU_STATE_HIDDEN, 0, 0, 0, global.setup.max_rating_srt, sizeof(global.setup.max_rating_srt), FILTER_NUM, (menu_t *) &global.setup.max_rating, ui_set_rating_callback},
+    { "Max Rating Match", MENU_ITEM_CALLBACK, MENU_STATE_HIDDEN, 0, 0, 0, global.setup.max_rating_str, sizeof(global.setup.max_rating_str), FILTER_NUM, (menu_t *) &global.setup.max_rating, ui_set_rating_callback},
     { "Back", MENU_ITEM_BACKUP, MENU_STATE_ENABLED, 0, 0, 0, NULL, 0, 0, NULL, NULL},
 };
 menu_t ui_settings_menu = {

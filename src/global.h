@@ -129,7 +129,7 @@ typedef struct _setup {
     char starting_time_srt[4 + 1];
     char incremental_time_str[4 + 1];
     char min_rating_str[4 + 1];
-    char max_rating_srt[4 + 1];
+    char max_rating_str[4 + 1];
     int starting_time;
     int incremental_time;
     int min_rating;

@@ -288,6 +288,10 @@ void plat_core_shutdown(void) {
     }
     TTF_Quit();
 
+    if(sdl.framebuffer) {
+        SDL_DestroyTexture(sdl.framebuffer);
+    }
+
     if (sdl.renderer) {
         SDL_DestroyRenderer(sdl.renderer);
     }

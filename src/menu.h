@@ -83,7 +83,7 @@ typedef struct {
 } menu_item_t;
 
 // A menu has a title, some number of menu times and knows which item is currently selected
-struct _menu {
+typedef struct _menu {
     char *title;                 // This menu's title
     uint8_t num_items;           // How many menu items
     menu_item_t *menu_items;     // The item menu_item's themselves
@@ -91,7 +91,7 @@ struct _menu {
     uint8_t selected_item;       // Currently selected item from menu_items
     // menu_callback_t item_change; // If set, called when the selection changes
     menu_t *parent_menu;         // Where back goes
-};
+} menu_t;
 
 typedef struct _menu_cache {
     menu_t *m;          // active menu
