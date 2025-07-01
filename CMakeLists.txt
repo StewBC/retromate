@@ -100,6 +100,7 @@ function(add_retromate_target target sources bin_file disk_file)
     # Extra linker flags just for apple2
     if(${target} STREQUAL "apple2")
         set(EXTRA_LINK_FLAGS "-C" "apple2-hgr.cfg" "-Wl" "-D,__HIMEM__=0xBF00")
+        list(APPEND ALL_DEPENDS ${CMAKE_SOURCE_DIR}/src/apple2/retromate.hgr)
     elseif(${target} STREQUAL "c64")
         set(EXTRA_LINK_FLAGS "-Wl" "-D,__HIMEM__=0xC000")
     else()
