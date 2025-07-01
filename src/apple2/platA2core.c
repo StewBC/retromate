@@ -60,8 +60,6 @@ uint8_t plat_core_get_status_x(void) {
 
 /*-----------------------------------------------------------------------*/
 void plat_core_init() {
-    int slot;
-
     // Assign a character that is in both hires and text, good as a cursor
     global.view.cursor_char[0] = 127;
     plat_draw_splash_screen();
@@ -140,6 +138,7 @@ void plat_core_key_wait_any() {
 
 /*-----------------------------------------------------------------------*/
 void plat_core_log_free_mem(char *mem) {
+    UNUSED(mem);
 }
 
 /*-----------------------------------------------------------------------*/

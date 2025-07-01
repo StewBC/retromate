@@ -144,6 +144,7 @@ void plat_draw_clrscr() {
 void plat_draw_highlight(uint8_t position, uint8_t color) {
     uint8_t y = position / 8;
     uint8_t x = position & 7;
+    UNUSED(color);
 
     // if (color) {
     hires_mask(2 + x * SQUARE_TEXT_WIDTH, 2 + y * SQUARE_DISPLAY_HEIGHT + 4,
