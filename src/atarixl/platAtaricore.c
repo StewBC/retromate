@@ -89,7 +89,7 @@ void plat_core_init() {
 
 /*-----------------------------------------------------------------------*/
 uint8_t plat_core_key_input(input_event_t *evt) {
-    uint8_t k, mod;
+    uint8_t k;
 
     evt->code = INPUT_NONE;
 

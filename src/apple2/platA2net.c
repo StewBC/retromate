@@ -7,9 +7,9 @@
  *
  */
 
-#include <string.h>
-#include <peekpoke.h>
 #include <ip65.h>
+#include <peekpoke.h>
+#include <string.h>
 
 #include "../global.h"
 

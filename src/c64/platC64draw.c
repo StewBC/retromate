@@ -7,10 +7,10 @@
  *
  */
 
+#include <c64.h>
 #include <conio.h>
 #include <string.h>
 
-#include <c64.h>
 #include "../global.h"
 
 #include "platC64.h"

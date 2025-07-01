@@ -55,6 +55,7 @@ typedef struct _c64 {
     char rop_color[2][2];
     uint32_t draw_colors;
     uint8_t terminal_display_width;
+    char send_buffer[80];
     char terminal_log_buffer[80 * 24];
     char status_log_buffer[13 * 25];
 } c64_t;

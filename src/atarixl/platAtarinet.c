@@ -7,29 +7,28 @@
  *
  */
 
-#include <string.h>
+#include <atari.h>
 #include <ip65.h>
+#include <string.h>
 
 #include "../global.h"
 
-#include <atari.h>
+#include "platAtari.h"
 
 #pragma code-name(push, "SHADOW_RAM")
 
-static char send_buffer[80];
-
 /*-----------------------------------------------------------------------*/
-static int plat_net_make_ascii(char *text) {
+static int plat_net_make_ascii(const char *text) {
     char i = 0;
     while (*text) {
         char c = *text++;
         if (c == 0x9b) {
-            send_buffer[i++] = 0x0a;
+            atari.send_buffer[i++] = 0x0a;
         } else {
-            send_buffer[i++] = c;
+            atari.send_buffer[i++] = c;
         }
     }
-    send_buffer[i++] = '\x0a';
+    atari.send_buffer[i++] = '\x0a';
     return i;
 }
 
@@ -84,7 +83,7 @@ bool plat_net_update() {
 void plat_net_send(const char *text) {
     int len = plat_net_make_ascii(text);
     log_add_line(&global.view.terminal, text, len);
-    tcp_send((unsigned char *)send_buffer, len);
+    tcp_send((unsigned char *)atari.send_buffer, len);
 }
 
 /*-----------------------------------------------------------------------*/

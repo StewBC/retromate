@@ -47,6 +47,7 @@ typedef struct _atari {
     char rop_color[2][2];
     uint8_t terminal_display_width;
     char *CHAR_ROM;
+    char send_buffer[80];
     char terminal_log_buffer[80 * 23];
     char status_log_buffer[13 * 24];
 } atari_t;

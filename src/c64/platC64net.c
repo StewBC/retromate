@@ -7,14 +7,13 @@
  *
  */
 
-#include <string.h>
+#include <c64.h>
 #include <ip65.h>
+#include <string.h>
 
 #include "../global.h"
 
-#include <c64.h>
-
-static char send_buffer[80];
+#include "platC64.h"
 
 /*-----------------------------------------------------------------------*/
 static int plat_net_make_ascii(const char *text) {
@@ -22,18 +21,18 @@ static int plat_net_make_ascii(const char *text) {
     while (*text) {
         char c = *text;
         if (c == 0x0d) {
-            send_buffer[i++] = 0x0a;
+            c64.send_buffer[i++] = 0x0a;
         }
         if (c < 65 || c > 218) {
-            send_buffer[i++] = c;
+            c64.send_buffer[i++] = c;
         } else if (c >= 193) {
-            send_buffer[i++] = c & ~128;
+            c64.send_buffer[i++] = c & ~128;
         } else if (c <= 90) {
-            send_buffer[i++] = c | 32;
+            c64.send_buffer[i++] = c | 32;
         }
         text++;
     }
-    send_buffer[i++] = '\x0a';
+    c64.send_buffer[i++] = '\x0a';
     return i;
 }
 
@@ -87,8 +86,8 @@ bool plat_net_update() {
 /*-----------------------------------------------------------------------*/
 void plat_net_send(const char *text) {
     int len = plat_net_make_ascii(text);
-    log_add_line(&global.view.terminal, send_buffer, len);
-    tcp_send((unsigned char *)send_buffer, len);
+    log_add_line(&global.view.terminal, c64.send_buffer, len);
+    tcp_send((unsigned char *)c64.send_buffer, len);
 }
 
 /*-----------------------------------------------------------------------*/

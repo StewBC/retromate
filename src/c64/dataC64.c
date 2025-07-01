@@ -9,6 +9,7 @@
 #include "../global.h"
 
 #include "platC64.h"
+
 /*-----------------------------------------------------------------------*/
 // C64 specific graphics for the chess pieces
 // 72 = 8 rows (character heigt) * 3 colomns (width) * 3 (character lines [of 8 rows and 3 columns each])

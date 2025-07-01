@@ -9,6 +9,7 @@
 #include "../global.h"
 
 #include "platAtari.h"
+
 /*-----------------------------------------------------------------------*/
 // Atari specific graphics for the chess pieces
 char hires_pieces[6][2][SQUARE_TEXT_WIDTH * SQUARE_DISPLAY_HEIGHT] = {
