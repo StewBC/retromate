@@ -17,7 +17,7 @@
 static char send_buffer[80];
 
 /*-----------------------------------------------------------------------*/
-static int plat_net_make_ascii(char *text) {
+static int plat_net_make_ascii(const char *text) {
     char i = 0;
     while (*text) {
         char c = *text;
