@@ -31,34 +31,34 @@ txt_mode = $02                                   ; mode to run the screen at
 .segment "DLIST"
 
 hires_list:
-        .byte $70,$70,$70                       ; 24 blank lines
-        .byte $40 + gfx_mode,<scrn,>scrn            ; Mode $0x + LMS, setting screen memory to $9100
-        .repeat top-1                           ; 96 lines of mode $0x (incl LMS row above)
+        .byte $70,$70,$70                        ; 24 blank lines
+        .byte $40 + gfx_mode,<scrn,>scrn         ; Mode $0x + LMS, setting screen memory to $9100
+        .repeat top-1                            ; 96 lines of mode $0x (incl LMS row above)
             .byte gfx_mode
         .endrep
-        .byte $40 +gfx_mode, <(scnd), >(scnd)       ; clear the 4k boundry and start another row of mode $0x
-        .repeat bot-1                           ; another 96 lines of mode $0x (incl. LMS row above)
+        .byte $40 +gfx_mode, <(scnd), >(scnd)    ; clear the 4k boundry and start another row of mode $0x
+        .repeat bot-1                            ; another 96 lines of mode $0x (incl. LMS row above)
             .byte gfx_mode
         .endrep
-        .byte $41,<hires_list,>hires_list       ; Vertical Blank jump to start of hires_list
+        .byte $41,<hires_list,>hires_list        ; Vertical Blank jump to start of hires_list
 
 text_list:
-        .byte $70,$70,$70                       ; 24 blank lines
-        .byte $40 + txt_mode,<txt_scrn,>txt_scrn            ; Mode $0x + LMS, setting screen memory to $9100
-        .repeat 24                              ; 96 lines of mode $0x (incl LMS row above)
+        .byte $70,$70,$70                        ; 24 blank lines
+        .byte $40 + txt_mode,<txt_scrn,>txt_scrn ; Mode $0x + LMS, setting screen memory to $9100
+        .repeat 24                               ; 96 lines of mode $0x (incl LMS row above)
             .byte txt_mode
         .endrep
-        .byte $41,<text_list,>text_list         ; Vertical Blank jump to start of text_list
+        .byte $41,<text_list,>text_list          ; Vertical Blank jump to start of text_list
 
 .rodata
 
 ;-----------------------------------------------------------------------
 ; lookup to the start of a graphics row
 BASELO:
-    .repeat top, I                              ; $60 rows at $9100
+    .repeat top, I                               ; $60 rows at $9100
         .byte <(scrn + I * 40)
     .endrep
-    .repeat bot, I                              ; $60 rows at $a000
+    .repeat bot, I                               ; $60 rows at $a000
         .byte <(scnd + I * 40)
     .endrep
 
@@ -78,13 +78,13 @@ BASEHI:
 ; Init the hires screen with the display list
 .proc _hires_init
 
-    lda #0                                      ; stop the dma
+    lda #0                                       ; stop the dma
     sta DMACTL
-    lda #<hires_list                           ; install the new display list
+    lda #<hires_list                             ; install the new display list
     sta SDLSTL
     lda #>hires_list
     sta SDLSTH
-    lda #$22                                    ; resume the DMA
+    lda #$22                                     ; resume the DMA
     sta DMACTL
 
     rts
@@ -94,13 +94,13 @@ BASEHI:
 
 .proc   _hires_done
 
-    lda #0                                      ; stop the dma
+    lda #0                                       ; stop the dma
     sta DMACTL
-    lda #<text_list                           ; install the new display list
+    lda #<text_list                              ; install the new display list
     sta SDLSTL
     lda #>text_list
     sta SDLSTH
-    lda #$22                                    ; resume the DMA
+    lda #$22                                     ; resume the DMA
     sta DMACTL
     lda #<txt_scrn
     sta SAVMSC
@@ -112,20 +112,20 @@ BASEHI:
 
 .proc   _hires_draw
 
-        sta     src+1       ; 'src' lo
-        stx     src+2       ; 'src' hi
+        sta     src+1                            ; 'src' lo
+        stx     src+2                            ; 'src' hi
 
-        jsr     popax       ; 'rop'
+        jsr     popax                            ; 'rop'
         stx     rop
         sta     rop+1
 
-        jsr     popa        ; 'ysize'
+        jsr     popa                             ; 'ysize'
         sta     ymax+1
 
-        jsr     popa        ; 'xsize'
+        jsr     popa                             ; 'xsize'
         sta     xmax+1
 
-        jsr     popa        ; 'ypos'
+        jsr     popa                             ; 'ypos'
         sta     ypos+1
         tax
 
@@ -133,7 +133,7 @@ BASEHI:
         adc     ymax+1
         sta     ymax+1
 
-        jsr     popa        ; 'xpos'
+        jsr     popa                             ; 'xpos'
         sta     xpos+1
 
         clc
@@ -145,20 +145,20 @@ yloop:
         lda     BASEHI,x
         sta     dst+2
 
-xpos:   ldx     #$FF        ; Patched
+xpos:   ldx     #$FF                             ; Patched
 xloop:
-src:    lda     $FFFF,y     ; Patched
+src:    lda     $FFFF,y                          ; Patched
         iny
-rop:    nop                 ; Patched
-        nop                 ; Patched
-dst:    sta     $FFFF,x     ; Patched
+rop:    nop                                      ; Patched
+        nop                                      ; Patched
+dst:    sta     $FFFF,x                          ; Patched
         inx
-xmax:   cpx     #$FF        ; Patched
+xmax:   cpx     #$FF                             ; Patched
         bne     xloop
 
         inc     ypos+1
-ypos:   ldx     #$FF        ; Patched
-ymax:   cpx     #$FF        ; Patched
+ypos:   ldx     #$FF                             ; Patched
+ymax:   cpx     #$FF                             ; Patched
         bne     yloop
         rts
 
@@ -167,23 +167,23 @@ ymax:   cpx     #$FF        ; Patched
 
 .proc   _hires_mask
 
-        stx     rop         ; 'rop' hi
-        sta     rop+1       ; 'rop' lo
+        stx     rop                              ; 'rop' hi
+        sta     rop+1                            ; 'rop' lo
 
-        jsr     popa        ; 'ysize'
+        jsr     popa                             ; 'ysize'
         sta     ymax+1
 
-        jsr     popa        ; 'xsize'
+        jsr     popa                             ; 'xsize'
         sta     xmax+1
 
-        jsr     popa        ; 'ypos'
+        jsr     popa                             ; 'ypos'
         tax
 
         clc
         adc     ymax+1
         sta     ymax+1
 
-        jsr     popa        ; 'xpos'
+        jsr     popa                             ; 'xpos'
         sta     xpos+1
 
         clc
@@ -198,18 +198,18 @@ yloop:
         sta     src+2
         sta     dst+2
 
-xpos:   ldy     #$FF        ; Patched
+xpos:   ldy     #$FF                             ; Patched
 xloop:
-src:    lda     $FFFF,y     ; Patched
-rop:    nop                 ; Patched
-        nop                 ; Patched
-dst:    sta     $FFFF,y     ; Patched
+src:    lda     $FFFF,y                          ; Patched
+rop:    nop                                      ; Patched
+        nop                                      ; Patched
+dst:    sta     $FFFF,y                          ; Patched
         iny
-xmax:   cpy     #$FF        ; Patched
+xmax:   cpy     #$FF                             ; Patched
         bne     xloop
 
         inx
-ymax:   cpx     #$FF        ; Patched
+ymax:   cpx     #$FF                             ; Patched
         bne     yloop
         rts
 

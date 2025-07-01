@@ -15,12 +15,6 @@
 
 #include "platC64.h"
 
-char rop_line[2][7] = {{0x00, 0x01, 0x03, 0x07, 0x0F, 0x1F, 0x3F},
-    {0x00, 0x40, 0x60, 0x70, 0x78, 0x7C, 0x7E}
-};
-
-char rop_color[2][2] = {{0x55, 0x2A}, {0xD5, 0xAA}};
-
 // Map menu colors to the application colors
 uint8_t plat_mc2pc[9] = {
     COLOR_BLUE << 4   | COLOR_BLUE,     // MENU_COLOR_BACKGROUND
@@ -35,10 +29,18 @@ uint8_t plat_mc2pc[9] = {
 };
 
 c64_t c64 = {
+    {                                   // rop_line
+        {0x00, 0x01, 0x03, 0x07, 0x0F, 0x1F, 0x3F},
+        {0x00, 0x40, 0x60, 0x70, 0x78, 0x7C, 0x7E}
+    },
+    {                                   // rop_color
+        {0x55, 0x2A},
+        {0xD5, 0xAA}
+    },
     COLOR_WHITE << 4 | COLOR_GREEN,    // draw_colors
+    SCREEN_TEXT_WIDTH,                 // terminal_display_width
 };
 
-extern uint8_t terminal_display_width = SCREEN_TEXT_WIDTH;
 
 /*-----------------------------------------------------------------------*/
 // x in Character coords, y in Graphics coords
@@ -106,8 +108,8 @@ void plat_draw_board_accoutrements() {
     char i;
 
     // Draw the board border
-    // hires_mask(1, 0, 1, 8 * SQUARE_TEXT_HEIGHT + 2 * 2, ROP_CONST(rop_line[1][2]));
-    // hires_mask(26, 0, 1, 8 * SQUARE_TEXT_HEIGHT + 2 * 2, ROP_CONST(rop_line[0][2]));
+    // hires_mask(1, 0, 1, 8 * SQUARE_TEXT_HEIGHT + 2 * 2, ROP_CONST(c64.rop_line[1][2]));
+    // hires_mask(26, 0, 1, 8 * SQUARE_TEXT_HEIGHT + 2 * 2, ROP_CONST(c64.rop_line[0][2]));
     // hires_mask(2, 0, 8 * SQUARE_TEXT_WIDTH, 1, ROP_WHITE);
     // hires_mask(2, 178, 8 * SQUARE_TEXT_WIDTH, 1, ROP_WHITE);
 
@@ -133,7 +135,7 @@ void plat_draw_board() {
 /*-----------------------------------------------------------------------*/
 void plat_draw_clear_input_line(bool active) {
     if (global.view.terminal_active) {
-        cclearxy(0, SCREEN_TEXT_HEIGHT - 1, terminal_display_width);
+        cclearxy(0, SCREEN_TEXT_HEIGHT - 1, c64.terminal_display_width);
     } else {
         hires_mask(0, SCREEN_TEXT_HEIGHT - 1, SCREEN_TEXT_WIDTH, 1, ROP_BLACK);
         hires_color(0, SCREEN_TEXT_HEIGHT - 1, SCREEN_TEXT_WIDTH, 1, active ? c64.draw_colors :  COLOR_GREEN);
@@ -163,9 +165,9 @@ void plat_draw_highlight(uint8_t position, uint8_t color) {
         hires_color(2 + x * SQUARE_TEXT_WIDTH, y * SQUARE_TEXT_HEIGHT, 1, 3, COLOR_BLUE << 4);
         hires_color(2 + SQUARE_TEXT_WIDTH + x * SQUARE_TEXT_WIDTH, y * SQUARE_TEXT_HEIGHT, 1, 3, COLOR_BLUE << 4);
         // hires_mask(2 + x * SQUARE_TEXT_WIDTH, 2 + y * SQUARE_TEXT_HEIGHT + 4,
-        //         1, SQUARE_TEXT_HEIGHT - 2 * 4, ROP_XOR(rop_line[0][4]));
+        //         1, SQUARE_TEXT_HEIGHT - 2 * 4, ROP_XOR(c64.rop_line[0][4]));
         // hires_mask(2 + x * SQUARE_TEXT_WIDTH + SQUARE_TEXT_WIDTH - 1, 2 + y * SQUARE_TEXT_HEIGHT + 4,
-        //         1, SQUARE_TEXT_HEIGHT - 2 * 4, ROP_XOR(rop_line[1][4]));
+        //         1, SQUARE_TEXT_HEIGHT - 2 * 4, ROP_XOR(c64.rop_line[1][4]));
         // hires_mask(2 + x * SQUARE_TEXT_WIDTH, 2 + y * SQUARE_TEXT_HEIGHT,
         //         SQUARE_TEXT_WIDTH, 4, ROP_XOR(0x7F));
         // hires_mask(2 + x * SQUARE_TEXT_WIDTH, 2 + y * SQUARE_TEXT_HEIGHT + SQUARE_TEXT_HEIGHT - 4,
@@ -175,11 +177,11 @@ void plat_draw_highlight(uint8_t position, uint8_t color) {
         hires_color(2 + SQUARE_TEXT_WIDTH + x * SQUARE_TEXT_WIDTH, y * SQUARE_TEXT_HEIGHT, 1, 3, COLOR_GREEN << 4);
         // uint8_t val = x & 1;
         // hires_mask(2 + x * SQUARE_TEXT_WIDTH, 2 + y * SQUARE_TEXT_HEIGHT,
-        //         1, SQUARE_TEXT_HEIGHT, ROP_AND(rop_color[color][!val]));
+        //         1, SQUARE_TEXT_HEIGHT, ROP_AND(c64.rop_color[color][!val]));
         // hires_mask(2 + x * SQUARE_TEXT_WIDTH + 1, 2 + y * SQUARE_TEXT_HEIGHT,
-        //         1, SQUARE_TEXT_HEIGHT, ROP_AND(rop_color[color][val]));
+        //         1, SQUARE_TEXT_HEIGHT, ROP_AND(c64.rop_color[color][val]));
         // hires_mask(2 + x * SQUARE_TEXT_WIDTH + 2, 2 + y * SQUARE_TEXT_HEIGHT,
-        //         1, SQUARE_TEXT_HEIGHT, ROP_AND(rop_color[color][!val]));
+        //         1, SQUARE_TEXT_HEIGHT, ROP_AND(c64.rop_color[color][!val]));
     }
 }
 
@@ -197,7 +199,7 @@ void plat_draw_log(tLog *log, uint8_t x, uint8_t y, bool) {
 
     c64.draw_colors = COLOR_BLACK << 4 | COLOR_GREEN;
 
-    if (width > terminal_display_width) {
+    if (width > c64.terminal_display_width) {
         uint8_t shift = (global.view.pan_value & 0b11);
         if (shift == 0b11) {
             shift = 0;

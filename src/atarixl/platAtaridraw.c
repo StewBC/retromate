@@ -14,12 +14,6 @@
 
 #include "platAtari.h"
 
-char rop_line[2][8] = {{0x00, 0x01, 0x03, 0x07, 0x0F, 0x1F, 0x3F, 0x7F},
-    {0x00, 0x80, 0xC0, 0xE0, 0xF0, 0xF8, 0xFC, 0xFE}
-};
-
-char rop_color[2][2] = {{0x55, 0x2A}, {0xD5, 0xAA}};
-
 // Map menu colors to the application colors
 uint8_t plat_mc2pc[9] = {
     0,  // MENU_COLOR_BACKGROUND
@@ -33,9 +27,6 @@ uint8_t plat_mc2pc[9] = {
     0,  // MENU_COLOR_DISABLED
 };
 
-extern uint8_t terminal_display_width = SCREEN_TEXT_WIDTH;
-extern char *CHAR_ROM;
-
 #pragma code-name(push, "SHADOW_RAM2")
 
 /*-----------------------------------------------------------------------*/
@@ -44,7 +35,7 @@ static void plat_draw_char(char x, char y, unsigned rop, char c) {
     if (c < 'a' || c > 'z') {
         c -= 32;
     }
-    hires_draw(x, y, 1, 8, rop, CHAR_ROM + c * 8);
+    hires_draw(x, y, 1, 8, rop, atari.CHAR_ROM + c * 8);
 }
 
 /*-----------------------------------------------------------------------*/
@@ -99,8 +90,8 @@ void plat_draw_board_accoutrements() {
     char i;
 
     // Draw the board border
-    hires_mask(1, 0, 1, 8 * SQUARE_DISPLAY_HEIGHT + 2 * 2, ROP_CONST(rop_line[0][2]));
-    hires_mask(26, 0, 1, 8 * SQUARE_DISPLAY_HEIGHT + 2 * 2, ROP_CONST(rop_line[1][2]));
+    hires_mask(1, 0, 1, 8 * SQUARE_DISPLAY_HEIGHT + 2 * 2, ROP_CONST(atari.rop_line[0][2]));
+    hires_mask(26, 0, 1, 8 * SQUARE_DISPLAY_HEIGHT + 2 * 2, ROP_CONST(atari.rop_line[1][2]));
     hires_mask(2, 0, 8 * SQUARE_TEXT_WIDTH, 2, ROP_WHITE);
     hires_mask(2, 178, 8 * SQUARE_TEXT_WIDTH, 2, ROP_WHITE);
 
@@ -125,7 +116,7 @@ void plat_draw_board() {
 /*-----------------------------------------------------------------------*/
 void plat_draw_clear_input_line(bool) {
     if (global.view.terminal_active) {
-        cclearxy(0, SCREEN_TEXT_HEIGHT - 1, terminal_display_width);
+        cclearxy(0, SCREEN_TEXT_HEIGHT - 1, atari.terminal_display_width);
     } else {
         hires_mask(0, (SCREEN_TEXT_HEIGHT - 1) * CHARACTER_HEIGHT, SCREEN_TEXT_WIDTH, CHARACTER_HEIGHT, ROP_BLACK);
     }
@@ -140,7 +131,6 @@ void plat_draw_clear_statslog_area(uint8_t row) {
 
 /*-----------------------------------------------------------------------*/
 void plat_draw_clrscr() {
-    clrscr();
     hires_mask(0, 0, SCREEN_TEXT_WIDTH, SCREEN_DISPLAY_HEIGHT, ROP_BLACK);
 }
 
@@ -152,9 +142,9 @@ void plat_draw_highlight(uint8_t position, uint8_t color) {
 
     // if (color) {
     hires_mask(2 + x * SQUARE_TEXT_WIDTH, 2 + y * SQUARE_DISPLAY_HEIGHT + 4,
-               1, SQUARE_DISPLAY_HEIGHT - 2 * 4, ROP_XOR(rop_line[0][4]));
+               1, SQUARE_DISPLAY_HEIGHT - 2 * 4, ROP_XOR(atari.rop_line[0][4]));
     hires_mask(2 + x * SQUARE_TEXT_WIDTH + SQUARE_TEXT_WIDTH - 1, 2 + y * SQUARE_DISPLAY_HEIGHT + 4,
-               1, SQUARE_DISPLAY_HEIGHT - 2 * 4, ROP_XOR(rop_line[1][4]));
+               1, SQUARE_DISPLAY_HEIGHT - 2 * 4, ROP_XOR(atari.rop_line[1][4]));
     hires_mask(2 + x * SQUARE_TEXT_WIDTH, 2 + y * SQUARE_DISPLAY_HEIGHT,
                SQUARE_TEXT_WIDTH, 4, ROP_XOR(0x7F));
     hires_mask(2 + x * SQUARE_TEXT_WIDTH, 2 + y * SQUARE_DISPLAY_HEIGHT + SQUARE_DISPLAY_HEIGHT - 4,
@@ -162,11 +152,11 @@ void plat_draw_highlight(uint8_t position, uint8_t color) {
     // } else {
     //     uint8_t val = x & 1;
     //     hires_mask(2 + x * SQUARE_TEXT_WIDTH, 2 + y * SQUARE_DISPLAY_HEIGHT,
-    //             1, SQUARE_DISPLAY_HEIGHT, ROP_AND(rop_color[color][!val]));
+    //             1, SQUARE_DISPLAY_HEIGHT, ROP_AND(atari.rop_color[color][!val]));
     //     hires_mask(2 + x * SQUARE_TEXT_WIDTH + 1, 2 + y * SQUARE_DISPLAY_HEIGHT,
-    //             1, SQUARE_DISPLAY_HEIGHT, ROP_AND(rop_color[color][val]));
+    //             1, SQUARE_DISPLAY_HEIGHT, ROP_AND(atari.rop_color[color][val]));
     //     hires_mask(2 + x * SQUARE_TEXT_WIDTH + 2, 2 + y * SQUARE_DISPLAY_HEIGHT,
-    //             1, SQUARE_DISPLAY_HEIGHT, ROP_AND(rop_color[color][!val]));
+    //             1, SQUARE_DISPLAY_HEIGHT, ROP_AND(atari.rop_color[color][!val]));
     // }
 }
 
@@ -186,7 +176,7 @@ void plat_draw_log(tLog *log, uint8_t x, uint8_t y, bool) {
     }
     log->modified = false;
 
-    if (width > terminal_display_width) {
+    if (width > atari.terminal_display_width) {
         uint8_t shift = (global.view.pan_value & 0b11);
         if (shift == 0b11) {
             shift = 0;

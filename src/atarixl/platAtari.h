@@ -12,9 +12,6 @@
 
 
 /*-----------------------------------------------------------------------*/
-extern uint8_t terminal_display_width;
-
-/*-----------------------------------------------------------------------*/
 // These are text based coordinates
 #define SCREEN_TEXT_WIDTH       40
 #define SCREEN_TEXT_HEIGHT      24
@@ -35,11 +32,6 @@ extern uint8_t terminal_display_width;
 #define ROP_INV                 0x49FF
 #define ROP_AND(val)            0x2900|(val)
 
-// extern char hires_char_set[96][CHARACTER_HEIGHT];
-extern char hires_pieces[6][2][SQUARE_TEXT_WIDTH * SQUARE_DISPLAY_HEIGHT];
-
-void plat_core_hires(bool on);
-// void hires_done(void);
 void hires_init(void);
 void hires_done(void);
 void hires_draw(char xpos,    char ypos,
@@ -48,5 +40,18 @@ void hires_draw(char xpos,    char ypos,
 void hires_mask(char xpos,    char ypos,
                 char xsize,   char ysize,
                 unsigned rop);
+
+/*-----------------------------------------------------------------------*/
+typedef struct _atari {
+    char rop_line[2][8];
+    char rop_color[2][2];
+    uint8_t terminal_display_width;
+    char *CHAR_ROM;
+    char terminal_log_buffer[80 * 23];
+    char status_log_buffer[13 * 24];
+} atari_t;
+
+extern atari_t atari;
+extern char hires_pieces[6][2][SQUARE_TEXT_WIDTH * SQUARE_DISPLAY_HEIGHT];
 
 #endif //_PLATATARI_H_

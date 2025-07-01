@@ -16,20 +16,35 @@
 
 #include "platAtari.h"
 
-char *CHAR_ROM;
-char terminal_log_buffer[80 * 23];
-char status_log_buffer[13 * 24];
+/*-----------------------------------------------------------------------*/
+atari_t atari = {
+    {                   // rop_lline
+        {0x00, 0x01, 0x03, 0x07, 0x0F, 0x1F, 0x3F, 0x7F},
+        {0x00, 0x80, 0xC0, 0xE0, 0xF0, 0xF8, 0xFC, 0xFE}
+    },
+    {
+        {0x55, 0x2A},
+        {0xD5, 0xAA}
+    },
+    SCREEN_TEXT_WIDTH, // terminal_display_width
+    0                  // CHAR_ROM
+};
 
 #pragma code-name(push, "SHADOW_RAM2")
 
 /*-----------------------------------------------------------------------*/
 void plat_core_active_term(bool active) {
+    // SQW - This isn't great, I need to sort this out
     if (active) {
-        plat_core_hires(false);
+        hires_done();
+        clrscr();
         global.view.terminal_active = 1;
     } else {
-        plat_core_hires(true);
+        clrscr();
+        hires_init();
+        plat_draw_board();
         global.view.terminal_active = 0;
+        plat_draw_log(&global.view.info_panel, plat_core_get_status_x(), 0, true);
     }
 }
 
@@ -55,23 +70,13 @@ uint8_t plat_core_get_status_x(void) {
 }
 
 /*-----------------------------------------------------------------------*/
-void plat_core_hires(bool on) {
-    if (on) {
-        hires_init();
-    } else {
-        hires_done();
-        clrscr();
-    }
-}
-
-/*-----------------------------------------------------------------------*/
 void plat_core_init() {
     // Assign a character that is in both hires and text, good as a cursor
-    CHAR_ROM = (char *)(*(char *)0x02F4 * 256);
+    atari.CHAR_ROM = (char *)(*(char *)0x02F4 * 256);
     global.view.cursor_char[0] = 160;
 
     plat_draw_clrscr();
-    plat_core_hires(true);
+    hires_init();
 
     _setcolor(1, 0xc, 0xf);  // Pixel %1 color
     _setcolor(2, 0xc, 0x7);  // Pixel %0 color
@@ -157,9 +162,9 @@ void plat_core_log_free_mem(char *mem) {
 /*-----------------------------------------------------------------------*/
 char *plat_core_log_malloc(unsigned int size) {
     if (size == (80 * 23)) {
-        return terminal_log_buffer;
+        return atari.terminal_log_buffer;
     }
-    return status_log_buffer;
+    return atari.status_log_buffer;
 }
 
 /*-----------------------------------------------------------------------*/

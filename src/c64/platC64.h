@@ -11,9 +11,6 @@
 #define _PLATC64_H_
 
 /*-----------------------------------------------------------------------*/
-extern uint8_t terminal_display_width;
-
-/*-----------------------------------------------------------------------*/
 // These are text based coordinates
 #define SCREEN_TEXT_WIDTH       40
 #define SCREEN_TEXT_HEIGHT      25
@@ -41,9 +38,6 @@ extern uint8_t terminal_display_width;
 #define ROP_INV                 0x49FF
 #define ROP_AND(val)            0x2900|(val)
 
-// extern char hires_char_set[96][CHARACTER_HEIGHT];
-extern char hires_pieces[6][2][SQUARE_TEXT_WIDTH * SQUARE_DISPLAY_HEIGHT];
-
 void plat_core_hires(bool on);
 void hires_draw(char xpos,    char ypos,
                 char xsize,   char ysize,
@@ -55,10 +49,17 @@ void hires_color(char xpos,   char ypos,
                  char xsize,  char ysize,
                  char color);
 
+/*-----------------------------------------------------------------------*/
 typedef struct _c64 {
+    char rop_line[2][7];
+    char rop_color[2][2];
     uint32_t draw_colors;
+    uint8_t terminal_display_width;
+    char terminal_log_buffer[80 * 24];
+    char status_log_buffer[13 * 25];
 } c64_t;
 
 extern c64_t c64;
+extern char hires_pieces[6][2][SQUARE_TEXT_WIDTH * SQUARE_DISPLAY_HEIGHT];
 
 #endif //_PLATC64_H_

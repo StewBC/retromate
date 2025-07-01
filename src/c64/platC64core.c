@@ -16,12 +16,9 @@
 
 #include "platC64.h"
 
-#define MODKEY  (*(char*)653)
+#define MODKEY          (*(char*)653)
 #define COMMODORE_KEY   2
 #define CONTROL_KEY     4
-
-char terminal_log_buffer[80 * 24];
-char status_log_buffer[13 * 25];
 
 /*-----------------------------------------------------------------------*/
 void plat_core_active_term(bool active) {
@@ -42,9 +39,6 @@ void plat_core_exit() {
 
 /*-----------------------------------------------------------------------*/
 uint8_t plat_core_get_cols(void) {
-    // if (global.view.terminal_active) {
-    //     return terminal_display_width;
-    // }
     return SCREEN_TEXT_WIDTH;
 }
 
@@ -194,9 +188,9 @@ void plat_core_log_free_mem(char *mem) {
 /*-----------------------------------------------------------------------*/
 char *plat_core_log_malloc(unsigned int size) {
     if (size == (80 * 24)) {
-        return terminal_log_buffer;
+        return c64.terminal_log_buffer;
     }
-    return status_log_buffer;
+    return c64.status_log_buffer;
 }
 
 /*-----------------------------------------------------------------------*/
