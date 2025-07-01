@@ -17,6 +17,7 @@
 #include "platC64.h"
 
 #define MODKEY          (*(char*)653)
+#define SHIFT_KEY       1
 #define COMMODORE_KEY   2
 #define CONTROL_KEY     4
 
@@ -110,8 +111,8 @@ uint8_t plat_core_key_input(input_event_t *evt) {
         return 0;
     }
 
-    k = cgetc();
     mod = MODKEY;
+    k = cgetc();
     evt->key_value = k;
     switch (k) {
         case 3:  // esc
@@ -132,34 +133,31 @@ uint8_t plat_core_key_input(input_event_t *evt) {
         case 17:  // crsr down
             evt->code = INPUT_DOWN;
             return 1;
-        case 9:   // tab
-        case 84: // CTRL-T
+        case 20: // CTRL-T
             if (mod & CONTROL_KEY) {
                 evt->code = INPUT_VIEW_TOGGLE;
                 return 1;
             }
-            goto justakey;
-        case 79: // CRTL+O
+            evt->code = INPUT_BACKSPACE;
+            return 1;
+        case 15: // CRTL+O
             if (mod & CONTROL_KEY) {
                 evt->code = INPUT_VIEW_PAN_LEFT;
                 return 1;
             }
             goto justakey;
-        case 80: // CTRL+P
+        case 16: // CTRL+P
             if (mod & CONTROL_KEY) {
                 evt->code = INPUT_VIEW_PAN_RIGHT;
                 return 1;
             }
             goto justakey;
-        case 83:
+        case 19: // CTRL+S
             if (mod & CONTROL_KEY) {
                 evt->code = INPUT_SAY;
                 return 1;
             }
             goto justakey;
-        case 20: // DEL
-            evt->code = INPUT_BACKSPACE;
-            return 1;
         default:  // any other key
 justakey:
             evt->code = INPUT_KEY;
