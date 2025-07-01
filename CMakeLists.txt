@@ -27,6 +27,8 @@ find_program(X64_EXECUTABLE NAMES x64sc x64 x64sc.exe x64.exe HINTS ENV VICE_HOM
 message(STATUS "Path to C64 emulator=${X64_EXECUTABLE}")
 find_program(C1541_EXECUTABLE c1541 c1541.exe HINTS ENV VICE_HOME PATHS ENV PATH DOC "Available at https://vice-emu.sourceforge.io/")
 message(STATUS "Path to c1541=${C1541_EXECUTABLE}")
+find_program(CC1541_EXECUTABLE cc1541 cc1541.exe HINTS ENV CC1541_HOME PATHS ENV PATH DOC "Available at https://bitbucket.org/ptv_claus/cc1541")
+message(STATUS "Path to cc1541=${CC1541_EXECUTABLE}")
 find_program(APPLEWIN_EXECUTABLE applewin AppleWin.exe HINTS ENV APPLEWIN_HOME PATHS ENV PATH DOC "Available at https://github.com/AppleWin/AppleWin")
 message(STATUS "Path to Apple 2 emulator=${APPLEWIN_EXECUTABLE}")
 find_program(CIDERPRESSII_EXECUTABLE cp2 cp2.exe HINTS ENV CP2_HOME PATHS ENV PATH DOC "Available at https://ciderpress2.com/")
@@ -142,13 +144,31 @@ function(add_retromate_target target sources bin_file disk_file)
             VERBATIM
         )
     elseif(${target} STREQUAL "c64")
+        # Build the command now that we have disk_file and bin_file
+        set(C64DISK_COMMAND)
+        if(C1541_EXECUTABLE)
+            get_filename_component(bin_file_no_ext "${bin_file}" NAME_WE)
+            list(APPEND C64DISK_COMMAND
+                ${C1541_EXECUTABLE}
+                -format "retromate,01" d64 "${DISK_DIR}/${disk_file}"
+                -attach "${DISK_DIR}/${disk_file}"
+                -write "${BIN_DIR}/${bin_file}" "${bin_file_no_ext}"
+            )
+        elseif(CC1541_EXECUTABLE)
+            list(APPEND C64DISK_COMMAND
+                ${CC1541_EXECUTABLE}
+                -q
+                -f retromate
+                -w "${BIN_DIR}/${bin_file}" "${DISK_DIR}/${disk_file}"
+            )
+        else()
+            message(FATAL_ERROR "Neither c1541 nor cc1541 was found.")
+        endif()
+
         add_custom_command(
             OUTPUT ${DISK_DIR}/${disk_file}
             COMMAND ${CMAKE_COMMAND} -E echo "Making disk for ${target}"
-
-            # Make a disk and put the file into the disk in one go using c1541
-            COMMAND ${C1541_EXECUTABLE} -format "retromate,01" d64 ${DISK_DIR}/${disk_file} -attach ${DISK_DIR}/${disk_file} -write ${BIN_DIR}/${bin_file} ${bin_file}
-            
+            COMMAND ${C64DISK_COMMAND}
             DEPENDS ${BIN_DIR}/${bin_file}
             COMMENT "Disk image: ${disk_file}"
             VERBATIM
@@ -162,10 +182,11 @@ function(add_retromate_target target sources bin_file disk_file)
             COMMAND ${CMAKE_COMMAND} -E make_directory "${DISK_DIR}/atarixl"
 
             # Copy to folder
-            COMMAND ${CMAKE_COMMAND} -E copy "${BIN_DIR}/${bin_file}" "${DISK_DIR}/atarixl/rmate"
+            COMMAND ${CMAKE_COMMAND} -E copy "${BIN_DIR}/${bin_file}" "${DISK_DIR}/atarixl/rtrmate"
 
             # Make the disk
-            COMMAND ${DIR2ATR_EXECUTABLE} -ab MyPicoDos406 "${DISK_DIR}/${disk_file}" "${DISK_DIR}/atarixl"
+            # COMMAND ${DIR2ATR_EXECUTABLE} -ab MyPicoDos406 "${DISK_DIR}/${disk_file}" "${DISK_DIR}/atarixl"
+            COMMAND ${DIR2ATR_EXECUTABLE} -b MyPicoDos406 "${DISK_DIR}/${disk_file}" "${DISK_DIR}/atarixl"
 
             # Clean up renamed/attribute-tagged files for Cadius (remove file)
             COMMAND ${CMAKE_COMMAND} -E remove_directory "${DISK_DIR}/atarixl"
@@ -212,6 +233,7 @@ add_retromate_target(
     retromate.prg
     retromate.d64
     ${X64_EXECUTABLE} -autostart ${BIN_DIR}/retromate.prg
+    # ${X64_EXECUTABLE} -autostart ${DISK_DIR}/retromate.d64
 )
 
 # --- Apple II ---
@@ -250,6 +272,7 @@ add_retromate_target(
     retromate.xex
     retromate.atr
     ${ATARI_EXECUTABLE} ${BIN_DIR}/retromate.xex
+    # ${ATARI_EXECUTABLE} ${DISK_DIR}/retromate.atr
 )
 
 # --- Native SDL2 ---
