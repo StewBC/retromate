@@ -24,9 +24,10 @@ void plat_net_init() {
     //         is stored at $280, starting with a length byte.
     unsigned char eth_slot = PEEK(0x281 + PEEK(0x280) - 1);
 
-    log_add_line(&global.view.terminal, "Initializing Network", -1);
-    plat_draw_log(&global.view.terminal, 0, 0, false);
     if (ip65_init(eth_slot & 7)) {
+        plat_core_active_term(1);
+        log_add_line(&global.view.terminal, "Initializing Network", -1);
+        plat_draw_log(&global.view.terminal, 0, 0, false);
         app_error(true, ip65_strerror(ip65_error));
     }
 }

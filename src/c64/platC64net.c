@@ -38,9 +38,9 @@ static int plat_net_make_ascii(const char *text) {
 
 /*-----------------------------------------------------------------------*/
 void plat_net_init() {
-    log_add_line(&global.view.terminal, "Initializing Network", -1);
-    plat_draw_log(&global.view.terminal, 0, 0, false);
     if (ip65_init(ETH_INIT_DEFAULT)) {
+        log_add_line(&global.view.terminal, "Initializing Network", -1);
+        plat_draw_log(&global.view.terminal, 0, 0, false);
         app_error(true, ip65_strerror(ip65_error));
     }
 }
