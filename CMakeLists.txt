@@ -97,7 +97,9 @@ function(add_retromate_target target sources bin_file disk_file)
         set(LINK_CFG_OPTION "")
     endif()
 
-    # Extra linker flags just for apple2
+    set(ALL_DEPENDS ${sources} ${IP65_DEP})
+
+    # Extra platform configs
     if(${target} STREQUAL "apple2")
         set(EXTRA_LINK_FLAGS "-C" "apple2-hgr.cfg" "-Wl" "-D,__HIMEM__=0xBF00")
         list(APPEND ALL_DEPENDS ${CMAKE_SOURCE_DIR}/src/apple2/retromate.hgr)
@@ -107,7 +109,6 @@ function(add_retromate_target target sources bin_file disk_file)
         set(EXTRA_LINK_FLAGS "")
     endif()
 
-    set(ALL_DEPENDS ${sources} ${IP65_DEP})
     if(EXISTS ${LINK_CFG})
         list(APPEND ALL_DEPENDS ${LINK_CFG})
     endif()
