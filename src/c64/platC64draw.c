@@ -241,6 +241,7 @@ void plat_draw_splash_screen() {
 
     // Show credits and wait for key press
     plat_draw_text((SCREEN_TEXT_WIDTH - title1_len) / 2, SCREEN_TEXT_HEIGHT / 2 - 1, global.text.title_line1, title1_len);
+    hires_color((SCREEN_TEXT_WIDTH - title1_len) / 2, SCREEN_TEXT_HEIGHT / 2 - 1, title1_len, 1, COLOR_WHITE<<4|COLOR_GREEN);
     c64.draw_colors = COLOR_GREEN;
     plat_draw_text((SCREEN_TEXT_WIDTH - title2_len) / 2, SCREEN_TEXT_HEIGHT / 2 + 1, global.text.title_line2, title2_len);
 
