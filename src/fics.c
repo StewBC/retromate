@@ -13,61 +13,66 @@
 
 #include "global.h"
 
+// This files has strings and characters encoded as hex, not as ' ' or "".  That is
+// because what comes from the server is ASCII but the target platforms aren't all ASCII.
+// The compiler will encode strings as "platform strings" and that won't match the server
+// side data.  This is a way to circumvent the compiler encoding these as non-ASCII data.
+
 
 // Triggers in the match callback
-// #define FICS_TRIGGER_LOGIN          "login:"
-#define FICS_TRIGGER_LOGIN          "\x6C\x6F\x67\x69\x6e:"
-// #define FICS_TRIGGER_LOGGED_IN      "enter the server as \""
+                                    // "login:"
+#define FICS_TRIGGER_LOGIN          "\x6C\x6F\x67\x69\x6e\x3a"
+                                    // "enter the server as \""
 #define FICS_TRIGGER_LOGGED_IN      "\x65\x6e\x74\x65\x72\x20\x74\x68\x65\x20\x73\x65\x72\x76\x65\x72\x20\x61\x73\x20\x22"
-// #define FICS_TRIGGER_MIN_SET        "set to 0."
+                                    // "set to 0."
 #define FICS_TRIGGER_MIN_SET        "\x73\x65\x74\x20\x74\x6f\x20\x30\x2e"
-// #define FICS_TRIGGER_CLOSED_URL     "(http://www.freechess.org)."
+                                    // "(http://www.freechess.org)."
 #define FICS_TRIGGER_CLOSED_URL     "\x28\x68\x74\x74\x70\x3a\x2f\x2f\x77\x77\x77\x2e\x66\x72\x65\x65\x63\x68\x65\x73\x73\x2e\x6f\x72\x67\x29\x2e"
 
 // Triggers in the data callback
-// #define FICS_DATA_CREATING          "Creating"
+                                    // "Creating"
 #define FICS_DATA_CREATING          "\x43\x72\x65\x61\x74\x69\x6e\x67"
-// #define FICS_DATA_GAME_OVER         "{Game "
+                                    // "{Game "
 #define FICS_DATA_GAME_OVER         "\x7b\x47\x61\x6d\x65\x20"
-// #define FICS_DATA_STYLE12           "<12>"
+                                    // "<12>"
 #define FICS_DATA_STYLE12           "\x3c\x31\x32\x3e"
-// #define FICS_DATA_SAYS              "says: "
+                                    // "says: "
 #define FICS_DATA_SAYS              "\x73\x61\x79\x73\x3a\x20"
-// #define FICS_DATA_REMOVING          "Removing game"
+                                    // "Removing game"
 #define FICS_DATA_REMOVING          "\x52\x65\x6d\x6f\x76\x69\x6e\x67\x20\x67\x61\x6d\x65"
-// #define FICS_DATA_QUIESCENCE        "nor examining a game."
+                                    // "nor examining a game."
 #define FICS_DATA_QUIESCENCE        "\x6e\x6f\x72\x20\x65\x78\x61\x6d\x69\x6e\x69\x6e\x67\x20\x61\x20\x67\x61\x6d\x65\x2e"
-// #define FICS_DATA_PASSWORD          "password:"
+                                    // "password:"
 #define FICS_DATA_PASSWORD          "\x70\x61\x73\x73\x77\x6f\x72\x64\x3a"
-// #define FICS_DATA_REGISTERED        "Starting FICS"
+                                    // "Starting FICS"
 #define FICS_DATA_REGISTERED        "\x53\x74\x61\x72\x74\x69\x6e\x67\x20\x46\x49\x43\x53"
-// #define FICS_DATA_BAD_PASSWORD      "Invalid password!"
+                                    // "Invalid password!"
 #define FICS_DATA_BAD_PASSWORD      "\x49\x6e\x76\x61\x6c\x69\x64\x20\x70\x61\x73\x73\x77\x6f\x72\x64\x21"
 
-// Commands that are sent
-// #define FICS_CMD_PLAY               "play "
-#define FICS_CMD_PLAY               "\x70\x6c\x61\x79\x20"
-// #define FICS_CMD_QUIT               "quit"
-#define FICS_CMD_QUIT               "\x71\x75\x69\x74"
-// #define FICS_CMD_REFRESH            "refresh"
-#define FICS_CMD_REFRESH            "\x72\x65\x66\x72\x65\x73\x68"
-// #define FICS_CMD_S12REFRESH         "set style 12\nrefresh"
-#define FICS_CMD_S12REFRESH         "\x73\x65\x74\x20\x73\x74\x79\x6c\x65\x20\x31\x32\x5c\x6e\x72\x65\x66\x72\x65\x73\x68"
-// #define FICS_CMD_SOUGHT             "sought"
-#define FICS_CMD_SOUGHT             "\x73\x6f\x75\x67\x68\x74"
+// Commands that are sent (are in platform format) and get converted to ASCII
+// before being sent (by plat_net_send)
+#define FICS_CMD_PLAY               "play "
+#define FICS_CMD_QUIT               "quit"
+#define FICS_CMD_REFRESH            "refresh"
+#define FICS_CMD_S12REFRESH         "set style 12\nrefresh"
+#define FICS_CMD_SOUGHT             "sought"
 
 enum {
-    SOUGHT_GAME_NUM,                // 0
-    SOUGHT_RANKING,                 // 1
-    SOUGHT_USER_NAME,               // 2
-    SOUGHT_START_TIME,              // 3
-    SOUGHT_INC_TIME,                // 4
-    SOUGHT_RATED,                   // 5
-    SOUGHT_GAME_TYPE,               // 6
-    SOUGHT_START_COLOR,             // 7
-    SOUGHT_RANGE,                   // 8
-    SOUGHT_EXTRA,                   // 9
-    SOUGHT_COUNT                    // 10
+    FS_STATUS_OKAY,
+    FS_STATUS_NEXTLINE,
+    FS_STATUS_DONE,
+    FS_STATUS_NO_MATCH,
+    FS_STATUS_ERROR,
+};
+
+fics_data_t fics_data = {
+    SOUGHT_GAME_NUM,
+    FS_STATUS_OKAY,
+    0,
+    0,
+    {},
+    {},
+    ""
 };
 
 // Forward declare
@@ -117,7 +122,7 @@ static void fics_add_stats(bool side) {
 // copied and no ' ' was found)
 static const char *fics_copy_data(char *dest, const char *src, uint8_t max_len) {
     while (max_len) {
-        if (*src != ' ') {
+        if (*src != '\x20') {   // ' '
             *dest++ = *src++;
             max_len--;
         } else {
@@ -125,7 +130,7 @@ static const char *fics_copy_data(char *dest, const char *src, uint8_t max_len) 
         }
     }
     *dest = '\0';
-    while (*src != ' ') {
+    while (*src != '\x20') {
         src++;
     }
     return ++src;
@@ -144,7 +149,7 @@ static void fics_format_stats_message(const char *message, int len, char delimit
     plat_draw_clear_statslog_area(FICS_STATSLOG_MSG_ROW);
 
     while (1) { // or start_message != \n or } maybe?
-        while (len && *message != ' ' && *message != delimiter) {
+        while (len && *message != '\x20' && *message != delimiter) { // ' '
             len--;
             message++;
         }
@@ -173,58 +178,62 @@ static void fics_format_stats_message(const char *message, int len, char delimit
     }
 }
 
+/*-----------------------------------------------------------------------*/
+bool fics_isnumeric(char c) {
+    if(c >= '\x30' && c <= '\x39' || c == '\x2b' || c == '\x2d') { // '+' '-'
+        return true;
+    }
+    return false;
+}
+
+/*-----------------------------------------------------------------------*/
+bool fics_isspace(char c) {
+    if(c == '\x20' || c == '\x0d' || c == '\x0a' || c == '\x09') {
+        return true;
+    }
+    return false;
+}
+
 #ifdef __APPLE2__
 #pragma code-name(push, "LOWCODE")
 #endif
 
 /*-----------------------------------------------------------------------*/
-static const char *fics_next_number(const char **source, int *len, int *word_len, bool start_of_line) {
-    const char *number_start;
-    const char *scan = *source;
-    int length = *len;
-
-    while (length && scan) {
-        // skip leading whitespace
-        while (length && isspace(*scan)) {
-            length--;
-            scan++;
-        }
-
-        // if ran buffer out, no number
-        if (!length) {
-            break;
-        }
-
-        number_start = scan;
-        while (length && isdigit(*scan) || *scan == '+' || *scan == '-') {
-            scan++;
-            length--;
-        }
-
-        // was it a number ending in a space
-        if (*scan == ' ') {
-            *source = scan;
-            *len = length;
-            *word_len = scan - number_start;
-            return number_start;
-        } else {
-            // it wasn't a number ending in a space so
-            if (start_of_line) {
-                // skip to the next line
-                while (length && /*scan &&*/ *scan != '\n') { // I don't think scan can be 0?
-                    length--;
-                    scan++;
-                }
-            } else {
-                break;
-            }
-        }
+static void fics_next_number() {
+    // Skip whitespace
+    while(fics_data.length && fics_isspace(*fics_data.parse_point)) {
+        fics_data.length--;
+        fics_data.parse_point++;
     }
 
-    *len = 0;
-    *source = 0;
-    *word_len = 0;
-    return NULL;
+    // If there's nothing more, done
+    if(!fics_data.length) {
+        return;
+    }
+
+    // If not a number, mark as such
+    if(!fics_isnumeric(*fics_data.parse_point)) {
+        fics_data.sought_word[fics_data.parse_state] = '\0';
+        fics_data.sought_word_len[fics_data.parse_state] = 0;
+        fics_data.parse_state++;
+    }
+
+    // Extract the number
+    fics_data.sought_word[fics_data.parse_state] = fics_data.parse_point;
+    while(fics_data.length && fics_isnumeric(*fics_data.parse_point)) {
+            fics_data.length--;
+            fics_data.parse_point++;
+    }
+
+    if(fics_data.length) {
+        // Set up the length
+        fics_data.sought_word_len[fics_data.parse_state] = fics_data.parse_point - fics_data.sought_word[fics_data.parse_state];
+        fics_data.parse_state++;
+    } else {
+        // This is a serious issue - this record is split - I don't really deal with that
+        // So skip till a newline and this record will just be ignored
+        fics_data.status = FS_STATUS_NEXTLINE;
+    }
 }
 
 #ifdef __ATARIXL__
@@ -232,42 +241,41 @@ static const char *fics_next_number(const char **source, int *len, int *word_len
 #endif
 
 /*-----------------------------------------------------------------------*/
-static const char *fics_next_word(const char **source, int *len, int *word_len) {
-    const char *word_start;
-    const char *scan = *source;
-    int length = *len;
-
-    while (length && scan) {
-        // skip leading whitespace
-        while (length && isspace(*scan)) {
-            length--;
-            scan++;
-        }
-
-        // if ran buffer out, no word
-        if (!length) {
-            break;
-        }
-
-        // Find the end of the word
-        word_start = scan;
-        while (length && isprint(*scan) && !isspace(*scan)) {
-            scan++;
-            length--;
-        }
-
-        // Update the parameters
-        *source = scan;
-        *len = length;
-        *word_len = scan - word_start;
-        return word_start;
+static void fics_next_word() {
+    // Skip whitespace
+    while(fics_data.length && fics_isspace(*fics_data.parse_point)) {
+        fics_data.length--;
+        fics_data.parse_point++;
     }
 
-    // No word found
-    *len = 0;
-    *source = 0;
-    *word_len = 0;
-    return NULL;
+    // If there's nothing more, done
+    if(!fics_data.length) {
+        return;
+    }
+
+    // If not a word-start, mark as such
+    if(!*fics_data.parse_point) {
+        fics_data.sought_word[fics_data.parse_state] = '\0';
+        fics_data.sought_word_len[fics_data.parse_state] = 0;
+        fics_data.parse_state++;
+    }
+
+    // Extract the word
+    fics_data.sought_word[fics_data.parse_state] = fics_data.parse_point;
+    while(fics_data.length && *fics_data.parse_point && !fics_isspace(*fics_data.parse_point)) {
+            fics_data.length--;
+            fics_data.parse_point++;
+    }
+
+    if(fics_data.length) {
+        // set the length
+        fics_data.sought_word_len[fics_data.parse_state] = fics_data.parse_point - fics_data.sought_word[fics_data.parse_state];
+        fics_data.parse_state++;
+    } else {
+        // This is a serious issue - this record is split - I don't really deal with that
+        // So skip till a newline and this record will just be ignored
+        fics_data.status = FS_STATUS_NEXTLINE;
+    }
 }
 
 /*-----------------------------------------------------------------------*/
@@ -372,113 +380,147 @@ static void fics_ndcb_login_flow(const char *buf, int len) {
 
 /*-----------------------------------------------------------------------*/
 static void fics_ndcb_sought_list(const char *buf, int len) {
-    uint16_t delta;
-    uint16_t rating;
-    uint8_t i;
-    bool error;
-    const char *sought_word[SOUGHT_COUNT];
-    int sought_word_len[SOUGHT_COUNT];
-    char game_number_str[6];
-    bool found_a_game = false;
-    const char *parse_point = buf;
-    int prev_lines_processed = 0;
-    int lines_processed = 0;
-    uint16_t rating_delta = -1;
-
-    while (len) {
-        if (prev_lines_processed != lines_processed) {
-            prev_lines_processed = lines_processed;
-            // Don't pick a game with a color preference
-            if (sought_word_len[SOUGHT_START_COLOR]) {
-                continue;
-            }
-            // Make sure there are no strings attached
-            if (sought_word_len[SOUGHT_EXTRA]) {
-                continue;
-            }
-            // Make sure it's the type of game I want
-            if (global.ui.my_game_type && 0 != strncmp(global.ui.my_game_type, sought_word[SOUGHT_GAME_TYPE], sought_word_len[SOUGHT_GAME_TYPE])) {
-                continue;
-            }
-            // Make sure it's rated or unrated as I desire
-            if (global.ui.my_rating_type[0] != sought_word[SOUGHT_RATED][0]) {
-                continue;
-            }
-            // See if this offer is closer to my rating
-            rating = atoi(sought_word[SOUGHT_RANKING]);
-            delta = abs(rating - global.ui.my_rating);
-            if (delta < rating_delta && sought_word_len[SOUGHT_GAME_NUM] < sizeof(game_number_str) - 1) {
-                rating_delta = delta;
-                strncpy(game_number_str, sought_word[SOUGHT_GAME_NUM], sought_word_len[SOUGHT_GAME_NUM]);
-                game_number_str[sought_word_len[SOUGHT_GAME_NUM]] = '\0';
-                found_a_game = true;
-            }
-        }
-        sought_word[SOUGHT_GAME_NUM] = fics_next_number(&parse_point, &len, &sought_word_len[SOUGHT_GAME_NUM], true);     // Game #
-        sought_word[SOUGHT_RANKING] = fics_next_number(&parse_point, &len, &sought_word_len[SOUGHT_RANKING], false);       // Rating
-        // Not a number here could denote the end
-        if (!sought_word[SOUGHT_RANKING]) {
-            // Is it the end of the list
-            if (sought_word_len[SOUGHT_GAME_NUM] && atoi(sought_word[SOUGHT_GAME_NUM]) == lines_processed) {
-                // Ads was not a number - end of all soughts, process now
-                fics_set_new_data_callback(fics_ndcb_update_from_server);
-                if (found_a_game) {
-                    strcpy(global.view.scratch_buffer, FICS_CMD_PLAY);
-                    strcat(global.view.scratch_buffer, game_number_str);
-                    // fics_concat_to_scratch(FICS_CMD_PLAY, game_number_str);
-                    plat_net_send(global.view.scratch_buffer);
-                    // Asking for the game - may not start though so re-enable the menu
-                    ui_in_game_menu.menu_items[UI_MENU_INGAME_NEW].item_state = MENU_STATE_ENABLED;
-                    return;
-                }
-                // No game found, exit and try a seek
-                break;
-            } else {
-                // Garbage in - just keep looking for a number at the start of a line
-                continue;
-            }
-        }
-        sought_word[SOUGHT_USER_NAME] = fics_next_word(&parse_point, &len, &sought_word_len[SOUGHT_USER_NAME]);        // User Name
-        sought_word[SOUGHT_START_TIME] = fics_next_number(&parse_point, &len, &sought_word_len[SOUGHT_START_TIME], false); // Start Time
-        sought_word[SOUGHT_INC_TIME] = fics_next_number(&parse_point, &len, &sought_word_len[SOUGHT_INC_TIME], false);     // Inc Time
-        sought_word[SOUGHT_RATED] = fics_next_word(&parse_point, &len, &sought_word_len[SOUGHT_RATED]);                // Rated/Unrated
-        sought_word[SOUGHT_GAME_TYPE] = fics_next_word(&parse_point, &len, &sought_word_len[SOUGHT_GAME_TYPE]);        // Game Type (blitz/suicide)
-        sought_word[SOUGHT_START_COLOR] = fics_next_word(&parse_point, &len, &sought_word_len[SOUGHT_START_COLOR]);    // Could be [white] or [black]
-
-        // Check if all fields read something
-        error = false;
-        for (i = 0; i < 8; i++) {
-            if (!sought_word_len[i]) {
-                error = true;
-                break;
-            }
-        }
-        if (error) {
-            // If not all fields have a value, there's an error
-            continue;
-        }
-        // This is a valid line
-        lines_processed++;
-        if (*sought_word[SOUGHT_START_COLOR] == '[') {
-            sought_word[SOUGHT_RANGE] = fics_next_number(&parse_point, &len, &sought_word_len[SOUGHT_RANGE], 0);       // Rating
-        } else {
-            // This is correct, but uneccesary as I don't care
-            // sought_word_len[SOUGHT_RANGE] = sought_word_len[SOUGHT_START_COLOR];
-            // sought_word[SOUGHT_RANGE] = sought_word[SOUGHT_START_COLOR];
-            sought_word_len[SOUGHT_START_COLOR] = 0;
-        }
-        while (len && *parse_point == ' ') {
+    if(fics_data.status == FS_STATUS_NEXTLINE) {
+        while(len && '\x0a' != *buf) {  // '\n'
             len--;
-            parse_point++;
+            buf++;
         }
-        if (len && isspace(*parse_point)) {
-            sought_word_len[SOUGHT_EXTRA] = 0;
-            continue;
-        }
-        sought_word[SOUGHT_EXTRA] = fics_next_word(&parse_point, &len, &sought_word_len[SOUGHT_EXTRA]);                // (f)ormula, (m)anual, ...
+        fics_data.parse_state = SOUGHT_GAME_NUM;
     }
-    fics_set_new_data_callback(fics_ndcb_update_from_server);
-    fics_play(true);
+    fics_data.status = FS_STATUS_OKAY;
+    fics_data.parse_point = buf;
+    fics_data.length = len;
+
+    while(fics_data.status == FS_STATUS_OKAY && fics_data.length) {
+        switch(fics_data.parse_state) {
+            case SOUGHT_GAME_NUM:
+                fics_next_number();
+                break;
+
+            case SOUGHT_RANKING:
+                fics_next_number();
+                if(!fics_data.sought_word_len[SOUGHT_RANKING]) {
+                    if(fics_data.game_number_str[0]) {
+                        fics_data.status = FS_STATUS_DONE;
+                    } else {
+                        fics_data.status = FS_STATUS_NO_MATCH;
+                    }
+                }
+            break;
+
+            case SOUGHT_USER_NAME:
+                fics_next_word();
+            break;
+
+            case SOUGHT_START_TIME:
+                fics_next_number();
+            break;
+
+            case SOUGHT_INC_TIME:
+                fics_next_number();
+            break;
+
+            case SOUGHT_RATED:
+                fics_next_word();
+            break;
+
+            case SOUGHT_GAME_TYPE:
+                fics_next_word();
+            break;
+
+            case SOUGHT_START_COLOR:
+                fics_next_word();
+                if(fics_data.sought_word_len[SOUGHT_START_COLOR] > 0) {
+                    if(*fics_data.sought_word[SOUGHT_START_COLOR] != '\x5b') { // '['
+                        // If the start color isn't a color but is actually the range
+                        fics_data.sought_word[SOUGHT_RANGE] = fics_data.sought_word[SOUGHT_START_COLOR];
+                        fics_data.sought_word_len[SOUGHT_RANGE] = fics_data.sought_word_len[SOUGHT_START_COLOR];
+                        fics_data.sought_word_len[SOUGHT_START_COLOR] = 0;
+                        // Go to post range (extra)
+                        fics_data.parse_state++;
+                    }
+                }
+            break;
+
+            case SOUGHT_RANGE:
+                fics_next_number();
+            break;
+
+            case SOUGHT_EXTRA:
+                // Start by saying there's no extra
+                fics_data.sought_word_len[SOUGHT_EXTRA] = 0;
+                // see if the end of the line is here
+                while(fics_data.length) {
+                    while(*fics_data.parse_point != '\x0a' && fics_isspace(*fics_data.parse_point)) {
+                        fics_data.length--;
+                        fics_data.parse_point++;
+                    }
+                    // If not EOL, there's some extra info to skip
+                    if(*fics_data.parse_point != '\x0a') {
+                        fics_next_word();
+                        // keep at extra
+                        fics_data.parse_state = SOUGHT_EXTRA;
+                    } else {
+                        uint16_t rating, delta;
+
+                        // Reset for the next line
+                        fics_data.parse_state = SOUGHT_GAME_NUM;
+
+                        // See if this is a fitting game
+
+                        // Don't pick a game with a color preference
+                        if (fics_data.sought_word_len[SOUGHT_START_COLOR]) {
+                            break;
+                        }
+                        // Make sure there are no strings attached
+                        if (fics_data.sought_word_len[SOUGHT_EXTRA]) {
+                            break;
+                        }
+
+                        // Make sure it's the type of game I want
+                        if (global.ui.my_game_type && 0 != strncmp(global.ui.my_game_type, fics_data.sought_word[SOUGHT_GAME_TYPE], fics_data.sought_word_len[SOUGHT_GAME_TYPE])) {
+                            break;
+                        }
+
+                        // Make sure it's rated or unrated as I desire
+                        if (global.ui.my_rating_type[0] != fics_data.sought_word[SOUGHT_RATED][0]) {
+                            break;
+                        }
+
+                        // See if this offer is closer to my rating
+                        rating = atoi(fics_data.sought_word[SOUGHT_RANKING]);
+                        delta = abs(rating - global.ui.my_rating);
+                        if (delta < fics_data.rating_delta && fics_data.sought_word_len[SOUGHT_GAME_NUM] < sizeof(fics_data.game_number_str) - 1) {
+                            fics_data.rating_delta = delta;
+                            strncpy(fics_data.game_number_str, fics_data.sought_word[SOUGHT_GAME_NUM], fics_data.sought_word_len[SOUGHT_GAME_NUM]);
+                            fics_data.game_number_str[fics_data.sought_word_len[SOUGHT_GAME_NUM]] = '\0';
+                        }
+                        break;
+                    }
+                }
+            break;
+        }
+    }
+
+    switch(fics_data.status) {
+        case FS_STATUS_DONE:
+            fics_set_new_data_callback(fics_ndcb_update_from_server);
+            strcpy(global.view.scratch_buffer, FICS_CMD_PLAY);
+            strcat(global.view.scratch_buffer, fics_data.game_number_str);
+            plat_net_send(global.view.scratch_buffer);
+            // Asking for the game - may not start though so re-enable the menu
+            ui_in_game_menu.menu_items[UI_MENU_INGAME_NEW].item_state = MENU_STATE_ENABLED;
+        break;
+
+        case FS_STATUS_NO_MATCH:
+        case FS_STATUS_ERROR:
+            fics_set_new_data_callback(fics_ndcb_update_from_server);
+            fics_play(true);
+        break;
+
+        default:
+        break;
+    }
 }
 
 /*-----------------------------------------------------------------------*/
@@ -494,7 +536,7 @@ static void fics_ndcb_update_from_server(const char *buf, int len) {
             parse_start = parse_point;
             global.state.game_active = true;
             parse_point += 5;
-            if (*parse_point == 'I') {
+            if (*parse_point == '\x49') { // 'I'
                 // Illegal move - let's get the state back
                 // I could keep a pre-move state and reinstate that, or just do this.
                 // A bit heavey-handed, but simple
@@ -527,14 +569,16 @@ static void fics_ndcb_update_from_server(const char *buf, int len) {
             parse_point = fics_copy_data(global.frame.move_number, parse_point, 3);
             parse_point = fics_copy_data(global.frame.previous_move, parse_point, 7);
 
-            global.state.includes_me = global.frame.my_relation_to_game[0] == '1' || global.frame.my_relation_to_game[1] == '1';
-            global.state.my_move = global.frame.my_relation_to_game[0] == '1';
+            // '1'
+            global.state.includes_me = global.frame.my_relation_to_game[0] == '\x31' || global.frame.my_relation_to_game[1] == '\x31';
+            global.state.my_move = global.frame.my_relation_to_game[0] == '\x31';
 
             if (!global.state.includes_me) {
                 global.state.my_side = SIDE_WHITE;
             } else {
                 // Derive my color based on whether it's my move or not
-                global.state.my_side = global.state.my_move ? *global.frame.color_to_move == 'W' : *global.frame.color_to_move != 'W';
+                // 'W'
+                global.state.my_side = global.state.my_move ? *global.frame.color_to_move == '\x57' : *global.frame.color_to_move != '\x57';
                 if (global.state.cursor < 0) {
                     global.state.cursor = global.state.my_side ? 51 : 12;
                 }
@@ -557,13 +601,14 @@ static void fics_ndcb_update_from_server(const char *buf, int len) {
             log_add_line(&global.view.info_panel, "\n", 1);
             fics_add_stats(global.state.my_side);
             fics_add_stats(global.state.my_side ^ 1);
-            fics_add_status_log(global.text.word_next, *global.frame.color_to_move == 'W' ? global.text.side_label[SIDE_WHITE] : global.text.side_label[SIDE_BLACK]);
+            // 'W'
+            fics_add_status_log(global.text.word_next, *global.frame.color_to_move == '\x57' ? global.text.side_label[SIDE_WHITE] : global.text.side_label[SIDE_BLACK]);
             fics_add_status_log(global.text.word_last, global.frame.previous_move);
 
             // Move past all this to see if there are more statements to parse (Game Over comes with last
             // move in all cases I observed)
             len -= (parse_point - parse_start);
-            while (len && *parse_point != '\n') {
+            while (len && *parse_point != '\x0a') { // '\n'
                 parse_point++;
                 len--;
             }
@@ -571,21 +616,21 @@ static void fics_ndcb_update_from_server(const char *buf, int len) {
             // Game status message received
             global.view.refresh = true;
             // Skip user names
-            while (len && *parse_point != ')') {
+            while (len && *parse_point != '\x29') { // ')'
                 parse_point++;
                 len--;
             }
             // Skip ) & space
             parse_point += 2;
             len -= 2;
-            if (len) {
+            if (len > 0) {
                 // If it's a Creating message, it's still game-on
                 if (!(*parse_point == FICS_DATA_CREATING[0] && 0 == strncmp(parse_point, FICS_DATA_CREATING, (sizeof(FICS_DATA_CREATING) - 1)))) {
                     // but if not, it's a game over message
                     global.state.game_active = false;
                 }
                 // Whatever message, show it
-                fics_format_stats_message(parse_point, len, '}');
+                fics_format_stats_message(parse_point, len, '\x7d'); // '}'
             }
             // Force a refresh to see what menu item states should be active
             plat_net_send(FICS_CMD_REFRESH);
@@ -605,12 +650,12 @@ static void fics_ndcb_update_from_server(const char *buf, int len) {
             parse_point += (sizeof(FICS_DATA_SAYS) - 1);
             len -= (sizeof(FICS_DATA_SAYS) - 1);
             parse_start = parse_point;
-            while (len && *parse_point != '\n') {
+            while (len && *parse_point != '\x0a') { // '\n'
                 len--;
                 parse_point++;
             }
-            if (*parse_point == '\n') {
-                fics_format_stats_message(parse_start, parse_point - parse_start, '\n');
+            if (*parse_point == '\x0a') {
+                fics_format_stats_message(parse_start, parse_point - parse_start, '\x0a');
                 global.view.refresh = true;
             }
         }
@@ -653,11 +698,15 @@ void fics_play(bool use_seek) {
         if (!(global.view.mc.df & MENU_DRAW_HIDDEN)) {
             global.view.mc.df = MENU_DRAW_REDRAW;
         }
-        if (global.ui.my_game_type[1] == 'u' || global.ui.my_game_type[1] == 'i' || global.ui.my_game_type[1] == 'r') {
+        // 'u' 'i' 'r'
+        if (global.ui.my_game_type[1] == '\x75' || global.ui.my_game_type[1] == '\x69' || global.ui.my_game_type[1] == '\x72') {
             strcpy(&global.setup.seek_cmd[5], global.ui.my_game_type);
             plat_net_send(global.setup.seek_cmd);
         }
     } else {
+        // Init the search cache
+        memset(&fics_data, 0, sizeof(fics_data));
+        fics_data.rating_delta = -1;
         fics_set_new_data_callback(fics_ndcb_sought_list);
         plat_net_send(FICS_CMD_SOUGHT);
     }
