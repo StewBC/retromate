@@ -85,9 +85,7 @@ bool plat_net_update() {
 
 /*-----------------------------------------------------------------------*/
 void plat_net_send(const char *text) {
-    int len = plat_net_make_ascii(text);
-    log_add_line(&global.view.terminal, c64.send_buffer, len);
-    tcp_send((unsigned char *)c64.send_buffer, len);
+    tcp_send((unsigned char *)c64.send_buffer, plat_net_make_ascii(text));
 }
 
 /*-----------------------------------------------------------------------*/
