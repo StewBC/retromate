@@ -77,7 +77,7 @@ enum { // ui_variable
     UI_VARIABLE_AVAILMAX
 };
 
-extern char *ui_game_types[GAME_TYPE_COUNT];
+extern char *ui_game_types_ascii[GAME_TYPE_COUNT];
 extern char *ui_game_start_lengths[5];
 extern char *ui_game_increments[5];
 

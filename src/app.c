@@ -118,7 +118,7 @@ void app_set_state(uint8_t new_state) {
             // Set some state
             plat_net_send("\nset bell 0\nset seek 0\nset style 12\nset autoflag 1\n");
             // Set up the one-time variables that need init
-            global.ui.my_game_type = ui_game_types[0];
+            global.ui.my_game_type = ui_game_types_ascii[0];
             // These also send commands to FICS to configure the variables
             // There's a trigger on the last one, which will cause the game to become "online"
             ui_set_item_target(&ui_settings_menu_items[UI_SETTINGS_START_TIME], UI_VARIABLE_TIME, ui_game_start_lengths[0]);

@@ -58,7 +58,7 @@ global_t global = {
         "5000",                                   // server_port_str
         5000,                                     // server_port
         0,                                        // my_rating
-        "u",                                      // my_rating_type
+        "\x75",                                   // my_rating_type (in ascii 'u')
         NULL,                                     // my_game_type
     },
     {
