@@ -81,7 +81,6 @@ void input_text(char *buffer, uint8_t buffer_len, uint8_t filter) {
             case INPUT_SELECT:
                 plat_draw_clear_input_line(0);
                 if (global.view.terminal_active) {
-                    log_add_line(&global.view.terminal, buffer, index);
                     plat_net_send(buffer);
                     buffer[0] = '\0';
                     plat_draw_clear_input_line(1);
