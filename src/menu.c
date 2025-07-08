@@ -93,6 +93,10 @@ static void menu_cache(menu_t *m) {
     uint8_t i, j, length, sel = 0;
     uint8_t height = 0;
 
+    if(m->selected_item > m->num_items || m->menu_items[m->selected_item].item_state != MENU_STATE_ENABLED) {
+        m->selected_item = 0;
+    }
+
     // Minimum menu width 1/4 of screen (or at least holds the title)
     global.view.mc.w = MAX(2 + strlen(m->title), plat_core_get_cols() >> 2);
     global.view.mc.ix_max = global.view.mc.ax_max = 0;
@@ -170,7 +174,7 @@ static void menu_cache(menu_t *m) {
 static void menu_change_selection(uint8_t new) {
     menu_t *m = global.view.mc.m;
     uint8_t old = m->selected_item;
-    uint8_t index = menu_count_active(old);
+    uint8_t index;
 
     // I am leaving this here, but I decided it's not needed so not included
     // if (m->item_change) {
