@@ -48,6 +48,11 @@ void plat_core_active_term(bool active) {
 }
 
 /*-----------------------------------------------------------------------*/
+void plat_core_copy_ascii_to_display(void *dest, const void *src, size_t n) {
+    memcpy(dest, src, n);
+}
+
+/*-----------------------------------------------------------------------*/
 void plat_core_exit() {
     exit(1);
 }

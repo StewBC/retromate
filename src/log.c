@@ -76,7 +76,7 @@ void log_add_line(tLog *log, const char *text, int text_len) {
     while (remaining > 0) {
         // Determine the end of the current line (up to \n or end of string)
         line_start = p;
-        newline = log_mempbrk(p, remaining, "\n\r");
+        newline = log_mempbrk(p, remaining, "\x0d\x0a");
         if (newline) {
             uint8_t skip = 1;
             char nl = *newline;
@@ -84,8 +84,8 @@ void log_add_line(tLog *log, const char *text, int text_len) {
 
             // If there's a following opposite newline (\n\r or \r\n), skip both
             if ((newline + 1 < p + remaining) &&
-                    ((nl == '\n' && newline[1] == '\r') ||
-                     (nl == '\r' && newline[1] == '\n'))) {
+                    ((nl == '\x0a' && newline[1] == '\x0d') ||
+                     (nl == '\x0d' && newline[1] == '\x0a'))) {
                 skip = 2;
             }
 
@@ -104,7 +104,7 @@ void log_add_line(tLog *log, const char *text, int text_len) {
         } else {
             while (line_len > 0) {
                 chunk_len = (line_len > log->cols) ? log->cols : line_len;
-                memcpy(log->dest_ptr, line_start, chunk_len);
+                plat_core_copy_ascii_to_display(log->dest_ptr, line_start, chunk_len);
 
                 if (chunk_len < log->cols) {
                     memset(log->dest_ptr + chunk_len, ' ', log->cols - chunk_len);

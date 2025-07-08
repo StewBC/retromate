@@ -47,8 +47,10 @@ c64_t c64 = {
 void plat_draw_char(char x, char y, unsigned rop, char c) {
     if (c >= 'A' && c <= 'Z') {
         c &= 0x7f;
-    } else if (c >= 'a' && c <= 'z') {
-        c -= 64;
+    } else if (c >= 65 && c <= 90) {
+        c -= 64;    // Lowercase to 1-26
+    } else if(c >= 97 && c <= 123) {
+        c -= 96;    // Lowercase ascii to 1-26
     }
     hires_draw(x, y, 1, 1, rop, CHARMAP_RAM + c * 8);
     hires_color(x, y, 1, 1, c64.draw_colors);
@@ -268,7 +270,7 @@ void plat_draw_square(uint8_t position) {
                SQUARE_TEXT_WIDTH, SQUARE_TEXT_HEIGHT, rop,
                hires_pieces[(piece & 127) - 1][inv]);
     hires_color(1 + x * SQUARE_TEXT_WIDTH, y * SQUARE_TEXT_HEIGHT,
-                SQUARE_TEXT_WIDTH, SQUARE_TEXT_HEIGHT, COLOR_WHITE);
+                SQUARE_TEXT_WIDTH, SQUARE_TEXT_HEIGHT, COLOR_WHITE<<4);
 }
 
 /*-----------------------------------------------------------------------*/

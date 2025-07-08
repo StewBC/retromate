@@ -10,6 +10,7 @@
 #include <apple2.h>
 #include <conio.h>  // kbhit, cgetc
 #include <stdlib.h> // exit
+#include <string.h> // memcpy
 
 #include "../global.h"
 
@@ -32,6 +33,11 @@ void plat_core_active_term(bool active) {
         hires_init();
         global.view.terminal_active = 0;
     }
+}
+
+/*-----------------------------------------------------------------------*/
+void plat_core_copy_ascii_to_display(void *dest, const void *src, size_t n) {
+    memcpy(dest, src, n);
 }
 
 /*-----------------------------------------------------------------------*/

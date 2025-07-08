@@ -18,7 +18,6 @@
 // The compiler will encode strings as "platform strings" and that won't match the server
 // side data.  This is a way to circumvent the compiler encoding these as non-ASCII data.
 
-
 // Triggers in the match callback
                                     // "login:"
 #define FICS_TRIGGER_LOGIN          "\x6C\x6F\x67\x69\x6e\x3a"
@@ -108,7 +107,7 @@ static void fics_add_stats(bool side) {
         fics_add_status_log(global.text.word_strength, global.frame.b_strength);
         fics_add_status_log(global.text.word_time, global.frame.b_remaining_time);
     }
-    log_add_line(&global.view.info_panel, "\n", 1);
+    log_add_line(&global.view.info_panel, "\x0a", 1);
 }
 
 
@@ -145,7 +144,7 @@ static void fics_format_stats_message(const char *message, int len, char delimit
     // Put the message in the message section by adjusting the size and head
     global.view.info_panel.size = global.view.info_panel.head = FICS_STATSLOG_MSG_ROW;
     // And also updating the dest ptr
-    global.view.info_panel.dest_ptr = global.view.info_panel.buffer + (global.view.info_panel.head * global.view.info_panel.cols);
+    global.view.info_panel.dest_ptr = global.view.info_panel.buffer + (FICS_STATSLOG_MSG_ROW * global.view.info_panel.cols);
     plat_draw_clear_statslog_area(FICS_STATSLOG_MSG_ROW);
 
     while (1) { // or start_message != \n or } maybe?
@@ -598,7 +597,7 @@ static void fics_ndcb_update_from_server(const char *buf, int len) {
             }
             log_clear(&global.view.info_panel);
             fics_add_status_log(global.text.game_number, global.frame.game_number);
-            log_add_line(&global.view.info_panel, "\n", 1);
+            log_add_line(&global.view.info_panel, "\x0a", 1); // '\n'
             fics_add_stats(global.state.my_side);
             fics_add_stats(global.state.my_side ^ 1);
             // 'W'
@@ -633,7 +632,10 @@ static void fics_ndcb_update_from_server(const char *buf, int len) {
                 fics_format_stats_message(parse_point, len, '\x7d'); // '}'
             }
             // Force a refresh to see what menu item states should be active
-            plat_net_send(FICS_CMD_REFRESH);
+            // Only if I was in the game.  Observe will refresh in FICS_DATA_REMOVING
+            if(global.state.includes_me) {
+                plat_net_send(FICS_CMD_REFRESH);
+            }
         } else if (character == FICS_DATA_REMOVING[0] && 0 == strncmp(parse_point, FICS_DATA_REMOVING, (sizeof(FICS_DATA_REMOVING) - 1))) {
             // Force a refresh to see what menu item states should be active
             plat_net_send(FICS_CMD_REFRESH);

@@ -20,15 +20,18 @@ static int plat_net_make_ascii(const char *text) {
     char i = 0;
     while (*text) {
         char c = *text;
-        if (c == 0x0d) {
+        if(c == 0x0d) { // \r to \n
             c64.send_buffer[i++] = 0x0a;
-        }
-        if (c < 65 || c > 218) {
-            c64.send_buffer[i++] = c;
-        } else if (c >= 193) {
-            c64.send_buffer[i++] = c & ~128;
-        } else if (c <= 90) {
-            c64.send_buffer[i++] = c | 32;
+        } else if (c < 219 && c >= 32) {    // ignore too small and big
+            if(c >= 193) { // Petscii 'A-Z' to Ascii 'A-Z'
+               c64.send_buffer[i++] = c & ~128;
+            } else if(c < 123) { // Ignore 123 - 192
+                if(c >= 91 || c < 65) {  // pass all (that remains), but 'a-z', as-is
+                    c64.send_buffer[i++] = c;
+                } else {    // Petscii 'a-z' to Ascii 'a-z'
+                    c64.send_buffer[i++] = c | 32;
+                }
+            }
         }
         text++;
     }
@@ -85,6 +88,7 @@ bool plat_net_update() {
 
 /*-----------------------------------------------------------------------*/
 void plat_net_send(const char *text) {
+    log_add_line(&global.view.terminal, text, -1);
     tcp_send((unsigned char *)c64.send_buffer, plat_net_make_ascii(text));
 }
 

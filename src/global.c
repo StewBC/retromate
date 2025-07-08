@@ -85,14 +85,14 @@ global_t global = {
         // state
         {
             // chess_board
-            "rnbqkbnr"
-            "pppppppp"
-            "--------"
-            "--------"
-            "--------"
-            "--------"
-            "PPPPPPPP"
-            "RNBQKBNR"
+        "\x72\x6e\x62\x71\x6b\x62\x6e\x72"        // "rnbqkbnr"
+        "\x70\x70\x70\x70\x70\x70\x70\x70"        // "pppppppp"
+        "\x2d\x2d\x2d\x2d\x2d\x2d\x2d\x2d"        // "--------"
+        "\x2d\x2d\x2d\x2d\x2d\x2d\x2d\x2d"        // "--------"
+        "\x2d\x2d\x2d\x2d\x2d\x2d\x2d\x2d"        // "--------"
+        "\x2d\x2d\x2d\x2d\x2d\x2d\x2d\x2d"        // "--------"
+        "\x50\x50\x50\x50\x50\x50\x50\x50"        // "PPPPPPPP"
+        "\x52\x4e\x42\x51\x4b\x42\x4e\x52"        // "RNBQKBNR"
         },
         "a1-a1",                                  // move_str[6]
         false,                                    // game_active

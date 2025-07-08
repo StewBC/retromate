@@ -34,6 +34,19 @@ void plat_core_active_term(bool active) {
 }
 
 /*-----------------------------------------------------------------------*/
+void plat_core_copy_ascii_to_display(void *dest, const void *src, size_t n) {
+    char *from = (char*)src;
+    char *to = (char*)dest;
+    while (n--) {
+        char c = *from++;
+        if (c >= 65 && c < 91) {    // 'A-Z' to PETSCII
+            c |= 0x80;
+        }
+        *to++ = c;
+    }
+}
+
+/*-----------------------------------------------------------------------*/
 void plat_core_exit() {
     exit(1);
 }
@@ -90,7 +103,7 @@ void plat_core_init() {
     CIA1.cra &= 0xfe;
     // CHAREN - Map characters into CPU
     *(char *)0x01 &= 0xfb;
-    // Copy the standard font to where the char font will live
+    // Copy the shifted font to where the char font will live
     memcpy((char *)CHARMAP_RAM, (char *)CHARMAP_ROM + 256 * 8, 256 * 8);
     // Unmap character rom from CPU
     *(char *)0x01 |= 0x04;

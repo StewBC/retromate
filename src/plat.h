@@ -20,6 +20,7 @@ extern uint8_t plat_mc2pc[9];
 
 // Core
 void plat_core_active_term(bool active);
+void plat_core_copy_ascii_to_display(void *dest, const void *src, size_t n);
 void plat_core_exit(void);
 uint8_t plat_core_get_cols(void);
 uint8_t plat_core_get_rows(void);

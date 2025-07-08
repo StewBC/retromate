@@ -81,9 +81,8 @@ bool plat_net_update() {
 
 /*-----------------------------------------------------------------------*/
 void plat_net_send(const char *text) {
-    int len = plat_net_make_ascii(text);
-    log_add_line(&global.view.terminal, text, len);
-    tcp_send((unsigned char *)atari.send_buffer, len);
+    log_add_line(&global.view.terminal, text, -1);
+    tcp_send((unsigned char *)atari.send_buffer, plat_net_make_ascii(text));
 }
 
 /*-----------------------------------------------------------------------*/
