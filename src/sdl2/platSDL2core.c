@@ -265,20 +265,13 @@ uint8_t plat_core_mouse_to_menu_item(void) {
 
     if (x > global.view.mc.x && x < global.view.mc.x + global.view.mc.w - 1) {
         uint8_t item_start_y = global.view.mc.y + 2;
-        uint8_t step = 1;
         uint8_t menu_bottom = global.view.mc.y + global.view.mc.h - 2;
 
         if (y < item_start_y || y > menu_bottom) {
             return MENU_SELECT_NONE;
         }
 
-        uint8_t offset = y - item_start_y;
-
-        if (offset % step != 0) {
-            return MENU_SELECT_NONE;
-        }
-
-        return offset / step;
+        return y - item_start_y;
     }
 
     return MENU_SELECT_NONE;
