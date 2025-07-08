@@ -87,7 +87,6 @@ typedef struct _menu {
     char *title;                 // This menu's title
     uint8_t num_items;           // How many menu items
     menu_item_t *menu_items;     // The item menu_item's themselves
-    uint8_t item_spacing;        // Extra spaces between items
     uint8_t selected_item;       // Currently selected item from menu_items
     // menu_callback_t item_change; // If set, called when the selection changes
     menu_t *parent_menu;         // Where back goes
@@ -107,7 +106,6 @@ typedef struct _menu_cache {
     uint8_t sy;         // selected item's y
     uint8_t ix_max;     // max length of all items
     uint8_t ax_max;     // max length of all actions
-    uint8_t is;         // menu's item spacing
     uint8_t iy;         // working y
 } menu_cache_t;
 

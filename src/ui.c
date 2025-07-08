@@ -155,7 +155,7 @@ menu_item_t ui_pregame_menu_options_menu_items[] = {
     { "Back", MENU_ITEM_BACKUP, MENU_STATE_ENABLED, 0, 0, 0, NULL, 0, 0, NULL, NULL},
 };
 menu_t ui_pregame_menu_options_menu = {
-    "Login Options", AS(ui_pregame_menu_options_menu_items), ui_pregame_menu_options_menu_items, 0, 0, NULL
+    "Login Options", AS(ui_pregame_menu_options_menu_items), ui_pregame_menu_options_menu_items, 0, NULL
 };
 
 // Pre-game Menu
@@ -165,7 +165,7 @@ menu_item_t ui_pregame_menu_items[] = {
     { "Quit", MENU_ITEM_BACKUP, MENU_STATE_ENABLED, 0, 0, 0, NULL, 0, 0, NULL, NULL},
 };
 menu_t ui_pregame_menu = {
-    "RetroMate", AS(ui_pregame_menu_items), ui_pregame_menu_items, 0, 0, NULL
+    "RetroMate", AS(ui_pregame_menu_items), ui_pregame_menu_items, 0, NULL
 };
 
 //----------------------------------------------------------------------------
@@ -183,7 +183,7 @@ menu_item_t ui_settings_menu_items[] = {
     { "Back", MENU_ITEM_BACKUP, MENU_STATE_ENABLED, 0, 0, 0, NULL, 0, 0, NULL, NULL},
 };
 menu_t ui_settings_menu = {
-    "Game Settings", AS(ui_settings_menu_items), ui_settings_menu_items, 0, 0, NULL
+    "Game Settings", AS(ui_settings_menu_items), ui_settings_menu_items, 0, NULL
 };
 
 // In-Game Menu
@@ -198,5 +198,5 @@ menu_item_t ui_in_game_menu_items[] = {
     { "Logout", MENU_ITEM_STATIC, MENU_STATE_ENABLED, 0, 0, 0, NULL, 0, 0, NULL, NULL},
 };
 menu_t ui_in_game_menu = {
-    "RetroMate (Online)", AS(ui_in_game_menu_items), ui_in_game_menu_items, 0, 0, NULL
+    "RetroMate (Online)", AS(ui_in_game_menu_items), ui_in_game_menu_items, 0, NULL
 };

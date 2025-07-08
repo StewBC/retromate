@@ -42,7 +42,6 @@ global_t global = {
             0,                                    // selected item's y
             0,                                    // max length of all items
             0,                                    // max length of all actions
-            0,                                    // menu's item spacing
             0,                                    // working y
         },
         true,                                     // refresh

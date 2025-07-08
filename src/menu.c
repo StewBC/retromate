@@ -96,7 +96,6 @@ static void menu_cache(menu_t *m) {
     // Minimum menu width 1/4 of screen (or at least holds the title)
     global.view.mc.w = MAX(2 + strlen(m->title), plat_core_get_cols() >> 2);
     global.view.mc.ix_max = global.view.mc.ax_max = 0;
-    global.view.mc.is = m->item_spacing;
 
     for (i = 0; i < m->num_items; i++) {
         if (m->menu_items[i].item_state == MENU_STATE_HIDDEN) {
@@ -150,8 +149,8 @@ static void menu_cache(menu_t *m) {
 
     // 1 for title
     height++;
-    // 2 for the frame + content spacing + content
-    global.view.mc.h = 2 + height * m->item_spacing + height;
+    // 2 for the frame + content
+    global.view.mc.h = 2 + height;
 
     // Centre on screen in X
     global.view.mc.x = (plat_core_get_cols() - global.view.mc.w) / 2;
@@ -162,7 +161,7 @@ static void menu_cache(menu_t *m) {
     // Centre on screen in Y
     global.view.mc.y = (plat_core_get_rows() - global.view.mc.h) / 2;
     // Selector is 1 below frame, spaced for offset and then item index
-    global.view.mc.sy = global.view.mc.y + 1 + sel * m->item_spacing + sel;
+    global.view.mc.sy = global.view.mc.y + 1 + sel;
     // Centre the title in the menu-draw-space
     global.view.mc.tx = global.view.mc.x + (global.view.mc.w - strlen(m->title)) / 2;
 }
@@ -182,7 +181,7 @@ static void menu_change_selection(uint8_t new) {
     menu_draw_string(global.view.mc.x + 1, global.view.mc.sy, MENU_COLOR_SELECTED, " ");
     menu_draw_string(global.view.mc.x + global.view.mc.w - 2, global.view.mc.sy, MENU_COLOR_SELECTED, " ");
     index = menu_count_active(new);
-    global.view.mc.sy = global.view.mc.y + 1 + index + index * m->item_spacing;
+    global.view.mc.sy = global.view.mc.y + 1 + index;
     menu_draw_string(global.view.mc.x + 1, global.view.mc.sy, MENU_COLOR_SELECTED, ">");
     menu_draw_string(global.view.mc.x + global.view.mc.w - 2, global.view.mc.sy, MENU_COLOR_SELECTED, "<");
     m->selected_item = new;
@@ -285,7 +284,7 @@ uint8_t menu_tick() {
         for (i = 0; i < m->num_items; i++) {
             menu_item_t *item = &m->menu_items[i];
             if (item->item_state != MENU_STATE_HIDDEN) {
-                global.view.mc.iy += 1 + m->item_spacing;
+                global.view.mc.iy++;
                 menu_show_item(item, MENU_ITEM_DRAW);
             }
         }

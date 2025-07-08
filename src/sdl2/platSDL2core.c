@@ -264,9 +264,9 @@ uint8_t plat_core_mouse_to_menu_item(void) {
     uint8_t y = global.os.input_event.mouse_y / CHARACTER_HEIGHT;
 
     if (x > global.view.mc.x && x < global.view.mc.x + global.view.mc.w - 1) {
-        uint8_t item_start_y = global.view.mc.y + 2 + global.view.mc.is;
-        uint8_t step = 1 + global.view.mc.is;
-        uint8_t menu_bottom = global.view.mc.y + global.view.mc.h - 2 - global.view.mc.is;
+        uint8_t item_start_y = global.view.mc.y + 2;
+        uint8_t step = 1;
+        uint8_t menu_bottom = global.view.mc.y + global.view.mc.h - 2;
 
         if (y < item_start_y || y > menu_bottom) {
             return MENU_SELECT_NONE;
