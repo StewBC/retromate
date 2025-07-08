@@ -15,7 +15,6 @@
 
 #pragma code-name(push, "LC")
 
-
 /*-----------------------------------------------------------------------*/
 void plat_net_init() {
     // ProDOS 8 Technical Reference Manual

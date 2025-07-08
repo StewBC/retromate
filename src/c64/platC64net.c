@@ -35,7 +35,8 @@ static int plat_net_make_ascii(const char *text) {
         }
         text++;
     }
-    c64.send_buffer[i++] = '\x0a';
+    // This seems like a good idea but it locks the C64 up.
+    // c64.send_buffer[i++] = '\x0a';
     return i;
 }
 
@@ -90,6 +91,9 @@ bool plat_net_update() {
 void plat_net_send(const char *text) {
     log_add_line(&global.view.terminal, text, -1);
     tcp_send((unsigned char *)c64.send_buffer, plat_net_make_ascii(text));
+    // Don't send \x0a in he buffer, send seprately.  I don't know why it
+    // improves stability, but it absolutely does
+    tcp_send((unsigned char *)"\x0a", 1);
 }
 
 /*-----------------------------------------------------------------------*/
