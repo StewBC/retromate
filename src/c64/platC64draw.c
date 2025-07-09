@@ -59,7 +59,7 @@ void plat_draw_char(char x, char y, unsigned rop, char c) {
 /*-----------------------------------------------------------------------*/
 // Restore the background that a menu covered up
 void plat_draw_background() {
-    uint8_t t, l, b, r;//, tt, tb;
+    uint8_t t, l, b, r;
     int8_t i, x, y, mw, mh;
     mw = global.view.mc.x + global.view.mc.w;
     mh = global.view.mc.y + global.view.mc.h;
@@ -67,7 +67,7 @@ void plat_draw_background() {
     x = mw - r;
 
     // If the accoutrements are covered
-    if (global.view.mc.x < 2) {
+    if (global.view.mc.x < 1) {
         hires_mask(0, 0, 1, SCREEN_TEXT_HEIGHT, ROP_BLACK);
         hires_color(0, 0, 1, SCREEN_TEXT_HEIGHT, COLOR_GREEN);
     }
@@ -86,14 +86,10 @@ void plat_draw_background() {
     t = 0;
     for (i = 0, y = 0; y < 8; y++) {
         b = t + SQUARE_TEXT_HEIGHT;
-        l = 2;
-        r = 2 + SQUARE_TEXT_WIDTH;
-        // find out what text rows these pieces now intercept
-        // tt = t >> 3;
-        // tb = b >> 3;
+        l = 1;
+        r = 1 + SQUARE_TEXT_WIDTH;
         for (x = 0; x < 8; x++) {
-            if (l <= mw && r >= global.view.mc.x) {
-                // tt <= mh && tb >= global.view.mc.y)  { // intersets
+            if (l <= mw && r >= global.view.mc.x && t < mh && b > global.view.mc.y) {
                 plat_draw_square(i);
             }
             l += SQUARE_TEXT_WIDTH;
