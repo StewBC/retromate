@@ -46,10 +46,11 @@ static void plat_draw_char(char x, char y, unsigned rop, char c) {
 /*-----------------------------------------------------------------------*/
 // Restore the background that a menu covered up
 void plat_draw_background() {
-    uint8_t t, l, b, r;//, tt, tb;
-    int8_t i, x, y, mw, mh;
+    uint8_t t, l, b, r, mt, mb, mw;
+    int8_t i, x, y;
     mw = global.view.mc.x + global.view.mc.w;
-    mh = global.view.mc.y + global.view.mc.h;
+    mt = global.view.mc.y << 3;
+    mb = mt + (global.view.mc.h << 3);
     r = plat_core_get_status_x() - 1;
     x = mw - r;
 
@@ -67,25 +68,28 @@ void plat_draw_background() {
     // Always redraw these - because of the line around the board
     plat_draw_board_accoutrements();
 
-    // Set up a square based clip top, left, bottom, right
-    t = 2;
-    for (i = 0, y = 0; y < 8; y++) {
-        b = t + SQUARE_DISPLAY_HEIGHT;
-        l = 2;
-        r = 2 + SQUARE_TEXT_WIDTH;
-        // find out what text rows these pieces now intercept
-        // tt = t >> 3;
-        // tb = b >> 3;
-        for (x = 0; x < 8; x++) {
-            if (l <= mw && r >= global.view.mc.x) {
-                // tt <= mh && tb >= global.view.mc.y)  { // intersets
-                plat_draw_square(i);
+    i = 0;                  // row of tile to potentially draw
+    t = 2;                  // This is in pixels
+    b = 2 + SQUARE_DISPLAY_HEIGHT;
+    for(y = 0; y < 8; y++) {
+        if(b >= mt) {       // Past top?
+            if(t > mb) {    // Past bottom?
+                break;      // past bottom done
             }
-            l += SQUARE_TEXT_WIDTH;
-            r += SQUARE_TEXT_WIDTH;
-            i++;
+            l = 2;          // This in character columns
+            r = 2 + SQUARE_TEXT_WIDTH;
+            for(x = 0; x < 8; x++) {
+                            // Intersect?
+                if(l < mw && r > global.view.mc.x) {
+                    plat_draw_square(i+x);
+                }
+                l += SQUARE_TEXT_WIDTH;
+                r += SQUARE_TEXT_WIDTH;
+            }
         }
         t += SQUARE_DISPLAY_HEIGHT;
+        b += SQUARE_DISPLAY_HEIGHT;
+        i += 8;
     }
 }
 
