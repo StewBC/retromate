@@ -216,7 +216,9 @@ void app_state_online() {
     if (global.view.mc.df & MENU_DRAW_HIDDEN) {
         if (global.os.input_event.code == INPUT_BACK) {
             // It's not a case of unhiding it, it has been popped so
-            // set it up to run
+            // set it up to run, but mark it as not having being on-screen
+            // So there's no extra erase call
+            global.view.mc.df |= MENU_DRAW_ERASE;
             menu_set(&ui_in_game_menu);
         } else if (global.state.includes_me) {
             // I am a participant in this app, there's a cursor
