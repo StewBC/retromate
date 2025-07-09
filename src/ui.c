@@ -120,9 +120,9 @@ static uint8_t ui_toggle_registerd_callback(menu_t *m, void *data) {
 //----------------------------------------------------------------------------
 static uint8_t ui_toggle_sought_callback(menu_t *m, void *data) {
     menu_item_t *item = (menu_item_t *)data;
-    global.setup.use_seek = item->selected == 1;
-    m->menu_items[UI_SETTINGS_START_TIME].item_state = MENU_STATE_ENABLED + item->selected;
-    m->menu_items[UI_SETTINGS_INCREMENTALTIME].item_state = MENU_STATE_ENABLED + item->selected;
+    m->menu_items[UI_SETTINGS_START_TIME].item_state = MENU_STATE_ENABLED + global.setup.use_seek;
+    m->menu_items[UI_SETTINGS_INCREMENTALTIME].item_state = MENU_STATE_ENABLED + global.setup.use_seek;
+    global.setup.use_seek = !global.setup.use_seek;
     return MENU_DRAW_REDRAW; // Force a redraw since the menu size changes
 }
 
