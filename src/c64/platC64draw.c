@@ -165,7 +165,7 @@ void plat_draw_highlight(uint8_t position, uint8_t color) {
         hires_color(1 + x * SQUARE_TEXT_WIDTH, y * SQUARE_TEXT_HEIGHT, 1, 3, COLOR_BLUE<<4|COLOR_BLUE);
         hires_color(SQUARE_TEXT_WIDTH + x * SQUARE_TEXT_WIDTH, y * SQUARE_TEXT_HEIGHT, 1, 3, COLOR_BLUE<<4|COLOR_BLUE);
     } else {
-        hires_color(1 + x * SQUARE_TEXT_WIDTH, y * SQUARE_TEXT_HEIGHT, 1, 3, COLOR_GREEN<<4);
+        hires_color(1 + x * SQUARE_TEXT_WIDTH, y * SQUARE_TEXT_HEIGHT, 1, 3, COLOR_GREEN<<4|COLOR_GREEN);
         hires_color(SQUARE_TEXT_WIDTH + x * SQUARE_TEXT_WIDTH, y * SQUARE_TEXT_HEIGHT, 1, 3, COLOR_GREEN<<4|COLOR_GREEN);
     }
 }
