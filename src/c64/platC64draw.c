@@ -83,20 +83,28 @@ void plat_draw_background() {
     plat_draw_board_accoutrements();
 
     // Set up a square based clip top, left, bottom, right
+    i = 0;
     t = 0;
-    for (i = 0, y = 0; y < 8; y++) {
-        b = t + SQUARE_TEXT_HEIGHT;
-        l = 1;
-        r = 1 + SQUARE_TEXT_WIDTH;
-        for (x = 0; x < 8; x++) {
-            if (l <= mw && r >= global.view.mc.x && t < mh && b > global.view.mc.y) {
-                plat_draw_square(i);
+    b = SQUARE_TEXT_HEIGHT;
+    for (y = 0; y < 8; y++) {
+        if(b >= global.view.mc.y) {
+            if(t >= mh) {
+                break;
             }
-            l += SQUARE_TEXT_WIDTH;
-            r += SQUARE_TEXT_WIDTH;
-            i++;
+            l = 1;
+            r = 1 + SQUARE_TEXT_WIDTH;
+            for (x = 0; x < 8; x++) {
+                if (l <= mw && r > global.view.mc.x) {
+                    plat_draw_square(i+x);
+
+                }
+                l += SQUARE_TEXT_WIDTH;
+                r += SQUARE_TEXT_WIDTH;
+            }
         }
         t += SQUARE_TEXT_HEIGHT;
+        b += SQUARE_TEXT_HEIGHT;
+        i += 8;
     }
 }
 
