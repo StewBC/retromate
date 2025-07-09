@@ -88,7 +88,6 @@ typedef struct _menu {
     uint8_t num_items;           // How many menu items
     menu_item_t *menu_items;     // The item menu_item's themselves
     uint8_t selected_item;       // Currently selected item from menu_items
-    // menu_callback_t item_change; // If set, called when the selection changes
     menu_t *parent_menu;         // Where back goes
 } menu_t;
 

@@ -176,12 +176,6 @@ static void menu_change_selection(uint8_t new) {
     uint8_t old = m->selected_item;
     uint8_t index;
 
-    // I am leaving this here, but I decided it's not needed so not included
-    // if (m->item_change) {
-    //     // Call with the new selected item while m->selected_item still points at the old
-    //     m->item_change(m, &new);
-    // }
-
     menu_draw_string(global.view.mc.x + 1, global.view.mc.sy, MENU_COLOR_SELECTED, " ");
     menu_draw_string(global.view.mc.x + global.view.mc.w - 2, global.view.mc.sy, MENU_COLOR_SELECTED, " ");
     index = menu_count_active(new);
@@ -362,11 +356,6 @@ uint8_t menu_tick() {
             case INPUT_QUIT:
             case INPUT_BACK:
                 menu_set(m->parent_menu);
-                // Not needed so not included
-                // if (m->item_change) {
-                //     // Call with NULL meaning backing up
-                //     m->item_change(m, NULL);
-                // }
                 return MENU_SELECT_BACK;
 
             case INPUT_UP:
