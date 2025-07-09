@@ -113,12 +113,6 @@ void plat_draw_background() {
 void plat_draw_board_accoutrements() {
     char i;
 
-    // Draw the board border
-    // hires_mask(1, 0, 1, 8 * SQUARE_TEXT_HEIGHT + 2 * 2, ROP_CONST(c64.rop_line[1][2]));
-    // hires_mask(26, 0, 1, 8 * SQUARE_TEXT_HEIGHT + 2 * 2, ROP_CONST(c64.rop_line[0][2]));
-    // hires_mask(2, 0, 8 * SQUARE_TEXT_WIDTH, 1, ROP_WHITE);
-    // hires_mask(2, 178, 8 * SQUARE_TEXT_WIDTH, 1, ROP_WHITE);
-
     c64.draw_colors = COLOR_GREEN;
     // Add the A..H and 1..8 tile-keys
     for (i = 0; i < 8; ++i) {
@@ -172,7 +166,7 @@ void plat_draw_highlight(uint8_t position, uint8_t color) {
         hires_color(SQUARE_TEXT_WIDTH + x * SQUARE_TEXT_WIDTH, y * SQUARE_TEXT_HEIGHT, 1, 3, COLOR_BLUE<<4|COLOR_BLUE);
     } else {
         hires_color(1 + x * SQUARE_TEXT_WIDTH, y * SQUARE_TEXT_HEIGHT, 1, 3, COLOR_GREEN<<4);
-        hires_color(SQUARE_TEXT_WIDTH + x * SQUARE_TEXT_WIDTH, y * SQUARE_TEXT_HEIGHT, 1, 3, COLOR_GREEN<<4);
+        hires_color(SQUARE_TEXT_WIDTH + x * SQUARE_TEXT_WIDTH, y * SQUARE_TEXT_HEIGHT, 1, 3, COLOR_GREEN<<4|COLOR_GREEN);
     }
 }
 

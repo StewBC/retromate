@@ -91,6 +91,21 @@ void plat_net_connect(const char *server_name, int server_port) {
 }
 
 /*-----------------------------------------------------------------------*/
+void plat_net_disconnect() {
+#ifdef _WIN32
+    if (sdl.sockfd != INVALID_SOCKET) {
+        closesocket(sdl.sockfd);
+        sdl.sockfd = INVALID_SOCKET;
+    }
+#else
+    if (sdl.sockfd >= 0) {
+        close(sdl.sockfd);
+        sdl.sockfd = -1;
+    }
+#endif
+}
+
+/*-----------------------------------------------------------------------*/
 bool plat_net_update() {
 #ifdef _WIN32
     if (sdl.sockfd == INVALID_SOCKET) {
@@ -173,16 +188,8 @@ void plat_net_send(const char *text) {
 
 /*-----------------------------------------------------------------------*/
 void plat_net_shutdown() {
+    plat_net_disconnect();
 #ifdef _WIN32
-    if (sdl.sockfd != INVALID_SOCKET) {
-        closesocket(sdl.sockfd);
-        sdl.sockfd = INVALID_SOCKET;
-    }
     WSACleanup();
-#else
-    if (sdl.sockfd >= 0) {
-        close(sdl.sockfd);
-        sdl.sockfd = -1;
-    }
 #endif
 }

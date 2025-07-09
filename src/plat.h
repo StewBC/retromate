@@ -54,6 +54,7 @@ void plat_draw_update(void);
 // Telnet
 void plat_net_init();
 void plat_net_connect(const char *server_name, int server_port);
+void plat_net_disconnect();
 bool plat_net_update(void);
 void plat_net_send(const char *text);
 void plat_net_shutdown(void);

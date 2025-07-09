@@ -301,6 +301,7 @@ static void fics_tcb_closed(const char *buf, int len, const char *match) {
     UNUSED(len);
     UNUSED(match);
     app_set_state(APP_STATE_OFFLINE);
+    plat_net_disconnect();
 }
 
 /*-----------------------------------------------------------------------*/

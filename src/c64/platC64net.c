@@ -77,6 +77,11 @@ void plat_net_connect(const char *server_name, int server_port) {
 }
 
 /*-----------------------------------------------------------------------*/
+void plat_net_disconnect() {
+    tcp_close();
+}
+
+/*-----------------------------------------------------------------------*/
 bool plat_net_update() {
     if (ip65_process()) {
         // I am not sure what erors could be returned here
@@ -98,5 +103,5 @@ void plat_net_send(const char *text) {
 
 /*-----------------------------------------------------------------------*/
 void plat_net_shutdown() {
-    tcp_close();
+    plat_net_disconnect();
 }

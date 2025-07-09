@@ -70,6 +70,11 @@ void plat_net_connect(const char *server_name, int server_port) {
 }
 
 /*-----------------------------------------------------------------------*/
+void plat_net_disconnect() {
+    tcp_close();
+}
+
+/*-----------------------------------------------------------------------*/
 bool plat_net_update() {
     if (ip65_process()) {
         // I am not sure what erors could be returned here
@@ -86,12 +91,12 @@ void plat_net_send(const char *text) {
     tcp_send((unsigned char *)atari.send_buffer, plat_net_make_ascii(text));
     // Don't send \x0a in he buffer, send seprately.  I don't know why it
     // improves stability, but it absolutely does
-    tcp_send("\x0a", 1);
+    tcp_send((unsigned char *)"\x0a", 1);
 }
 
 /*-----------------------------------------------------------------------*/
 void plat_net_shutdown() {
-    tcp_close();
+    plat_net_disconnect();
 }
 
 #pragma code-name(pop)
