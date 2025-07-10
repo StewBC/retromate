@@ -23,8 +23,8 @@
 #define FICS_TRIGGER_LOGIN          "\x6C\x6F\x67\x69\x6e\x3a"
                                     // "enter the server as \""
 #define FICS_TRIGGER_LOGGED_IN      "\x65\x6e\x74\x65\x72\x20\x74\x68\x65\x20\x73\x65\x72\x76\x65\x72\x20\x61\x73\x20\x22"
-                                    // "set to 0."
-#define FICS_TRIGGER_MIN_SET        "\x73\x65\x74\x20\x74\x6f\x20\x30\x2e"
+                                    // "increment set to"
+#define FICS_TRIGGER_MIN_SET        "\x69\x6e\x63\x72\x65\x6d\x65\x6e\x74\x20\x73\x65\x74\x20\x74\x6f"
                                     // "(http://www.freechess.org)."
 #define FICS_TRIGGER_CLOSED_URL     "\x28\x68\x74\x74\x70\x3a\x2f\x2f\x77\x77\x77\x2e\x66\x72\x65\x65\x63\x68\x65\x73\x73\x2e\x6f\x72\x67\x29\x2e"
 
@@ -300,8 +300,12 @@ static void fics_tcb_closed(const char *buf, int len, const char *match) {
     UNUSED(buf);
     UNUSED(len);
     UNUSED(match);
-    app_set_state(APP_STATE_OFFLINE);
+
+    // plat_net_disconnect is slow
     plat_net_disconnect();
+    // A bit of hackery - make sure the in-game menu is erased and
+    global.view.mc.df &= ~MENU_DRAW_ERASE;
+    app_set_state(APP_STATE_OFFLINE);
 }
 
 /*-----------------------------------------------------------------------*/
@@ -728,6 +732,7 @@ void fics_set_trigger_callback(const char *text, fics_match_callback_t callback)
 
 /*-----------------------------------------------------------------------*/
 void fics_shutdown() {
+    plat_core_active_term(true);
     fics_set_trigger_callback(FICS_TRIGGER_CLOSED_URL, fics_tcb_closed);
     plat_net_send(FICS_CMD_QUIT);
 }

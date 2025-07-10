@@ -58,7 +58,10 @@ void menu_show_item(menu_item_t *item, uint8_t draw_flag) {
 
         case MENU_ITEM_CALLBACK:
             if (item->edit_target) {
-                menu_draw_rect(global.view.mc.ax, global.view.mc.iy, global.view.mc.ax_max, 1, MENU_COLOR_BACKGROUND);
+                // Since callbacks always redraw, this clear is not needed.  Also,
+                // ui_set_item_target might change item->edit_target after menu_cache ran,
+                // global.view.mc.ax_max might be 0 when coming in here...
+                // menu_draw_rect(global.view.mc.ax, global.view.mc.iy, global.view.mc.ax_max, 1, MENU_COLOR_BACKGROUND);
                 menu_draw_string_clipped(global.view.mc.ax, global.view.mc.iy, MENU_COLOR_CALLBACK, item->edit_target);
             }
             break;

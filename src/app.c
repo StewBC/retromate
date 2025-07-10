@@ -96,7 +96,7 @@ void app_error(bool fatal, const char *error_text) {
     if (fatal) {
         plat_core_exit();
     }
-    plat_net_shutdown();
+    plat_net_disconnect();
     app_set_state(APP_STATE_OFFLINE);
 }
 
@@ -114,23 +114,29 @@ void app_set_state(uint8_t new_state) {
             global.app.tick = app_state_offline;
             break;
 
-        case APP_STATE_ONLINE_INIT:
+        case APP_STATE_ONLINE_INIT: {
+            // make sure the selected game mode is standard (if logging in again)
+            char game_mode = ui_settings_menu_items[UI_SETTINGS_GAME_TYPE].selected;
             // Set some state
             plat_net_send("\nset bell 0\nset seek 0\nset style 12\nset autoflag 1\n");
             // Set up the one-time variables that need init
-            global.ui.my_game_type = ui_game_types_ascii[0];
+            global.ui.my_game_type = ui_game_types_ascii[game_mode];
             // These also send commands to FICS to configure the variables
             // There's a trigger on the last one, which will cause the game to become "online"
-            ui_set_item_target(&ui_settings_menu_items[UI_SETTINGS_START_TIME], UI_VARIABLE_TIME, ui_game_start_lengths[0]);
-            ui_set_item_target(&ui_settings_menu_items[UI_SETTINGS_INCREMENTALTIME], UI_VARIABLE_INC, ui_game_increments[0]);
+            ui_set_item_target(&ui_settings_menu_items[UI_SETTINGS_START_TIME], UI_VARIABLE_TIME, ui_settings_menu_items[UI_SETTINGS_START_TIME].edit_target);
+            ui_set_item_target(&ui_settings_menu_items[UI_SETTINGS_INCREMENTALTIME], UI_VARIABLE_INC, ui_settings_menu_items[UI_SETTINGS_INCREMENTALTIME].edit_target);
             ui_set_item_target(&ui_settings_menu_items[UI_SETTINGS_MAXRATINGMATCH], UI_VARIABLE_AVAILMAX, ui_settings_menu_items[UI_SETTINGS_MAXRATINGMATCH].edit_target);
             ui_set_item_target(&ui_settings_menu_items[UI_SETTINGS_MINRATINGMATCH], UI_VARIABLE_AVAILMIN, ui_settings_menu_items[UI_SETTINGS_MINRATINGMATCH].edit_target);
             ui_settings_menu_items[UI_SETTINGS_MAXRATINGMATCH].item_state = MENU_STATE_ENABLED;
             ui_settings_menu_items[UI_SETTINGS_MINRATINGMATCH].item_state = MENU_STATE_ENABLED;
             // Keep using the offline loop as that has the ability to cancel back to offline should anything go wrong
             break;
+        }
 
         case APP_STATE_ONLINE:
+            // Make New Game the selected option when coming online
+            // (matters after a re-logon after a logout)
+            ui_in_game_menu.selected_item = 0;
             menu_set(&ui_in_game_menu);
             plat_core_active_term(0);
             global.app.tick = app_state_online;
@@ -141,7 +147,7 @@ void app_set_state(uint8_t new_state) {
 
 /*-----------------------------------------------------------------------*/
 void app_state_offline() {
-    // Part 1 whne the menu is on-screen
+    // Part 1 when the menu is on-screen
     if (global.app.selection != MENU_SELECT_NONE) {
         if ((global.app.selection == MENU_SELECT_BACK && !global.view.mc.nm) ||
                 global.os.input_event.code == INPUT_QUIT ||
