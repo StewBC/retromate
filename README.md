@@ -116,7 +116,14 @@ vcpkg install sdl2 sdl2-ttf sdl2-image
 ```
 
 ### Build Targets
-The build targets are `atarixl`, `c64`, `apple2` and `sdl2`. Each has a _test target (e.g., `make c64_test`) to run in emulator if detected.
+The build targets are
+```
+* apple2
+* atarixl
+* c64
+* sdl2
+```
+Each has a _test target (e.g., `make c64_test`) to run in emulator if detected.
 
 ### Emulator/Tool path variables   
 Variable | Tool Searched For
@@ -126,6 +133,7 @@ APPLEWIN_HOME | applewin AppleWin.exe
 CP2_HOME      | cp2
 ATARI_HOME    | Altirra
 DIR2ATR_HOME  | dir2atr
+CC1541_HOME | cc1541 (if not using c1541 from Vice)
 
 Disk Image tools | URL
 --- | ---
