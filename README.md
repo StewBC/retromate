@@ -54,7 +54,7 @@ _Default time settings:_
 > Note: For Wild 0 and 1, castling must be done in the terminal using `o-o` or `o-o-o`.
 
 ### Terminal View  
-Use the menu op press `TAB` or `CTRL+T` to switch to the telnet terminal. Here you can use FICS commands directly. Press `ESC`, `TAB`, or `CTRL+T` to return to the game board.
+Use the menu or press `TAB` or `CTRL+T` to switch to the telnet terminal. Here you can use FICS commands directly. Press `ESC`, `TAB`, or `CTRL+T` to return to the game board.
 
 #### Useful Terminal Commands  
 - `finger`: View your account info (e.g., GuestXXXX)  
@@ -83,7 +83,7 @@ Even when it’s not your turn, you can select a piece to prepare your move - us
 - Shows players' names and sides/colors
 - "Next" = who moves next  
 - "Last" = last move made  
-- Status updates (e.g., SAY, resign, checkmate) appear below "Last:"
+- Status updates (from e.g., say, resign, checkmate) appear below "Last:"
 
 ## Mouse Support  
 In the SDL2 version:
@@ -91,7 +91,13 @@ In the SDL2 version:
 - Right-click = `ESC`
 
 ## Building RetroMate  
-RetroMate uses CMake.
+RetroMate uses CMake.  Typically:
+```
+mkdir build
+cd build
+cmake .. -G "Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake
+make  # or ninja/nmake depending on generator
+```
 
 ### SDL2 Setup (via vcpkg)  
 For Linux (including WSL):
@@ -107,18 +113,12 @@ export PATH=$PATH:$VCPKG_ROOT
 
 # Install dependencies
 vcpkg install sdl2 sdl2-ttf sdl2-image
-
-mkdir build
-cd build
-cmake .. -G "Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake
-make  # or ninja/nmake depending on generator
 ```
 
 ### Build Targets
 The build targets are `atarixl`, `c64`, `apple2` and `sdl2`. Each has a _test target (e.g., `make c64_test`) to run in emulator if detected.
 
 ### Emulator/Tool path variables   
-```
 Variable | Tool Searched For
 --- | ---
 VICE_HOME | x64sc x64 & c1541
@@ -133,7 +133,6 @@ CiderPress-II (cp2) | https://ciderpress2.com/
 dir2atr (Atari) | https://www.horus.com/~hias/atari/
 c1541 (C64) | Included with VICE distribution
 cc1541 (Alternative to 1541) | https://bitbucket.org/ptv_claus/cc1541
-```
 
 Initial Beta Release  
 6 June 2025  
