@@ -165,7 +165,7 @@ menu_item_t ui_pregame_menu_items[] = {
     { "Quit", MENU_ITEM_BACKUP, MENU_STATE_ENABLED, 0, 0, 0, NULL, 0, 0, NULL, NULL},
 };
 menu_t ui_pregame_menu = {
-    "RetroMate", AS(ui_pregame_menu_items), ui_pregame_menu_items, 0, NULL
+    "RetroMate V1.00", AS(ui_pregame_menu_items), ui_pregame_menu_items, 0, NULL
 };
 
 //----------------------------------------------------------------------------
