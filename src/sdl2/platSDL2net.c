@@ -52,6 +52,7 @@ void plat_net_connect(const char *server_name, int server_port) {
     if (sdl.sockfd < 0) {
 #endif
         app_error(true, "Error opening socket");
+        return;
     }
 
     log_add_line(&global.view.terminal, "Resolving server name", -1);
@@ -61,6 +62,7 @@ void plat_net_connect(const char *server_name, int server_port) {
     server = gethostbyname(server_name);
     if (!server) {
         app_error(false, "No such server_name");
+        return;
     }
 
     memset((char *)&serv_addr, 0, sizeof(serv_addr));
@@ -73,6 +75,7 @@ void plat_net_connect(const char *server_name, int server_port) {
     plat_draw_update();
     if (connect(sdl.sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
         app_error(false, "Socket error connecting");
+        return;
     }
 
     // Set non-blocking
