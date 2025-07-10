@@ -16,18 +16,15 @@
 
 #include "platC64.h"
 
-#define MODKEY          (*(char*)653)
-#define SHIFT_KEY       1
-#define COMMODORE_KEY   2
-#define CONTROL_KEY     4
-
 /*-----------------------------------------------------------------------*/
 void plat_core_active_term(bool active) {
     if (active) {
         plat_core_hires(false);
+        VIC.bordercolor = COLOR_BLACK;
         c64.draw_colors = COLOR_GREEN; // COLOR_BLACK<<4|COLOR_GREEN
         global.view.terminal_active = 1;
     } else {
+        VIC.bordercolor = COLOR_GREEN;
         plat_core_hires(true);
         global.view.terminal_active = 0;
     }
@@ -97,7 +94,7 @@ void plat_core_init() {
     global.view.cursor_char[0] = 160;
 
     plat_draw_clrscr();
-    plat_core_hires(true);
+    plat_core_active_term(false);
 
     // Turn off the timer
     CIA1.cra &= 0xfe;
@@ -110,7 +107,8 @@ void plat_core_init() {
     // Turn timer back on
     CIA1.cra |= 0x01;
 
-    VIC.bordercolor = COLOR_GREEN;
+    VIC.bgcolor0 = COLOR_BLACK;
+    *CHARCOLOR = COLOR_WHITE;
     plat_draw_splash_screen();
     plat_draw_board();
 }

@@ -29,6 +29,13 @@
 #define CHARMAP_ROM             (0xD000)
 #define SCREEN_RAM              ((char*)VIC_BASE_RAM + 0x2000)
 #define CHARMAP_RAM             ((char*)VIC_BASE_RAM + 0x2800)
+#define CHARCOLOR               ((char*)0x286)
+
+// For keys
+#define MODKEY                  (*(char*)0x28D)
+#define SHIFT_KEY               1
+#define COMMODORE_KEY           2
+#define CONTROL_KEY             4
 
 #define ROP_CONST(val)          0xA900|(val)
 #define ROP_BLACK               0xA900
