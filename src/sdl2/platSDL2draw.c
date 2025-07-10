@@ -97,16 +97,18 @@ static void plat_draw_piece(uint8_t piece, int screen_x, int screen_y) {
 
 /*-----------------------------------------------------------------------*/
 void plat_draw_background() {
-    // uint8_t t, l, b, r, tt, tb;
-    // int8_t i, x, y, mw, mh;
-    // mw = global.view.mc.x + global.view.mc.w;
-    // mh = global.view.mc.y + global.view.mc.h;
-    int8_t r = plat_core_get_status_x() - 1;
-    int8_t x = global.view.mc.x + global.view.mc.w - r;
+    uint8_t t, l, b, r;
+    int8_t i, x, y, mw, mh;
+    mw = global.view.mc.x + global.view.mc.w;
+    mh = global.view.mc.y + global.view.mc.h;
+    r = plat_core_get_status_x() - 1;
+    x = mw - r;
+    // int8_t r = plat_core_get_status_x() - 1;
+    // int8_t x = global.view.mc.x + global.view.mc.w - r;
 
     // If the accoutrements are covered
-    if (global.view.mc.x < 2) {
-        plat_draw_rect(0, 0, 2, SCREEN_TEXT_HEIGHT, COLOR_GREEN);
+    if (global.view.mc.x < 1) {
+        plat_draw_rect(0, 0, 1, SCREEN_TEXT_HEIGHT, COLOR_GREEN);
     }
 
     if (x > 0) {
@@ -118,27 +120,30 @@ void plat_draw_background() {
     // Always redraw these - because of the line around the board
     plat_draw_board_accoutrements();
 
-    // Set up a square based clip top, left, bottom, right
-    // t = 14;
-    // for (i = 0, y = 0; y < 8; y++) {
-    //     b = t + SQUARE_DISPLAY_HEIGHT;
-    //     l = 2;
-    //     r = 2 + SQUARE_TEXT_WIDTH;
-    //     // find out what text rows these pieces now intercept
-    //     tt = t >> 3;
-    //     tb = b >> 3;
-    //     for (x = 0; x < 8; x++) {
-    //         if (l <= mw && r >= global.view.mc.x) {
-    //             // tt <= mh && tb >= global.view.mc.y)  { // intersets
-    //             plat_draw_square(i);
-    //         }
-    //         l += SQUARE_TEXT_WIDTH;
-    //         r += SQUARE_TEXT_WIDTH;
-    //         i++;
-    //     }
-    //     t += SQUARE_DISPLAY_HEIGHT;
-    // }
-    plat_draw_board();
+    // plat_draw_board();
+    i = 0;
+    t = 0;
+    b = SQUARE_TEXT_HEIGHT;
+    for (y = 0; y < 8; y++) {
+        if(b >= global.view.mc.y) {
+            if(t >= mh) {
+                break;
+            }
+            l = 1;
+            r = 1 + SQUARE_TEXT_WIDTH;
+            for (x = 0; x < 8; x++) {
+                if (l <= mw && r > global.view.mc.x) {
+                    // plat_draw_square(i+x);
+                    plat_draw_rect(l, t, SQUARE_TEXT_WIDTH, SQUARE_TEXT_HEIGHT, COLOR_PURPLE);
+                }
+                l += SQUARE_TEXT_WIDTH;
+                r += SQUARE_TEXT_WIDTH;
+            }
+        }
+        t += SQUARE_TEXT_HEIGHT;
+        b += SQUARE_TEXT_HEIGHT;
+        i += 8;
+    }
 }
 
 /*-----------------------------------------------------------------------*/
