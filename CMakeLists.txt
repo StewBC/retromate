@@ -42,6 +42,8 @@ message(STATUS "Path to dir2atr=${DIR2ATR_EXECUTABLE}")
 set(BIN_DIR ${CMAKE_BINARY_DIR}/bin)
 set(DISK_DIR ${CMAKE_BINARY_DIR}/disk)
 file(MAKE_DIRECTORY ${BIN_DIR} ${DISK_DIR})
+file(RELATIVE_PATH DISK_REL_PATH "${CMAKE_CURRENT_BINARY_DIR}" "${DISK_DIR}/retromate")
+file(RELATIVE_PATH BIN_REL_PATH "${CMAKE_CURRENT_BINARY_DIR}" "${BIN_DIR}/retromate")
 
 # Shared sources
 set(SHARED_SOURCES
@@ -218,9 +220,6 @@ function(add_retromate_target target sources bin_file disk_file)
         )
     endif()
 endfunction()
-
-file(RELATIVE_PATH DISK_REL_PATH "${CMAKE_CURRENT_BINARY_DIR}" "${DISK_DIR}/retromate")
-file(RELATIVE_PATH BIN_REL_PATH "${CMAKE_CURRENT_BINARY_DIR}" "${BIN_DIR}/retromate")
 
 # --- C64 ---
 set(C64_SOURCES
