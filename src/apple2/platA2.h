@@ -16,7 +16,6 @@
 #define TXTPAGE1    0xC054
 #define TXTPAGE2    0xC055
 
-extern uint8_t terminal_display_width;
 
 /*-----------------------------------------------------------------------*/
 // These are text based coordinates
@@ -52,5 +51,16 @@ void hires_mask(char xpos,    char ypos,
                 char xsize,   char ysize,
                 unsigned rop);
 
+
+typedef struct _apple2 {
+    char rop_line[2][7];
+    char rop_color[2][2];
+    uint8_t terminal_display_width;
+    char send_buffer[80];
+    char terminal_log_buffer[80 * 23];
+    char status_log_buffer[13 * 24];
+} apple2_t;
+
+extern apple2_t apple2;
 
 #endif //_PLATA2_H_

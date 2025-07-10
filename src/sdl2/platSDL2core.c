@@ -116,6 +116,7 @@ void plat_core_init(void) {
 
     // Set the cursor
     global.view.cursor_char[0] = -128;
+    global.view.cursor_char[2] = -128;
 
     // Show the title screen
     plat_draw_splash_screen();

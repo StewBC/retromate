@@ -90,8 +90,9 @@ void plat_core_hires(bool on) {
 
 /*-----------------------------------------------------------------------*/
 void plat_core_init() {
-    // Assign a character that is in both hires and text, good as a cursor
-    global.view.cursor_char[0] = 160;
+    // Assign character that are good as a cursors
+    global.view.cursor_char[0] = 248;   // HiRes
+    global.view.cursor_char[2] = 162;   // Text (Terminal)
 
     plat_draw_clrscr();
     plat_core_active_term(false);

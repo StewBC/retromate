@@ -104,7 +104,7 @@ typedef struct _view {
     uint8_t pan_value;
     menu_cache_t mc;
     bool refresh;
-    char cursor_char[2];
+    char cursor_char[4];
     char scratch_buffer[81];
     char say_buffer[51];
 } view_t;

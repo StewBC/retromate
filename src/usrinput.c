@@ -30,6 +30,7 @@ static uint8_t input_is_allowed(char c, uint8_t filter) {
 void input_text(char *buffer, uint8_t buffer_len, uint8_t filter) {
     uint8_t index = 0;
     int8_t start_char;
+    char *cursor = &global.view.cursor_char[global.view.terminal_active ? 2 : 0];
     while (buffer[index] && index < buffer_len - 1) {
         index++;
     }
@@ -45,7 +46,7 @@ void input_text(char *buffer, uint8_t buffer_len, uint8_t filter) {
         // Draw input line
         plat_draw_text(0, plat_core_get_rows() - 1, &buffer[start_char], index - start_char);
         // Draw Cursor
-        plat_draw_text(index - start_char, plat_core_get_rows() - 1, global.view.cursor_char, 2);
+        plat_draw_text(index - start_char, plat_core_get_rows() - 1, cursor, 2);
         // Make sure it's on screen
         plat_draw_update();
 

@@ -18,7 +18,7 @@
 
 /*-----------------------------------------------------------------------*/
 atari_t atari = {
-    {                   // rop_lline
+    {                   // rop_line
         {0x00, 0x01, 0x03, 0x07, 0x0F, 0x1F, 0x3F, 0x7F},
         {0x00, 0x80, 0xC0, 0xE0, 0xF0, 0xF8, 0xFC, 0xFE}
     },
@@ -34,7 +34,6 @@ atari_t atari = {
 
 /*-----------------------------------------------------------------------*/
 void plat_core_active_term(bool active) {
-    // SQW - This isn't great, I need to sort this out
     if (active) {
         hires_done();
         clrscr();
@@ -77,8 +76,9 @@ uint8_t plat_core_get_status_x(void) {
 /*-----------------------------------------------------------------------*/
 void plat_core_init() {
     // Assign a character that is in both hires and text, good as a cursor
-    atari.CHAR_ROM = (char *)(*(char *)0x02F4 * 256);
-    global.view.cursor_char[0] = 160;
+    atari.CHAR_ROM = (char *)(*((char *)0x02F4) * 256);
+    global.view.cursor_char[0] = 95;
+    global.view.cursor_char[2] = 95;
 
     plat_draw_clrscr();
     hires_init();

@@ -45,7 +45,7 @@ global_t global = {
             0,                                    // working y
         },
         true,                                     // refresh
-        {0, ' '},                                 // cursor_char[2]
+        {0, ' ', 0, ' '},                         // cursor_char[4]
         "",                                       // scratch_buffer
         "say "                                    // say_buffer
     },

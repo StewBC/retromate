@@ -16,8 +16,18 @@
 
 #include "platA2.h"
 
-char terminal_log_buffer[80 * 23];
-char status_log_buffer[13 * 24];
+/*-----------------------------------------------------------------------*/
+apple2_t apple2 = {
+    {                   // rop_line
+        {0x00, 0x01, 0x03, 0x07, 0x0F, 0x1F, 0x3F},
+        {0x00, 0x40, 0x60, 0x70, 0x78, 0x7C, 0x7E}
+    },
+    {                   // rop_color - unused right now
+        {0x55, 0x2A},
+        {0xD5, 0xAA}
+    },
+    SCREEN_TEXT_WIDTH, // terminal_display_width
+};
 
 #pragma code-name(push, "LC")
 
@@ -25,7 +35,7 @@ char status_log_buffer[13 * 24];
 void plat_core_active_term(bool active) {
     if (active) {
         hires_done();
-        if (terminal_display_width == 80) {
+        if (apple2.terminal_display_width == 80) {
             videomode(VIDEOMODE_80COL);
         }
         global.view.terminal_active = 1;
@@ -48,7 +58,7 @@ void plat_core_exit() {
 /*-----------------------------------------------------------------------*/
 uint8_t plat_core_get_cols(void) {
     if (global.view.terminal_active) {
-        return terminal_display_width;
+        return apple2.terminal_display_width;
     }
     return SCREEN_TEXT_WIDTH;
 }
@@ -67,12 +77,13 @@ uint8_t plat_core_get_status_x(void) {
 /*-----------------------------------------------------------------------*/
 void plat_core_init() {
     // Assign a character that is in both hires and text, good as a cursor
-    global.view.cursor_char[0] = 127;
+    global.view.cursor_char[0] = 95;
+    global.view.cursor_char[2] = 95;
     plat_draw_splash_screen();
     plat_draw_board();
 
     if (videomode(VIDEOMODE_80COL) != -1) {
-        terminal_display_width = 80;
+        apple2.terminal_display_width = 80;
     }
 }
 
@@ -150,9 +161,9 @@ void plat_core_log_free_mem(char *mem) {
 /*-----------------------------------------------------------------------*/
 char *plat_core_log_malloc(unsigned int size) {
     if (size == (80 * 23)) {
-        return terminal_log_buffer;
+        return apple2.terminal_log_buffer;
     }
-    return status_log_buffer;
+    return apple2.status_log_buffer;
 }
 
 /*-----------------------------------------------------------------------*/
