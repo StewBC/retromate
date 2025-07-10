@@ -110,6 +110,7 @@ void plat_core_init() {
     // Turn timer back on
     CIA1.cra |= 0x01;
 
+    VIC.bordercolor = COLOR_GREEN;
     plat_draw_splash_screen();
     plat_draw_board();
 }
