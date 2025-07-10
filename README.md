@@ -135,6 +135,7 @@ ATARI_HOME    | Altirra
 DIR2ATR_HOME  | dir2atr
 CC1541_HOME | cc1541 (if not using c1541 from Vice)
 
+### Tool download URLs
 Disk Image tools | URL
 --- | ---
 CiderPress-II (cp2) | https://ciderpress2.com/
@@ -142,6 +143,11 @@ dir2atr (Atari) | https://www.horus.com/~hias/atari/
 c1541 (C64) | Included with VICE distribution
 cc1541 (Alternative to 1541) | https://bitbucket.org/ptv_claus/cc1541
 
-Initial Beta Release  
-6 June 2025  
+### Release History
+Release | Title | Date
+--- | --- | ---
+Beta | Apple 2 | 6 June 2025  
+V1.00 | apple2 atarixl c64 sdl2 | 8 July 2025
+
+## Contact
 swessels@email.com
