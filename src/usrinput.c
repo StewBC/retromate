@@ -9,6 +9,7 @@
 
 #include <ctype.h>  // is*
 #include <stdlib.h> // atoi
+#include <string.h> // strcpy
 
 #include "global.h"
 
@@ -129,8 +130,15 @@ uint8_t input_text_callback(menu_t *m, void *data) {
     UNUSED(m);
 
     input_text(item->edit_target, item->edit_maxlen, item->filter);
-    if (item->filter == FILTER_NUM && item->submenu) {
-        *(int *)item->submenu = atoi(item->edit_target);
+    if (item->filter == FILTER_NUM) {
+        if(!item->edit_target[0]) {
+            // Numeric entries cannot be set to blank
+            // This could cause big issues with time and rating fields being blank
+            strcpy(item->edit_target, "0");
+        }
+        if (item->submenu) {
+            *(int *)item->submenu = atoi(item->edit_target);
+        }
     }
     // Strings could change size, so the menu needs to be redrawn
     return MENU_DRAW_REDRAW;
