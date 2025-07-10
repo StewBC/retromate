@@ -1,155 +1,140 @@
 # RetroMate  
-A Free Internet Chess Server front-end for modern and retro computers.  
-  
+A Free Internet Chess Server front-end for modern and retro computers.
+
+## What is FICS, the Free Internet Chess Server?  
+FICS is a free chess matchmaking service hosted at `freechess.org:5000` using telnet. Log in using `guest` as the user and type `help` to explore. FICS supports a variety of game modes (standard, blitz, crazyhouse, wild, suicide, etc.). You’ll find several bots to play against, and human players are usually online as well.
+
 ## Conception  
-The idea to build RetroMate came from Oliver Schmidt.  He asked if I would be interested in writing this, and if I was, he would provide a framework and incorporate IP65 so I could just get on with the game.  Without Oliver, this game would not have happened.  
-  
-## Requirements  
-At this time, RetroMate for the Apple II requires 64K and an Uthernet II.  RetroMate uses IP65 for online communication.  RetroMate works very well in AppleWin.  
-The Arari XL and C64 versions also use IP65 and require compatible hardware or emulators.  C64 should work with RRNet, which I have not managed to get to work on my laptop with wireless only.  The Atari version doesn't fit in memory so I have not gotten so far as to try and test the online component of the game.
-The SDL2 version has been tested on Windows and Linux.  
-  
-## Development  
-The Apple II, Atari XL and C64 versions are built using cc65.  It's almost all "C" code.  The hires drawing code was written by Oliver Schmidt, in 6502 assembly language, for cc66-Chess and re-used here.  
-The Atari and C64 versions are more or less ports of the Apple 2 version, with modifications as required.
-The SDL2 version is all "C" and has been compiled using clang, gnu c and Visual Studio 22.  FWIW, I found vcpkg on Windows and Linux to be the best way to install SDL2 so it works with CMake.  
-  
+RetroMate was originally proposed by Oliver Schmidt. He suggested the idea and offered to provide a framework using IP65 so I could focus on developing the game. Without Oliver, this project would not have happened.
+
+## Platforms  
+As of 10 July 2025, RetroMate runs on:
+- Apple II  
+- Commodore 64  
+- Atari XL  
+- SDL2-based systems (Windows, Linux, macOS)
+
+## 8-bit Requirements: Hardware / Emulators  
+The 8-bit versions use IP65, so you’ll need hardware or an emulator with IP65 support. Recommended emulators:
+
+- Apple II: [AppleWin](https://github.com/AppleWin/AppleWin)  
+- Commodore 64: [VICE](https://vice-emu.sourceforge.io/)  
+- Atari XL: [Altirra](https://www.virtualdub.org/altirra.html)
+
+## Code & Development  
+The Apple II, Atari XL, and C64 versions are built with `cc65` and written mostly in C. The high-resolution drawing code - originally created in 6502 assembly, by Oliver Schmidt, for `cc65-Chess` is reused here.
+
+The SDL2 version is entirely in C and has been compiled using Clang, GCC, and Visual Studio 2022.
+
 ## Using RetroMate  
-The following describes how to use the interface.  To learn more about FICS and all that can be done (a lot more through the Telnet interface than what's exposed in the menu's) search for FICS help, or enter help in the RetroMate terminal, described later.  
-  
-## Pre-game, Offline, Menu  
-Play Online will connect to freechess.org on port 5000 - the same way you would if you were using Telnet.  
-If you have a FICS account, you can set your account and password in the settings.  You could also choose a different server/port.  
-Quit will terminate the application.  On the Apple II, this will reboot the machine (ProDOS gets trashed by RetroMate).
-  
-## Online  
-There are several game options to choose from, which are described below.  The default is a standard unrated game of about 15 minutes against any skill level opponent.  In my experience, most people on FICS play Blitz, and these games are around 3 to 5 minutes.
-  
-### Game Settings    
-The first menu option I will cover is Game Settings.  
-The game types standard, blitz, lightning and untimed are regular chess games, with different time limits.  
-The game types crazyhouse, wild (with sub types wild 0-5, 8, 8a and fr) and suicide are variations on chess.  
-Whichever type of game you choose here, is the type of game the New Game option will seek an opponent for you to play.  
-  
-When using a registered account there's an option, Rated, which defaults to No.  When yes, you seek to play games that affect your rating.  
-   
-Use Sought means look first for partners that are already looking for a game of the same type.  If you choose No to Use Sought, more options appear.  The game will use these options to look for a partner for you, when you choose New Game.  
-  
-The options when not using Sought are Start Time and Incremental Time. These times are how many minutes you have on the clock when you start and how many seconds are added to you clock after every move.  So, in reality, the Game Types standard, blitz, lightning and untimed are just variations of these values.  Untimed has a start and increment of 0.  RetroMate defaults to Standard (15, 0), Blitz (5, 2) and Lightning (2, 2).  The other games are defaulted to (3, 0).
-Note that for some Wild variants (0 and 1), castling will have to be done in the terminal, as it requires a special command (o-o-o and o-o).  
-  
-The last two options Min and Max ratings.  Using these you can try and find players with a specific skill rating.  If you play in an unregistered account, you in essence have a 0 rating.  To be rated, you will have to register for an account.  
-  
-### New Game  
-As discussed above, New Game will use the Game Settings to find a partner to play Chess against.  
-  
-### View Terminal  
-This setting (keyboard shortcuts TAB or CTRL-T) switch to a telnet screen.  Here you can interact with the FICS server and do many more things that are not available from the UI.  Use the ESC, TAB or CTRL+T to switch back to the chess board view.  See later for some sample commands.  
 
-### Hide Menu  
-This option simply hides the menu (Keyboard shortcut ESC) so you can see the chess board.  
-  
-### Logout  
-This will log out of the FICS server and will return you to the pre-game, offline, menu.  
-  
-## Using the chess board display  
-If you are in a game, you have a cursor that you can move with the cursor keys, or WASD.  Enter will select a source piece, and Enter on another square will move the selected piece, if the move is legal, to the destination (2nd selected) square.  
-You can press CTRL+S to bring up a prompt where you can enter a phrase of up to 50 characters to say to your opponent.  
-ESC will hide/unhide the menu.  
-TAB or CTRL+T will switch to the terminal.  
-  
-On the right hand side is a status display.   If you are in the game (one of the players), you will be listed at the top as black or white, and your opponent will be listed below you.  
-The Next indicator is for which player is to move and the Last indicates the last move that was made (by the opposite player than the one listed in Next).  
-  
-Status messages, such as SAY or Checkmate or resign messages appear below the Last: message line.  
-  
-Even when it is not your turn, you are able to select a source piece to move.  This is useful for Blitz or Lightning games where you can prime your move while your opponent is making their move - every second counts!  
-  
-## The Terminal in more detail  
-The Terminal is 80 columns wide.  If the computer display isn't capable of 80 columns, use CTRL-O (left) and CTRL-P (right) to "move" the 80 col display so all text can be viewed.  There is no scroll back, what's gone off-screen is gone.  
-  
-Some useful commands in the terminal  
-* finger - see what you account name is, useful if you logged in as Guest (you get assigned a name such as GuestXXXX)  
-* match <user> - Challenge a specific user to a match.  Useful for 2 people that want to play together.  Follow prompts (accept)  
-* games - List all of the games currently being played  
-* observe <game number> - Start watching a game in progress between two other opponents  
-* unobserve [<game numer>] - Stop watching a game, or all observed games  
-* resign - give up, will affect rating  
-* abort - ask opponent if you can quit, and it won't affect your rating  
-* help [<subject] - view the built-into FICS help pages  
-* refresh - the server sends an update of whatever state you are currently in  
-* say <text> - Tell your opponent something  
-* sought - see who is looking to play games that you are eligible to join  
-* seek [<parameters>] - advertise that you are looking to play a game (with optional parameters)  
-* logout - go offline  
-  
-The RetroMate front-end is, as much as possible, stateless.  You can, for example, observe multiple games at the same time.  RetroMate will display each board as it gets an update.  Not practical, but it illustrates the point.  
-  
-## About the Apple II version  
-Keep in mind that the Apple II is not quite in the same processing power class as modern machines, so you are at a bit of a disadvantage in Blitz/Lightning games since the text processing and updating the screen take considerable time.  
-  
-## Mouse support  
-The SDL2 version supports a mouse in menus and the game board.  Left click is the same as ENTER and right-click is the same as ESC.  
-  
-## Known Bugs & Issues  
-None of the 8-bit versions currently work.  
-* Apple 2  - Works
-* Atari xl - Sending data via IP65 seems not to work  
-* C64      - RRNet times out getting an IP address  
-I have been unable to get RRNet working so there may be bigger issues, other than the reorg I made.
-The SDL2 version works well.
+### Offline Menu  
+Before connecting:
+- Set your FICS account and password (or use a guest account - default).
+- Optionally, configure a different server or port.
 
-## Building the game
-The build system is CMake based.  
-  
-SDL2 must be installed, and ready to work with CMake.  To install SDL2 with vcpkg, first install vcpkg.  I used the guide here `https://learn.microsoft.com/en-us/vcpkg/get_started/get-started?pivots=shell-bash`  Notice at the top the toggle between PowerShell, CMD and Bash.  
-Basically, for me it looked like this:  
+### Game Setup  
+Choose from several game types:
+- **Standard, Blitz, Lightning, Untimed**: Classical chess with varying time controls.  
+- **Crazyhouse, Suicide, Wild (0–5, 8, 8a, fr)**: Chess variants.
+
+**Settings:**
+- **Rated**: Available to registered users. Set to "Yes" to play rated games.  
+- **Use Sought**: If "Yes", look for existing opponent requests. If "No", the game sends a new seek request with the following options:  
+  - **Start Time**: Minutes on your clock at game start.  
+  - **Increment Time**: Seconds added after every move.  
+  - **Min/Max Ratings**: Try to find players within this skill range.  
+
+_Default time settings:_
+- Standard: 15+0  
+- Blitz: 5+2  
+- Lightning: 2+2  
+- Others: 3+0  
+
+> Note: For Wild 0 and 1, castling must be done in the terminal using `o-o` or `o-o-o`.
+
+### Terminal View  
+Use the menu op press `TAB` or `CTRL+T` to switch to the telnet terminal. Here you can use FICS commands directly. Press `ESC`, `TAB`, or `CTRL+T` to return to the game board.
+
+#### Useful Terminal Commands  
+- `finger`: View your account info (e.g., GuestXXXX)  
+- `match <user>`: Challenge a specific user  
+- `games`: List all active games  
+- `observe <game#>`: Watch a game in progress  
+- `unobserve [game#]`: Stop watching a game  
+- `resign`, `abort`: Resign or request abort  
+- `say <text>`: Send message to your opponent  
+- `sought`: View active seeks  
+- `seek [params]`: Advertise a new game request  
+- `refresh`, `logout`, `help [subject]`  
+
+RetroMate is stateless - you can, for example, observe multiple games at once (not practical, but supported).
+
+## Chess Board Controls  
+- Use arrow keys or WASD to move the cursor  
+- `Enter`: Select a piece and confirm move  
+- `CTRL+S`: Say something to your opponent  
+- `ESC`: Show/hide the menu  
+- `TAB` or `CTRL+T`: Toggle to/from terminal
+
+Even when it’s not your turn, you can select a piece to prepare your move - useful for fast games.
+
+**UI indicators:**
+- Shows players' names and sides/colors
+- "Next" = who moves next  
+- "Last" = last move made  
+- Status updates (e.g., SAY, resign, checkmate) appear below "Last:"
+
+## Mouse Support  
+In the SDL2 version:
+- Left-click = `Enter`  
+- Right-click = `ESC`
+
+## Building RetroMate  
+RetroMate uses CMake.
+
+### SDL2 Setup (via vcpkg)  
+For Linux (including WSL):
 ```
-# I had previously installed (at least) this already: build-essential cmake ninja-build
-# I still needed curl and libtool
 sudo apt install curl libtool
+# I had already installed, in the past, at least: build-essential cmake ninja-build clang
 git clone https://github.com/microsoft/vcpkg.git
 cd vcpkg && ./bootstrap-vcpkg.sh
-# Insert your own path to where you just installed (cloned to) vcpkg, in the export, below.
-# This path is where I have it, your path will differ:
-# I also added these 2 statements to my ~/.bashrc file, so they are always set
-export VCPKG_ROOT=/home/swessels/develop/github/external/vcpkg
+
+# Add these to ~/.bashrc
+export VCPKG_ROOT=/your/path/to/vcpkg
 export PATH=$PATH:$VCPKG_ROOT
-vcpkg install sdl2
-vcpkg install sdl2-ttf
-vcpkg install sdl2-image
-```
-  
-In the retromate folder, use the commands  
-```
+
+# Install dependencies
+vcpkg install sdl2 sdl2-ttf sdl2-image
+
 mkdir build
 cd build
-# The "Unix Makefiles", below, could also be any of the methods that will work for you
-# such as "Ninja" or "NMake Makefiles"
 cmake .. -G "Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake
-# If using ninja, this is not make but ninja (or nmake if using NMake Makefiles)
-make
+make  # or ninja/nmake depending on generator
 ```
-The targets are `atarixl`, `c64`, `apple2` and `sdl2` and each of these has a _test target - example `apple2_test` - that will attempt to run the game in (in an emulator if needed). In other words you can use `make c64_test` to build and run the c64 version in vice (x64sc or x64), if the emulator was found in the configure stage.  
-  
-I use VS Code with the CMake Tools extension, and this also works very well.  
-  
-These variables are checked to help find the tools needed to build (and run) the game, if the programs, named below, are not in the path:  
-```
-Path asnd what it searches for
-VICE_HOME       - x64sc x64 & c1541
-APPLEWIN_HOME   - applewin AppleWin.exe
-CP2_HOME        - cp2
-ATARI_HOME      - Altirra
-DIR2ATR_HOME    - dir2atr
-```
-  
-I mostly develop using Linux through WSL or Windows directly.  Note that if you are using WSL, you can launch windows executables using the full name, including the .exe extension.  That way, it is, for example, possible to use AppleWin.exe, under Windows, to run the application developed on WSL.  
-CP2 is CiderPress-II (cp2 is the command line tool for Apple 2 disk images) and is available here: https://ciderpress2.com/  
-dir2atr (Atari disk images tool) is available here: https://www.horus.com/~hias/atari/  (Windows exe in zip - `Atari Tools for Win32 (Windows)`; Otherwise source in `atariso-<date>.tar.gz` - If `make` in atariso* folder doesn't work to build dir2atr, try `make dir2atr` in the `tools` sub-folder.)  
-c1541 (C64 disk images tool) is part of the Vice Emulator distribution.    
 
+### Build Targets
+The build targets are `atarixl`, `c64`, `apple2` and `sdl2`. Each has a _test target (e.g., `make c64_test`) to run in emulator if detected.
 
-Initial Release  
+### Emulator/Tool path variables   
+```
+Variable | Tool Searched For
+--- | ---
+VICE_HOME | x64sc x64 & c1541
+APPLEWIN_HOME | applewin AppleWin.exe
+CP2_HOME      | cp2
+ATARI_HOME    | Altirra
+DIR2ATR_HOME  | dir2atr
+
+Disk Image tools | URL
+--- | ---
+CiderPress-II (cp2) | https://ciderpress2.com/
+dir2atr (Atari) | https://www.horus.com/~hias/atari/
+c1541 (C64) | Included with VICE distribution
+cc1541 (Alternative to 1541) | https://bitbucket.org/ptv_claus/cc1541
+```
+
+Initial Beta Release  
 6 June 2025  
 swessels@email.com
