@@ -13,6 +13,7 @@ As of 10 July 2025, RetroMate runs on:
 - Commodore 64  
 - Atari XL  
 - SDL2-based systems (Windows, Linux, macOS)
+[View Screenshots](#screenshots)
 
 ## 8-bit Requirements: Hardware / Emulators  
 The 8-bit versions use IP65, so you’ll need hardware or an emulator with IP65 support. Recommended emulators:
@@ -148,6 +149,23 @@ Release | Title | Date
 --- | --- | ---
 Beta | Apple 2 | 6 June 2025  
 V1.00 | apple2 atarixl c64 sdl2 | 8 July 2025
+
+## Screenshots
+
+### Apple II  
+![Apple II Screenshot](screenshots/apple2-0.png)
+![Apple II Screenshot](screenshots/apple2-1.png)
+
+### Atari XL  
+![Atari XL Screenshot](screenshots/atari-0.png)
+
+### Commodore 64  
+![Commodore 64 Screenshot](screenshots/c64-0.png)
+![Commodore 64 Screenshot](screenshots/c64-1.png)
+![Commodore 64 Screenshot](screenshots/c64-2.png)
+
+### SDL2 (Modern Platforms)  
+![SDL2 Screenshot](screenshots/sdl2-0.png)
 
 ## Contact
 swessels@email.com
