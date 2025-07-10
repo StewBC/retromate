@@ -219,6 +219,9 @@ function(add_retromate_target target sources bin_file disk_file)
     endif()
 endfunction()
 
+file(RELATIVE_PATH DISK_REL_PATH "${CMAKE_CURRENT_BINARY_DIR}" "${DISK_DIR}/retromate")
+file(RELATIVE_PATH BIN_REL_PATH "${CMAKE_CURRENT_BINARY_DIR}" "${BIN_DIR}/retromate")
+
 # --- C64 ---
 set(C64_SOURCES
     ${SHARED_SOURCES}
@@ -234,8 +237,8 @@ add_retromate_target(
     "${C64_SOURCES}"
     retromate.prg
     retromate.d64
-    ${X64_EXECUTABLE} -autostart ${BIN_DIR}/retromate.prg
-    # ${X64_EXECUTABLE} -autostart ${DISK_DIR}/retromate.d64
+    ${X64_EXECUTABLE} -autostart ${BIN_REL_PATH}.prg
+    # ${X64_EXECUTABLE} -autostart ${DISK_REL_PATH}.d64
 )
 
 # --- Apple II ---
@@ -247,8 +250,6 @@ set(APPLE2_SOURCES
     ${CMAKE_SOURCE_DIR}/src/apple2/platA2draw.c
     ${CMAKE_SOURCE_DIR}/src/apple2/platA2net.c
 )
-
-file(RELATIVE_PATH DISK_REL_PATH "${CMAKE_CURRENT_BINARY_DIR}" "${DISK_DIR}/retromate")
 
 add_retromate_target(
     apple2
@@ -273,8 +274,8 @@ add_retromate_target(
     "${ATARI_SOURCES}"
     retromate.xex
     retromate.atr
-    ${ATARI_EXECUTABLE} ${BIN_DIR}/retromate.xex
-    # ${ATARI_EXECUTABLE} ${DISK_DIR}/retromate.atr
+    ${ATARI_EXECUTABLE} ${BIN_REL_PATH}.xex
+    # ${ATARI_EXECUTABLE} ${DISK_REL_PATH}.atr
 )
 
 # --- Native SDL2 ---
