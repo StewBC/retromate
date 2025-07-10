@@ -43,7 +43,6 @@ void plat_core_active_term(bool active) {
     } else {
         global.view.terminal_active = 0;
         global.view.refresh = 1;
-        // plat_draw_board();
     }
 }
 
