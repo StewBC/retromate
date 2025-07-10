@@ -13,6 +13,8 @@ As of 10 July 2025, RetroMate runs on:
 - Commodore 64  
 - Atari XL  
 - SDL2-based systems (Windows, Linux, macOS)
+
+## Screenshots (below)
 [View Screenshots](#screenshots)
 
 ## 8-bit Requirements: Hardware / Emulators  
