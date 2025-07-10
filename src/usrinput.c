@@ -9,7 +9,6 @@
 
 #include <ctype.h>  // is*
 #include <stdlib.h> // atoi
-#include <string.h> // strcpy
 
 #include "global.h"
 
@@ -75,9 +74,14 @@ void input_text(char *buffer, uint8_t buffer_len, uint8_t filter) {
                 if (global.view.terminal_active) {
                     return;
                 }
-                // In normal edit, it erases whatever was there
+                // In normal edit, it erases whatever was there, in edit colour
+                plat_draw_clear_input_line(1);
+                // And set to empty
                 buffer[0] = '\0';
-            // Fall Through
+                index = 0;
+                // I wanted to fall through but that always breaks the next plat_net_send which I gave up
+                // trying to understand.  This is quite acceptable though, just clearing the line
+                break;
 
             case INPUT_SELECT:
                 plat_draw_clear_input_line(0);
@@ -134,7 +138,8 @@ uint8_t input_text_callback(menu_t *m, void *data) {
         if(!item->edit_target[0]) {
             // Numeric entries cannot be set to blank
             // This could cause big issues with time and rating fields being blank
-            strcpy(item->edit_target, "0");
+            item->edit_target[0]= '0';
+            item->edit_target[1] = '\0';
         }
         if (item->submenu) {
             *(int *)item->submenu = atoi(item->edit_target);
