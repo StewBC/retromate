@@ -133,8 +133,7 @@ void plat_draw_background() {
             r = 1 + SQUARE_TEXT_WIDTH;
             for (x = 0; x < 8; x++) {
                 if (l <= mw && r > global.view.mc.x) {
-                    // plat_draw_square(i+x);
-                    plat_draw_rect(l, t, SQUARE_TEXT_WIDTH, SQUARE_TEXT_HEIGHT, COLOR_PURPLE);
+                    plat_draw_square(i+x);
                 }
                 l += SQUARE_TEXT_WIDTH;
                 r += SQUARE_TEXT_WIDTH;
