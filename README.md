@@ -14,8 +14,8 @@ As of 10 July 2025, RetroMate runs on:
 - Atari XL  
 - SDL2-based systems (Windows, Linux, macOS)
 
-## Screenshots (below)
-[View Screenshots](#screenshots)
+## Screenshots
+[View Screenshots (below)](#screenshots)
 
 ## 8-bit Requirements: Hardware / Emulators  
 The 8-bit versions use IP65, so you’ll need hardware or an emulator with IP65 support. Recommended emulators:
@@ -155,10 +155,12 @@ V1.00 | apple2 atarixl c64 sdl2 | 8 July 2025
 ## Screenshots
 
 ### Apple II  
-![Apple II Screenshot](screenshots/apple2-0.png)
 ![Apple II Screenshot](screenshots/apple2-1.png)
+![Apple II Screenshot](screenshots/apple2-0.png)
+![Apple II Screenshot](screenshots/apple2-2.png)
 
 ### Atari XL  
+![Atari XL Screenshot](screenshots/atari-1.png)
 ![Atari XL Screenshot](screenshots/atari-0.png)
 
 ### Commodore 64  
