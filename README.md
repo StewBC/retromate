@@ -14,7 +14,8 @@ As of 10 July 2025, RetroMate runs on:
 - Atari XL  
 - SDL2-based systems (Windows, Linux, macOS)
   
-[View Screenshots (below)](#screenshots)
+[View Screenshots (below)](#screenshots)  
+[Watch Video on YouTube](https://youtu.be/-Jjvj0yIkgo)  
 
 ## 8-bit Requirements: Hardware / Emulators  
 The 8-bit versions use IP65, so you’ll need hardware or an emulator with IP65 support. Recommended emulators:
@@ -22,6 +23,10 @@ The 8-bit versions use IP65, so you’ll need hardware or an emulator with IP65 
 - Apple II: [AppleWin](https://github.com/AppleWin/AppleWin)  
 - Commodore 64: [VICE](https://vice-emu.sourceforge.io/)  
 - Atari XL: [Altirra](https://www.virtualdub.org/altirra.html)
+  
+For all of these emulators to work on Windows, you will need npcap.  It can be downloaded from https://npcap.com/#download.  
+I have found many versions of VICE (I have 5 x64.exe's on my system right now), and with only 1 was I able to configure RRNet and get it working.  
+The Apple 2 version needs to know in which slot the Uthernet II card is.  The program and launcher have this in the file name.  By default, it is called rmate3, which indicates the Network Card is in Slot 3.  Rename according to your own needs.
 
 ## Code & Development  
 The Apple II, Atari XL, and C64 versions are built with `cc65` and written mostly in C. The high-resolution drawing code - originally created in 6502 assembly, by Oliver Schmidt, for `cc65-Chess` is reused here.
