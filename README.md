@@ -2,7 +2,7 @@
 A Free Internet Chess Server front-end for modern and retro computers.
 
 ## What is FICS, the Free Internet Chess Server?  
-FICS is a free chess matchmaking service hosted at `freechess.org:5000` using telnet. Log in using `guest` as the user and type `help` to explore. FICS supports a variety of game modes (standard, blitz, crazyhouse, wild, suicide, etc.). You’ll find several bots to play against, and human players are usually online as well.
+FICS is a free chess matchmaking service hosted at `freechess.org:5000` using Telnet. Log in using `guest` as the user and type `help` to explore. FICS supports a variety of game modes (standard, blitz, crazyhouse, wild, suicide, etc.). You’ll find several bots to play against, and human players are usually online as well.
 
 ## Conception  
 RetroMate was originally proposed by Oliver Schmidt. He suggested the idea and offered to provide a framework using IP65 so I could focus on developing the game. Without Oliver, this project would not have happened.
@@ -24,9 +24,9 @@ The 8-bit versions use IP65, so you’ll need hardware or an emulator with IP65 
 - Commodore 64: [VICE](https://vice-emu.sourceforge.io/)  
 - Atari XL: [Altirra](https://www.virtualdub.org/altirra.html)
   
-For all of these emulators to work on Windows, you will need npcap.  It can be downloaded from https://npcap.com/#download.  
+For AppleWin and VICE to work on Windows, you will need npcap.  It can be downloaded from https://npcap.com/#download.  
 I have found many versions of VICE (I have 5 x64.exe's on my system right now), and with only 1 was I able to configure RRNet and get it working.  
-The Apple 2 version needs to know in which slot the Uthernet II card is.  The program and launcher have this in the file name.  By default, it is called rmate3, which indicates the Network Card is in Slot 3.  Rename according to your own needs.
+The Apple II version needs to know in which slot the Uthernet card is.  The program and launcher have this in their file name.  By default, they are called rmate3, which indicates the network card is in slot 3.  Rename both according to your own needs.
 
 ## Code & Development  
 The Apple II, Atari XL, and C64 versions are built with `cc65` and written mostly in C. The high-resolution drawing code - originally created in 6502 assembly, by Oliver Schmidt, for `cc65-Chess` is reused here.
@@ -61,7 +61,7 @@ _Default time settings:_
 > Note: For Wild 0 and 1, castling must be done in the terminal using `o-o` or `o-o-o`.
 
 ### Terminal View  
-Use the menu or press `TAB` or `CTRL+T` to switch to the telnet terminal. Here you can use FICS commands directly. Press `ESC`, `TAB`, or `CTRL+T` to return to the game board.
+Use the menu or press `TAB` or `CTRL+T` to switch to the Telnet terminal. Here you can use FICS commands directly. Press `ESC`, `TAB`, or `CTRL+T` to return to the game board.
 
 #### Useful Terminal Commands  
 - `finger`: View your account info (e.g., GuestXXXX)  
@@ -79,7 +79,7 @@ RetroMate is stateless - you can, for example, observe multiple games at once (n
 
 ## Chess Board Controls  
 - Use arrow keys or WASD to move the cursor  
-- `Enter`: Select a piece and confirm move  
+- `RETURN`: Select a piece and confirm move  
 - `CTRL+S`: Say something to your opponent  
 - `ESC`: Show/hide the menu  
 - `TAB` or `CTRL+T`: Toggle to/from terminal
@@ -94,7 +94,7 @@ Even when it’s not your turn, you can select a piece to prepare your move - us
 
 ## Mouse Support  
 In the SDL2 version:
-- Left-click = `Enter`  
+- Left-click = `RETURN`  
 - Right-click = `ESC`
 
 ## Building RetroMate  
