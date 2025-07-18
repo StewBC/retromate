@@ -16,6 +16,12 @@
 
 .rodata
 
+.ifdef USE_TR
+    .import command_mask
+    base        = $DE00
+    command     = base+2
+.endif
+
 .define VIC_BASE_RAM    $C000
 .define SCREEN_RAM      VIC_BASE_RAM + $2000
 .define CHARMAP_RAM     VIC_BASE_RAM + $2800
@@ -66,23 +72,27 @@ CBASEHI:
 
         jsr popa    ; 'xpos'
         sta xpos+1
-   
+
         clc
         adc xmax+1
         sta xmax+1
-        
+
         lda #0
         sta xoffhi+1
         lda xpos+1
         beq :+
         asl         ; mult 8
         rol xoffhi+1
-        asl 
+        asl
         rol xoffhi+1
-        asl 
+        asl
         rol xoffhi+1
 :       sta xofflo+1
 
+.ifdef USE_TR
+        lda #%00001011
+        sta command
+.endif
         sei         ; stop interrupts
         lda #$34    ; Basic ROM off; Kernal ROM off; I/O off
         sta 1
@@ -108,7 +118,7 @@ dst:    sta $ffff,x ; Patched
         inx
         cpx #8
         bne src
-        
+
         clc
         lda dst+1 ; next col
         adc #8
@@ -116,7 +126,7 @@ dst:    sta $ffff,x ; Patched
         bcc :+
         inc dst+2
 :       inc xcurr+1
-xcurr:  ldx #$FF        ; Patched 
+xcurr:  ldx #$FF        ; Patched
 xmax:   cpx #$FF    ; Patched
         bne xloop
         inc ypos+1
@@ -127,6 +137,10 @@ ymax:   cpx #$FF    ; Patched
         lda #$36    ; Basic ROM off; Kernal ROM on; I/O on
         sta 1
         cli         ; resume interrupts
+.ifdef USE_TR
+        lda command_mask
+        sta command
+.endif
 
         rts
 .endproc
@@ -155,19 +169,23 @@ ymax:   cpx #$FF    ; Patched
         ; clc
         adc xmax+1
         sta xmax+1
-        
+
         lda #0
         sta xoffhi+1
         lda xpos+1
         beq :+
         asl         ; mult 8
         rol xoffhi+1
-        asl 
+        asl
         rol xoffhi+1
-        asl 
+        asl
         rol xoffhi+1
 :       sta xofflo+1
 
+.ifdef USE_TR
+        lda #%00001011
+        sta command
+.endif
         sei
         lda #$34
         sta 1
@@ -192,7 +210,7 @@ dst:    sta $ffff,y ; Patched
         dey
         bpl src
         clc       ; probably uneccesary but maybe rop set it
-        lda src+1 ; adjust src & dest 
+        lda src+1 ; adjust src & dest
         adc #8    ; next col is 8 away
         sta src+1 ; and screen > 256 wide
         bcc :+
@@ -214,6 +232,10 @@ ymax:   cpy #$FF    ; Patched
         lda #$36
         sta 1
         cli
+.ifdef USE_TR
+        lda command_mask
+        sta command
+.endif
 
         rts
 .endproc
@@ -244,6 +266,10 @@ ymax:   cpy #$FF    ; Patched
         adc xmax+1
         sta xmax+1
 
+.ifdef USE_TR
+        lda #%00001011
+        sta command
+.endif
         sei
         lda #$34
         sta 1
@@ -268,6 +294,10 @@ ymax:   cpy #$FF    ; Patched
         lda #$36
         sta 1
         cli
+.ifdef USE_TR
+        lda command_mask
+        sta command
+.endif
 
         rts
 .endproc

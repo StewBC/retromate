@@ -8,7 +8,6 @@
  */
 
 #include <c64.h>
-#include <ip65.h>
 #include <string.h>
 
 #include "../global.h"
@@ -35,10 +34,13 @@ static int plat_net_make_ascii(const char *text) {
         }
         text++;
     }
-    // This seems like a good idea but it locks the C64 up.
-    // c64.send_buffer[i++] = '\x0a';
+    c64.send_buffer[i++] = '\x0a';
     return i;
 }
+
+#if USE_IP65
+
+#include <ip65.h>
 
 /*-----------------------------------------------------------------------*/
 void plat_net_init() {
@@ -96,12 +98,59 @@ bool plat_net_update() {
 void plat_net_send(const char *text) {
     log_add_line(&global.view.terminal, text, -1);
     tcp_send((unsigned char *)c64.send_buffer, plat_net_make_ascii(text));
-    // Don't send \x0a in he buffer, send seprately.  I don't know why it
-    // improves stability, but it absolutely does
-    tcp_send((unsigned char *)"\x0a", 1);
 }
 
 /*-----------------------------------------------------------------------*/
 void plat_net_shutdown() {
     plat_net_disconnect();
 }
+
+#elif USE_TR
+
+// Assembly functions in swlinkC64.s
+extern void sw_init(void);
+extern void sw_idle(void);
+extern void sw_send(uint8_t len);
+extern void sw_shutdown(void);
+
+void plat_net_init() {
+    sw_init();
+}
+
+void plat_net_connect(const char *host, int port) {
+    int len;
+    UNUSED(port);
+
+    strcpy(c64.send_buffer, "atdt");
+    strcat(c64.send_buffer, host);
+    strcat(c64.send_buffer, ":");
+    strcat(c64.send_buffer, global.ui.server_port_str);
+    strcat(c64.send_buffer, "\n");
+    len = strlen(c64.send_buffer);
+    log_add_line(&global.view.terminal, c64.send_buffer, len);
+    // Don't go through plat_net_send because this isn't ascii
+    sw_send(len);
+}
+
+void plat_net_disconnect() {
+    plat_net_shutdown();
+}
+
+// This does not check that the head doesn't catch the tail
+// It assumes the buffer is big enough, also assumes
+// all data sent is <= 255 bytes
+void plat_net_send(const char *text) {
+    uint8_t len = plat_net_make_ascii(text);
+    log_add_line(&global.view.terminal, text, -1);
+    sw_send(len);
+}
+
+void plat_net_shutdown() {
+    sw_shutdown();  // Remove the IRQ handler
+    if(!global.app.quit) {
+        // If the app isn't quitting, restart the swiftlink
+        sw_init();
+    }
+}
+
+#endif
