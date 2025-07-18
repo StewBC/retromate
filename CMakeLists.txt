@@ -11,13 +11,13 @@ set(CMAKE_DIMAGES_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/dsk)   # Custom
 file(MAKE_DIRECTORY ${CMAKE_DIMAGES_OUTPUT_DIRECTORY})
 
 # Required tools for disk images and emulators
-find_program(X64_EXECUTABLE NAMES x64sc x64 x64sc.exe x64.exe HINTS ENV VICE_HOME PATHS ENV PATH DOC "VICE emulator")
-find_program(C1541_EXECUTABLE NAMES c1541 c1541.exe HINTS ENV VICE_HOME PATHS ENV PATH DOC "VICE disk tool")
-find_program(CC1541_EXECUTABLE NAMES cc1541 cc1541.exe HINTS ENV CC1541_HOME PATHS ENV PATH DOC "Alternate C64 disk builder")
-find_program(APPLEWIN_EXECUTABLE NAMES applewin AppleWin.exe HINTS ENV APPLEWIN_HOME PATHS ENV PATH DOC "Apple II emulator")
-find_program(CIDERPRESSII_EXECUTABLE NAMES cp2 cp2.exe HINTS ENV CP2_HOME PATHS ENV PATH DOC "CiderPress-II")
-find_program(ATARI_EXECUTABLE NAMES Altirra64 Altirra Altirra64.exe Altirra.exe HINTS ENV ATARI_HOME PATHS ENV PATH DOC "Atari emulator")
-find_program(DIR2ATR_EXECUTABLE NAMES dir2atr dir2atr.exe HINTS ENV DIR2ATR_HOME PATHS ENV PATH DOC "Atari disk packer")
+find_program(X64_EXECUTABLE NAMES x64sc x64 x64sc.exe x64.exe HINTS ENV VICE_HOME PATHS ENV PATH DOC "VICE emulator available at https://vice-emu.sourceforge.io/")
+find_program(C1541_EXECUTABLE NAMES c1541 c1541.exe HINTS ENV VICE_HOME PATHS ENV PATH DOC "VICE disk tool available at https://vice-emu.sourceforge.io/")
+find_program(CC1541_EXECUTABLE NAMES cc1541 cc1541.exe HINTS ENV CC1541_HOME PATHS ENV PATH DOC "Alternate C64 disk builder available at https://bitbucket.org/ptv_claus/cc154")
+find_program(APPLEWIN_EXECUTABLE NAMES applewin AppleWin.exe HINTS ENV APPLEWIN_HOME PATHS ENV PATH DOC "Apple II emulator available at https://github.com/AppleWin/AppleWin")
+find_program(CIDERPRESSII_EXECUTABLE NAMES cp2 cp2.exe HINTS ENV CP2_HOME PATHS ENV PATH DOC "CiderPress-II available at https://ciderpress2.com/")
+find_program(ATARI_EXECUTABLE NAMES Altirra64 Altirra Altirra64.exe Altirra.exe HINTS ENV ATARI_HOME PATHS ENV PATH DOC "Atari emulator available at https://www.virtualdub.org/altirra.html")
+find_program(DIR2ATR_EXECUTABLE NAMES dir2atr dir2atr.exe HINTS ENV DIR2ATR_HOME PATHS ENV PATH DOC "Atari disk packer available at https://www.horus.com/~hias/atari/")
 find_program(CL65_EXECUTABLE cl65 DOC "Available at https://cc65.github.io/")
 
 message(STATUS "C64 emulator: ${X64_EXECUTABLE}")
