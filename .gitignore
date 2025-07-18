@@ -1,4 +1,5 @@
 .vscode/
+CMakePresets.json
 
 # build artifacts
 build/
