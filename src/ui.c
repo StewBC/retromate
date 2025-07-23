@@ -172,7 +172,7 @@ menu_t ui_pregame_menu = {
 // In-game menus
 // In-game Menu Submenu: Game Settings
 menu_item_t ui_settings_menu_items[] = {
-    { "Game Type", MENU_ITEM_CYCLE, MENU_STATE_ENABLED, AS(ui_game_types), ui_game_types, 0, NULL, 0, 0, NULL, ui_set_game_type_callback},
+    { "Game Type", MENU_ITEM_CYCLE, MENU_STATE_ENABLED, AS(ui_game_types), ui_game_types, 1, NULL, 0, 0, NULL, ui_set_game_type_callback},
     { "Wild Variant", MENU_ITEM_CYCLE, MENU_STATE_HIDDEN, AS(wild_variants), wild_variants, 0, NULL, 0, 0, NULL, ui_set_wild_type_callback},
     { "Rated", MENU_ITEM_CYCLE, MENU_STATE_HIDDEN, AS(ui_yes_no_toggle), ui_yes_no_toggle, 0, NULL, 0, 0, NULL, ui_toggle_rated_callback},
     { "Use Sought", MENU_ITEM_CYCLE, MENU_STATE_ENABLED, AS(ui_yes_no_toggle), ui_yes_no_toggle, 1, NULL, 0, 0, NULL, ui_toggle_sought_callback},
