@@ -16,12 +16,6 @@
 
 .rodata
 
-.ifdef USE_TR
-    .import command_mask
-    base        = $DE00
-    command     = base+2
-.endif
-
 .define VIC_BASE_RAM    $C000
 .define SCREEN_RAM      VIC_BASE_RAM + $2000
 .define CHARMAP_RAM     VIC_BASE_RAM + $2800
@@ -89,10 +83,6 @@ CBASEHI:
         rol xoffhi+1
 :       sta xofflo+1
 
-.ifdef USE_TR
-        lda #%00001011
-        sta command
-.endif
         sei         ; stop interrupts
         lda #$34    ; Basic ROM off; Kernal ROM off; I/O off
         sta 1
@@ -137,11 +127,6 @@ ymax:   cpx #$FF    ; Patched
         lda #$36    ; Basic ROM off; Kernal ROM on; I/O on
         sta 1
         cli         ; resume interrupts
-.ifdef USE_TR
-        lda command_mask
-        sta command
-.endif
-
         rts
 .endproc
 
@@ -182,10 +167,6 @@ ymax:   cpx #$FF    ; Patched
         rol xoffhi+1
 :       sta xofflo+1
 
-.ifdef USE_TR
-        lda #%00001011
-        sta command
-.endif
         sei
         lda #$34
         sta 1
@@ -232,11 +213,6 @@ ymax:   cpy #$FF    ; Patched
         lda #$36
         sta 1
         cli
-.ifdef USE_TR
-        lda command_mask
-        sta command
-.endif
-
         rts
 .endproc
 
@@ -266,10 +242,6 @@ ymax:   cpy #$FF    ; Patched
         adc xmax+1
         sta xmax+1
 
-.ifdef USE_TR
-        lda #%00001011
-        sta command
-.endif
         sei
         lda #$34
         sta 1
@@ -294,10 +266,5 @@ ymax:   cpy #$FF    ; Patched
         lda #$36
         sta 1
         cli
-.ifdef USE_TR
-        lda command_mask
-        sta command
-.endif
-
         rts
 .endproc

@@ -127,7 +127,6 @@ void plat_net_connect(const char *host, int port) {
     strcat(c64.send_buffer, global.ui.server_port_str);
     strcat(c64.send_buffer, "\n");
     len = strlen(c64.send_buffer);
-    log_add_line(&global.view.terminal, c64.send_buffer, len);
     // Don't go through plat_net_send because this isn't ascii
     sw_send(len);
 }
@@ -146,7 +145,7 @@ void plat_net_send(const char *text) {
 }
 
 void plat_net_shutdown() {
-    sw_shutdown();  // Remove the IRQ handler
+    sw_shutdown();  // Reset the modem
     if(!global.app.quit) {
         // If the app isn't quitting, restart the swiftlink
         sw_init();

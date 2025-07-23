@@ -83,7 +83,7 @@ add_retromate_target(
     TARGET c64
     VARIANT teensyrom
     SOURCES ${C64_TR_SOURCES}
-    COMPILE_DEFINITIONS -DUSE_TR  --asm-define USE_TR -Wl -D,__HIMEM__=0xC000
+    COMPILE_DEFINITIONS -DUSE_TR -Wl -D,__HIMEM__=0xC000
 )
 
 # --- Apple II ---
