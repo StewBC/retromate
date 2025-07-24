@@ -26,13 +26,13 @@
 static void app_terminal() {
     char command[COMMAND_LENGTH] = {0};
     // Go to terminal mode
-    plat_core_active_term(1);
+    plat_core_active_term(true);
     // Force a draw
     global.view.terminal.modified = true;
     // Run the input while updating the terminal and net
     input_text(command, COMMAND_LENGTH, FILTER_ALLOW_ALL);
     // Done with terminal mode
-    plat_core_active_term(0);
+    plat_core_active_term(false);
     // Redraw the board
     global.view.refresh = true;
     // Force a redraw of the status log
@@ -87,7 +87,7 @@ void app_draw_update() {
 
 /*-----------------------------------------------------------------------*/
 void app_error(bool fatal, const char *error_text) {
-    plat_core_active_term(1);
+    plat_core_active_term(true);
     log_add_line(&global.view.terminal, error_text, -1);
     log_add_line(&global.view.terminal, "Press a key", -1);
     plat_draw_log(&global.view.terminal, 0, 0, MENU_COLOR_TITLE);
@@ -110,7 +110,7 @@ void app_set_state(uint8_t new_state) {
             };
             // Bring up the pre-game (offline) UI
             menu_set(&ui_pregame_menu);
-            plat_core_active_term(0);
+            plat_core_active_term(false);
             global.app.tick = app_state_offline;
             break;
 
@@ -138,7 +138,7 @@ void app_set_state(uint8_t new_state) {
             // (matters after a re-logon after a logout)
             ui_in_game_menu.selected_item = 0;
             menu_set(&ui_in_game_menu);
-            plat_core_active_term(0);
+            plat_core_active_term(false);
             global.app.tick = app_state_online;
             break;
     }
@@ -160,7 +160,7 @@ void app_state_offline() {
             // Hide the menu
             global.view.mc.df |= MENU_DRAW_HIDDEN;
             // Make the terminal active
-            plat_core_active_term(1);
+            plat_core_active_term(true);
             // Start the connection
             fics_init();
         }
