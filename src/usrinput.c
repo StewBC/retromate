@@ -129,7 +129,7 @@ void input_text(char *buffer, uint8_t buffer_len, uint8_t filter) {
     }
 }
 
-//----------------------------------------------------------------------------
+/*-----------------------------------------------------------------------*/
 uint8_t input_text_callback(menu_t *m, void *data) {
     menu_item_t *item = (menu_item_t *)data;
     UNUSED(m);

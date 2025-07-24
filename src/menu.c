@@ -12,7 +12,7 @@
 #include <string.h>
 #include "global.h"
 
-/*--------------------------------------------------------------------------*/
+/*-----------------------------------------------------------------------*/
 // Thes makes code more readable.  The color mapping is done from menu colors
 // to platform colors by a lookup in the platform mapping array
 // The _clipped version is used to clip the action part of a menu to the max
@@ -22,7 +22,7 @@
 #define menu_draw_rect(x,y,w,h,c)           plat_draw_rect(x,y,w,h,plat_mc2pc[c])
 #define menu_draw_set_text_bg_color(c)      plat_draw_set_text_bg_color(plat_mc2pc[c])
 
-/*--------------------------------------------------------------------------*/
+/*-----------------------------------------------------------------------*/
 // The flag is draw item, and/or item/action as selected.  the action
 // is always drawn (it could cycle, or is being selected/deselcted)
 // static void menu_show_item(menu_item_t *item, uint8_t draw_flag) {
@@ -77,7 +77,7 @@ void menu_show_item(menu_item_t *item, uint8_t draw_flag) {
     }
 }
 
-/*--------------------------------------------------------------------------*/
+/*-----------------------------------------------------------------------*/
 uint8_t menu_count_active(uint8_t index) {
     menu_t *m = global.view.mc.m;
     uint8_t count = m->menu_items[index].item_state != MENU_STATE_HIDDEN;
@@ -91,7 +91,7 @@ uint8_t menu_count_active(uint8_t index) {
     return count;
 }
 
-/*--------------------------------------------------------------------------*/
+/*-----------------------------------------------------------------------*/
 static void menu_cache(menu_t *m) {
     uint8_t i, j, length, sel = 0;
     uint8_t height = 0;
@@ -173,7 +173,7 @@ static void menu_cache(menu_t *m) {
     global.view.mc.tx = global.view.mc.x + (global.view.mc.w - strlen(m->title)) / 2;
 }
 
-/*--------------------------------------------------------------------------*/
+/*-----------------------------------------------------------------------*/
 static void menu_change_selection(uint8_t new) {
     menu_t *m = global.view.mc.m;
     uint8_t old = m->selected_item;
@@ -188,7 +188,7 @@ static void menu_change_selection(uint8_t new) {
     m->selected_item = new;
 }
 
-/*--------------------------------------------------------------------------*/
+/*-----------------------------------------------------------------------*/
 static void menu_next_item() {
     menu_t *m = global.view.mc.m;
     int8_t sel = m->selected_item;
@@ -204,7 +204,7 @@ static void menu_next_item() {
     }
 }
 
-/*--------------------------------------------------------------------------*/
+/*-----------------------------------------------------------------------*/
 static void menu_prev_item() {
     menu_t *m = global.view.mc.m;
     int8_t sel = m->selected_item;
@@ -218,7 +218,7 @@ static void menu_prev_item() {
     }
 }
 
-/*--------------------------------------------------------------------------*/
+/*-----------------------------------------------------------------------*/
 void menu_set(menu_t *m) {
     if (global.view.mc.df & MENU_DRAW_ERASE) {
         // If erase is set in the cache, there's no menu on screen so just draw
@@ -231,7 +231,7 @@ void menu_set(menu_t *m) {
     global.view.mc.m = NULL;
 }
 
-/*--------------------------------------------------------------------------*/
+/*-----------------------------------------------------------------------*/
 // Ticks the menu system (non-blocking call in a loop)
 uint8_t menu_tick() {
     int8_t i, sel;
