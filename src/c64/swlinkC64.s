@@ -13,10 +13,24 @@
 .export _sw_init, _sw_send, _sw_shutdown, _plat_net_update
 .import _c64, _fics_tcp_recv, pusha, pushax
 
+    ; char rop_line[2][7];
+    ; char rop_color[2][2];
+    ; uint32_t draw_colors;
+    ; char **help_text[2];
+    ; uint8_t *help_text_len[2];
+    ; uint8_t help_text_num_lines[2];
+    ; uint8_t terminal_display_width;
+    ; char send_buffer[80];
+    ; char terminal_log_buffer[80 * 24];
+    ; char status_log_buffer[13 * 25];
+
 .struct c64_t
     rop_line               .res 2*7     ; 14 bytes
     rop_color              .res 2*2     ; 4 bytes
     draw_colors            .res 4       ; uint32_t
+    help_text              .res 4
+    help_text_len          .res 4
+    help_text_num_lines    .res 2
     terminal_display_width .res 1
     send_buffer            .res 80*24   ; I need access to this buffer
     status_log_buffer      .res 13*25
@@ -28,8 +42,6 @@ status      = base+1        ; ready to receive / send
 command     = base+2        ; parity, echo, irq's and rx/tx on/off
 control     = base+3        ; stop bits / baud
 turbo232    = $DE07         ; turbo232 baud select
-
-NUM_RECEIVE_BANKS  = 4      ; Each bank is 256 bytes so keep low, and pow-2
 
 .code
 
@@ -46,7 +58,7 @@ NUM_RECEIVE_BANKS  = 4      ; Each bank is 256 bytes so keep low, and pow-2
     beq remain
     ldy #0
 bank:
-    lda #0
+    tya
 :   sta (ptr1),y
     dey
     bne :-
@@ -56,10 +68,10 @@ bank:
     bne bank
 remain:
     lda #0
-    ldx #<(data_end-data_start)
+    ldy #<(data_end-data_start)
     beq done_clear
-:   dex
-    sta data_end-<(data_end-data_start),x
+:   dey
+    sta data_end-<(data_end-data_start),y
     bne :-
 done_clear:
 
@@ -107,70 +119,46 @@ done_clear:
 
 ; Called regularly from the "C" code to process the "network"
 .proc _plat_net_update
-    ldx receiver_bank
-    lda consumer_bank,x     ; is the consumer overloaded
-    beq read_byte           ; no - it can handle input
-    jmp send
+    ldy buffer_index        ; where to put the byte to be received
 read_byte:
     lda status              ; see if there's a byte can be read
     and #%00001000
     beq idle_check          ; no, see about an idle timeout
-    ldy receiver_size       ; where to put the byte to be received
     lda data                ; receive the byte
-save_rx: 
     sta receive_buffer,y    ; put it in the bank
     iny
-    sty receiver_size       ; set index for next byte to receive
-
     cmp #$20                ; Any char before ' ' is an eol for me
     bcc line_end
     cmp #$25                ; '%' (fics% also means end of line)
+    beq line_end
+    .repeat 4               ; Getting to status too fast means
+        nop                 ; nothing to receive and we exit the loop
+    .endrepeat              ; so spin a bit to get cadence right
     bne read_byte
 
 line_end:
     cpy #2                  ; empty lines (just a line-feed) get ignored
     bcs line_ok
     ldy #0                  ; reset size to 0 for the receiver
-    sty receiver_size
     beq read_byte
 line_ok:
-    clc
-    tya                     ; line-length in a
-    ldx receiver_bank       ; start from the receiver's bank
-    sta consumer_size,x     ; Set the length of the string/bank for the consumer
-    lda #0
-    sta receiver_size       ; reset the receiver length
-    inx                     ; move to the next receiver bank
-    txa
-    and #NUM_RECEIVE_BANKS-1
-    sta receiver_bank
-    clc
-    adc #>receive_buffer    ; point at the active bank
-    sta save_rx+2           ; set the bank
     tya                     ; line length to a
     pha                     ; save length (size) in y
-    lda consumer_bank       ; put bank in a
-    clc
-    adc #>receive_buffer    ; add hi
-    tax                     ; to x
+    ldx #>receive_buffer    ; hi to x
     lda #<receive_buffer    ; lo to a
     jsr pushax              ; push ptr to bank
     ldx #0                  ; hi 0
     pla                     ; length (size) to a (lo)
     jsr _fics_tcp_recv
-    lda #0
-    ldx consumer_bank
-    sta consumer_size,x     ; reset the consumer bank line length to 0
-    sta idle_counter        ; also reset the idle counter
-    sta idle_counter+1
-    inx                     ; step to next consumer bank
-    txa
-    and #NUM_RECEIVE_BANKS-1
-    sta consumer_bank
-    jmp _plat_net_update    ; and see if there's something more to receive
+    ldy #0
+    sty buffer_index
+    sty idle_counter        ; also reset the idle counter
+    sty idle_counter+1
+    jmp read_byte           ; and see if there's something more to receive
 
 idle_check:
-    ldy receiver_size       ; receibed but not consumed?
+    sty buffer_index
+    cpy #0                  ; received but not consumed?
     beq send                ; no
     inc idle_counter        ; tick the counter
     bne send
@@ -220,28 +208,22 @@ length:
 .endproc
 
 .data
+
 data_start:
-; The "C" side of chess will consume these values through callback
-consumer_bank:  .byte $00   ; bank the "C" side uses
-consumer_size:              ; number of bytes in received string, per bank
-    .repeat NUM_RECEIVE_BANKS
-                .byte $00
-    .endrepeat
 
-; The receiver uses this to place received bytes
-receiver_bank:  .byte $00   ; bank the receiver will use in receive_buffer
-receiver_size:  .byte $00   ; # bytes in bank, in the receive buffer
-
-; Sender ring of 256 bytes
-send_head:      .byte $00
-send_tail:      .byte $00
+; The # of bytes already received when nothing new to receive
+buffer_index:   .byte $00   ; # bytes in bank, in the receive buffer
 
 ; Used to see if a buffer was received that didn't end in a \n
 idle_counter:   .byte $00, $00
 
+; Sender ring of 256 bytes
+send_head:      .byte $00
+send_tail:      .byte $00
 ; send buffer is a ring of 256 bytes (I won't send anything nearly as long)
 send_buffer:    .res 256   ; Shared send buffer
 
-; Shared receive buffer [in banks of 256 bytes]
-receive_buffer: .res NUM_RECEIVE_BANKS * 256
+; Receive buffer
+receive_buffer: .res 256
+text: .byte "stefan"
 data_end:
