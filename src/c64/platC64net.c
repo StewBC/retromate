@@ -109,7 +109,6 @@ void plat_net_shutdown() {
 
 // Assembly functions in swlinkC64.s
 extern void sw_init(void);
-extern void sw_idle(void);
 extern void sw_send(uint8_t len);
 extern void sw_shutdown(void);
 
