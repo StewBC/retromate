@@ -27,6 +27,61 @@ uint8_t plat_mc2pc[9] = {
     0,  // MENU_COLOR_DISABLED
 };
 
+char *help_text[] = {
+    "            RetroMate",
+    "",
+    "Chess board View:",
+    "ESC       - show/hide menu",
+    "CTRL+t/TAB- switch to terminal view",
+    "CTRL+s    - \"say\" to opponent",
+    "crsr/wasd - move cursor",
+    "enter     - select/deselect square",
+    "",
+    "Terminal View:",
+    "CTRL+t/TAB- switch to board view",
+    "CTRL+p    - show text to the right",
+    "CTRL+o    - show text to the left",
+    "Type commands to execute them",
+    "",
+    "By S. Wessels and O. Schmidt, 2025"
+};
+
+uint8_t help_text_len[] = {
+    0, // "            RetroMate",
+    0, // "",
+    0, // "Chess board View:",
+    0, // "ESC       - show/hide menu",
+    0, // "CTRL+t/TAB- switch to terminal view",
+    0, // "CTRL+s    - \"say\" to opponent",
+    0, // "crsr/wasd - move cursor",
+    0, // "enter     - select/deselect square",
+    0, // "",
+    0, // "Terminal View:",
+    0, // "CTRL+t/TAB- switch to board view",
+    0, // "CTRL+p    - show text to the right",
+    0, // "CTRL+o    - show text to the left",
+    0, // "Type commands to execute them",
+    0, // "",
+    0, // "By S. Wessels and O. Schmidt, 2025"
+};
+
+/*-----------------------------------------------------------------------*/
+atari_t atari = {
+    {                   // rop_line
+        {0x00, 0x01, 0x03, 0x07, 0x0F, 0x1F, 0x3F, 0x7F},
+        {0x00, 0x80, 0xC0, 0xE0, 0xF0, 0xF8, 0xFC, 0xFE}
+    },
+    {
+        {0x55, 0x2A},
+        {0xD5, 0xAA}
+    },
+    help_text,
+    help_text_len,
+    AS(help_text_len),
+    SCREEN_TEXT_WIDTH, // terminal_display_width
+    0                  // CHAR_ROM
+};
+
 #pragma code-name(push, "SHADOW_RAM2")
 
 /*-----------------------------------------------------------------------*/
@@ -270,8 +325,41 @@ void plat_draw_text(uint8_t x, uint8_t y, const char *text, uint8_t len) {
     }
 }
 
+#pragma code-name(pop)
+
+/*-----------------------------------------------------------------------*/
+uint8_t plat_draw_ui_help_callback(menu_t *m, void *data) {
+    uint8_t line, h, s;
+    UNUSED(m);
+    UNUSED(data);
+
+    h = atari.help_text_num_lines + 2;
+    s = (SCREEN_TEXT_HEIGHT - h) / 2;
+
+    // Clear background
+    plat_draw_rect(2, s, 37, h, 0);
+
+
+    // Draw a frame
+    hires_mask(1, s*CHARACTER_HEIGHT, 1, h*CHARACTER_HEIGHT+2, ROP_CONST(atari.rop_line[0][2]));
+    hires_mask(39, s*CHARACTER_HEIGHT, 1, h*CHARACTER_HEIGHT+2, ROP_CONST(atari.rop_line[1][2]));
+    hires_mask(2, s*CHARACTER_HEIGHT, 37, 2, ROP_WHITE);
+    hires_mask(2, (s+h)*CHARACTER_HEIGHT, 37, 2, ROP_WHITE);
+    s++;
+
+    // Show the text
+    for(line = 0; line < atari.help_text_num_lines; line++) {
+        plat_draw_text(3, s + line, atari.help_text[line], atari.help_text_len[line]);
+    }
+
+    plat_core_key_wait_any();
+    plat_draw_clrscr();
+    plat_draw_board();
+
+    return MENU_DRAW_REDRAW;
+}
+
 /*-----------------------------------------------------------------------*/
 void plat_draw_update() {
 }
 
-#pragma code-name(pop)

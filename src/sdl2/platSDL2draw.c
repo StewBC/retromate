@@ -48,6 +48,80 @@ uint8_t plat_mc2pc[9] = {
     COLOR_RED,                  // MENU_COLOR_DISABLED
 };
 
+char *help_text0[] = {
+    "            RetroMate",
+    "",
+    "Chess board View:",
+    "ESC       - show/hide menu",
+    "CTRL+t/TAB- switch to terminal view",
+    "CTRL+s    - \"say\" to opponent",
+    "crsr/wasd - move cursor",
+    "enter     - select/deselect square",
+    "",
+    "Terminal View:",
+    "CTRL+t/TAB- switch to board view",
+    "Type commands to execute them",
+    "",
+    "By S. Wessels and O. Schmidt, 2025"
+};
+
+char *help_text1[] = {
+    "Some terminal commands:",
+    "finger - view your login name",
+    "match <user> - challenge a user",
+    "games - list all active games",
+    "observe <game#> - watch a game",
+    "unobserve <game#> - stop watching",
+    "resign - resign game",
+    "abort - request game abort",
+    "say <text> - message opponent",
+    "sought - view active seeks",
+    "seek [params] - new game request",
+    "refresh - show FICS' status",
+    "help [subject] - view FICS' help",
+    "",
+    "Sometime it is neccesary to look at",
+    "the terminal.  RetroMate doesn't",
+    "handle all the incoming FICS text.",
+};
+
+uint8_t help_text_len0[] = {
+    0, // "            RetroMate",
+    0, // "",
+    0, // "Chess board View:",
+    0, // "ESC       - show/hide menu",
+    0, // "CTRL+t/TAB- switch to terminal view",
+    0, // "CTRL+s    - \"say\" to opponent",
+    0, // "crsr/wasd - move cursor",
+    0, // "enter     - select/deselect square",
+    0, // "",
+    0, // "Terminal View:",
+    0, // "CTRL+t/TAB- switch to board view",
+    0, // "Type commands to execute them",
+    0, // "",
+    0, // "By S. Wessels and O. Schmidt, 2025"
+};
+
+uint8_t help_text_len1[] = {
+    0, // "Some terminal commands:",
+    0, // "finger - view your login name",
+    0, // "match <user> - challenge a user",
+    0, // "games - list all active games",
+    0, // "observe <game#> - watch a game",
+    0, // "unobserve <game#> - stop watching",
+    0, // "resign - resign game",
+    0, // "abort - request game abort",
+    0, // "say <text> - message opponent",
+    0, // "sought - view active seeks",
+    0, // "seek [params] - new game request",
+    0, // "refresh - show FICS' status",
+    0, // "help [subject] - view FICS' help",
+    0, // "",
+    0, // "Sometime it is neccesary to look at",
+    0, // "the terminal.  RetroMate doesn't",
+    0, // "handle all the incoming FICS text.",
+};
+
 sdl_t sdl = {
     NULL,           // window;
     NULL,           // renderer;
@@ -56,6 +130,9 @@ sdl_t sdl = {
     NULL,           // piece_texture;
     COLOR_WHITE,    // draw_color;
     COLOR_GREEN,    // text_bg_color
+    {help_text0, help_text1},
+    {help_text_len0, help_text_len1},
+    {AS(help_text_len0), AS(help_text_len1)},
     -1,             // sockfd;
     {},             // recv_buf[1025];
     NULL            // receive_callback
@@ -338,6 +415,32 @@ void plat_draw_text(uint8_t x, uint8_t y, const char *text, uint8_t len) {
         SDL_FreeSurface(text_surface);
         SDL_DestroyTexture(texture);
     }
+}
+
+/*-----------------------------------------------------------------------*/
+uint8_t plat_draw_ui_help_callback(menu_t *m, void *data) {
+    uint8_t line, h, s, l;
+    UNUSED(m);
+    UNUSED(data);
+
+    sdl.draw_color = COLOR_WHITE;
+    sdl.text_bg_color = COLOR_BLUE;
+
+    for(int i=0; i < 2; i++) {
+        h =  sdl.help_text_num_lines[i]+2;
+        s = (SCREEN_TEXT_HEIGHT - h)/2;
+        l = (SCREEN_TEXT_WIDTH - 37) / 2;
+        plat_draw_rect(l+2-1, s-1, 37+2, h+2, COLOR_LIGHTBLUE);
+        plat_draw_rect(l+2, s++, 37, h, COLOR_BLUE);
+        for(line = 0; line <  sdl.help_text_num_lines[i]; line++) {
+            plat_draw_text(l+3, s+line,  sdl.help_text[i][line],  sdl.help_text_len[i][line]);
+        }
+        plat_draw_update();
+        plat_core_key_wait_any();
+    }
+    plat_draw_clrscr();
+    plat_draw_board();
+    return MENU_DRAW_REDRAW;
 }
 
 /*-----------------------------------------------------------------------*/

@@ -74,6 +74,7 @@ uint8_t plat_core_get_status_x(void) {
 
 /*-----------------------------------------------------------------------*/
 void plat_core_init(void) {
+    uint8_t i, j;
     SDL_Init(SDL_INIT_VIDEO);
     TTF_Init();
 
@@ -120,6 +121,13 @@ void plat_core_init(void) {
 
     // Show the title screen
     plat_draw_splash_screen();
+
+    // Fill in the help text lengths
+    for(i = 0; i < 2; i++) {
+        for(j = 0; j <  sdl.help_text_num_lines[i]; j++) {
+             sdl.help_text_len[i][j] = strlen( sdl.help_text[i][j]);
+        }
+    }
 
     // Clear the title screen
     plat_draw_board();

@@ -45,6 +45,9 @@ void hires_mask(char xpos,    char ypos,
 typedef struct _atari {
     char rop_line[2][8];
     char rop_color[2][2];
+    char **help_text;
+    uint8_t *help_text_len;
+    uint8_t help_text_num_lines;
     uint8_t terminal_display_width;
     char *CHAR_ROM;
     char send_buffer[80];

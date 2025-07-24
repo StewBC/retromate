@@ -90,6 +90,8 @@ void plat_core_hires(bool on) {
 
 /*-----------------------------------------------------------------------*/
 void plat_core_init() {
+    uint8_t i, j;
+
     // Assign character that are good as a cursors
     global.view.cursor_char[0] = 248;   // HiRes
     global.view.cursor_char[2] = 162;   // Text (Terminal)
@@ -108,6 +110,12 @@ void plat_core_init() {
     // Turn timer back on
     CIA1.cra |= 0x01;
 
+    // Fill in the help text lengths
+    for(i = 0; i < 2; i++) {
+        for(j = 0; j < c64.help_text_num_lines[i]; j++) {
+            c64.help_text_len[i][j] = strlen(c64.help_text[i][j]);
+        }
+    }
     VIC.bgcolor0 = COLOR_BLACK;
     *CHARCOLOR = COLOR_WHITE;
     plat_draw_splash_screen();

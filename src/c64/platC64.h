@@ -61,6 +61,9 @@ typedef struct _c64 {
     char rop_line[2][7];
     char rop_color[2][2];
     uint32_t draw_colors;
+    char **help_text[2];
+    uint8_t *help_text_len[2];
+    uint8_t help_text_num_lines[2];
     uint8_t terminal_display_width;
     char send_buffer[80];
     char terminal_log_buffer[80 * 24];

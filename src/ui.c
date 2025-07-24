@@ -48,7 +48,7 @@ char *ui_rating_code[2] = {"0", "1"};
 // FICS variables to change the users' time and rating deired variables
 char *ui_variable[] = {"time ", "inc ", "availmin ", "availmax ", "rated "};
 
-//----------------------------------------------------------------------------
+/*-----------------------------------------------------------------------*/
 static uint8_t ui_set_rating_callback(menu_t *m, void *data) {
     menu_item_t *item = (menu_item_t *)data;
     uint8_t variable = item == &ui_settings_menu_items[UI_SETTINGS_MINRATINGMATCH] ? 0 : 1;
@@ -58,7 +58,7 @@ static uint8_t ui_set_rating_callback(menu_t *m, void *data) {
     return MENU_DRAW_REDRAW;   // Don't change the flags
 }
 
-//----------------------------------------------------------------------------
+/*-----------------------------------------------------------------------*/
 static uint8_t ui_set_wild_type_callback(menu_t *m, void *data) {
     menu_item_t *item = (menu_item_t *)data;
     uint8_t selected = item->selected;
@@ -68,7 +68,7 @@ static uint8_t ui_set_wild_type_callback(menu_t *m, void *data) {
     return global.view.mc.df;
 }
 
-//----------------------------------------------------------------------------
+/*-----------------------------------------------------------------------*/
 static uint8_t ui_set_game_type_callback(menu_t *m, void *data) {
     uint8_t retval = global.view.mc.df;
     menu_item_t *item = (menu_item_t *)data;
@@ -94,7 +94,7 @@ static uint8_t ui_set_game_type_callback(menu_t *m, void *data) {
     return retval;   // Might redraw if wild selected/unselected
 }
 
-//----------------------------------------------------------------------------
+/*-----------------------------------------------------------------------*/
 static uint8_t ui_toggle_rated_callback(menu_t *m, void *data) {
     menu_item_t *item = (menu_item_t *)data;
     UNUSED(m);
@@ -109,7 +109,7 @@ static uint8_t ui_toggle_rated_callback(menu_t *m, void *data) {
     return global.view.mc.df; // No draw needed
 }
 
-//----------------------------------------------------------------------------
+/*-----------------------------------------------------------------------*/
 static uint8_t ui_toggle_registerd_callback(menu_t *m, void *data) {
     menu_item_t *item = (menu_item_t *)data;
     m->menu_items[UI_LOGIN_OPTIONS_PASSWORD].item_state = MENU_STATE_HIDDEN - item->selected;
@@ -117,7 +117,7 @@ static uint8_t ui_toggle_registerd_callback(menu_t *m, void *data) {
     return MENU_DRAW_REDRAW; // Force a redraw since the menu size changes
 }
 
-//----------------------------------------------------------------------------
+/*-----------------------------------------------------------------------*/
 static uint8_t ui_toggle_sought_callback(menu_t *m, void *data) {
     menu_item_t *item = (menu_item_t *)data;
     m->menu_items[UI_SETTINGS_START_TIME].item_state = MENU_STATE_ENABLED + global.setup.use_seek;
@@ -126,7 +126,7 @@ static uint8_t ui_toggle_sought_callback(menu_t *m, void *data) {
     return MENU_DRAW_REDRAW; // Force a redraw since the menu size changes
 }
 
-//----------------------------------------------------------------------------
+/*-----------------------------------------------------------------------*/
 #include <stdio.h>
 void ui_set_item_target(menu_item_t *item, uint8_t variable, char *value_str) {
     if(item->edit_target != value_str) {
@@ -142,7 +142,7 @@ void ui_set_item_target(menu_item_t *item, uint8_t variable, char *value_str) {
     plat_net_send(global.view.scratch_buffer);
 }
 
-//----------------------------------------------------------------------------
+/*-----------------------------------------------------------------------*/
 // Pre-game menus
 
 // Pre-game Menu Submenu: Login Options
@@ -165,10 +165,10 @@ menu_item_t ui_pregame_menu_items[] = {
     { "Quit", MENU_ITEM_BACKUP, MENU_STATE_ENABLED, 0, 0, 0, NULL, 0, 0, NULL, NULL},
 };
 menu_t ui_pregame_menu = {
-    "RetroMate V1.00", AS(ui_pregame_menu_items), ui_pregame_menu_items, 0, NULL
+    "RetroMate V1.01", AS(ui_pregame_menu_items), ui_pregame_menu_items, 0, NULL
 };
 
-//----------------------------------------------------------------------------
+/*-----------------------------------------------------------------------*/
 // In-game menus
 // In-game Menu Submenu: Game Settings
 menu_item_t ui_settings_menu_items[] = {
@@ -195,6 +195,7 @@ menu_item_t ui_in_game_menu_items[] = {
     { "Game Settings", MENU_ITEM_SUBMENU, MENU_STATE_ENABLED, 0, 0, 0, NULL, 0, 0, &ui_settings_menu, NULL},
     { "View Terminal", MENU_ITEM_STATIC, MENU_STATE_ENABLED, 0, 0, 0, NULL, 0, 0, NULL, NULL},
     { "Hide Menu", MENU_ITEM_BACKUP, MENU_STATE_ENABLED, 0, 0, 0, NULL, 0, 0, NULL, NULL},
+    { "Help", MENU_ITEM_CALLBACK, MENU_STATE_ENABLED, 0, 0, 0, NULL, 0, 0, NULL, plat_draw_ui_help_callback},
     { "Logout", MENU_ITEM_STATIC, MENU_STATE_ENABLED, 0, 0, 0, NULL, 0, 0, NULL, NULL},
 };
 menu_t ui_in_game_menu = {

@@ -16,19 +16,6 @@
 
 #include "platA2.h"
 
-/*-----------------------------------------------------------------------*/
-apple2_t apple2 = {
-    {                   // rop_line
-        {0x00, 0x01, 0x03, 0x07, 0x0F, 0x1F, 0x3F},
-        {0x00, 0x40, 0x60, 0x70, 0x78, 0x7C, 0x7E}
-    },
-    {                   // rop_color - unused right now
-        {0x55, 0x2A},
-        {0xD5, 0xAA}
-    },
-    SCREEN_TEXT_WIDTH, // terminal_display_width
-};
-
 #pragma code-name(push, "LC")
 
 /*-----------------------------------------------------------------------*/
@@ -76,6 +63,8 @@ uint8_t plat_core_get_status_x(void) {
 
 /*-----------------------------------------------------------------------*/
 void plat_core_init() {
+    uint8_t i, j;
+
     // Assign a character that is in both hires and text, good as a cursor
     global.view.cursor_char[0] = 95;
     global.view.cursor_char[2] = 95;
@@ -85,6 +74,13 @@ void plat_core_init() {
     if (videomode(VIDEOMODE_80COL) != -1) {
         apple2.terminal_display_width = 80;
     }
+
+    // Fill in the help text lengths
+    for(i = 0; i < 2; i++) {
+        for(j = 0; j < apple2.help_text_num_lines[i]; j++) {
+            apple2.help_text_len[i][j] = strlen(apple2.help_text[i][j]);
+        }
+    }    
 }
 
 /*-----------------------------------------------------------------------*/

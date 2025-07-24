@@ -33,6 +33,7 @@ char *plat_core_log_malloc(unsigned int size);
 uint8_t plat_core_mouse_to_cursor(void);
 uint8_t plat_core_mouse_to_menu_item(void);
 void plat_core_shutdown(void);
+uint8_t plat_draw_ui_help_callback(menu_t *m, void *data);
 
 // Draw
 void plat_draw_background(void);

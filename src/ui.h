@@ -45,6 +45,7 @@ enum {  // Menu - ui_in_game_menu - RetroMate (Online)
     UI_MENU_INGAME_SETTINGS,
     UI_MENU_INGAME_TERMINAL,
     UI_MENU_INGAME_BACK,
+    UI_MENU_INGAME_HELP,
     UI_MENU_INGAME_QUIT,
 };
 

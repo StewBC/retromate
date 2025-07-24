@@ -16,20 +16,6 @@
 
 #include "platAtari.h"
 
-/*-----------------------------------------------------------------------*/
-atari_t atari = {
-    {                   // rop_line
-        {0x00, 0x01, 0x03, 0x07, 0x0F, 0x1F, 0x3F, 0x7F},
-        {0x00, 0x80, 0xC0, 0xE0, 0xF0, 0xF8, 0xFC, 0xFE}
-    },
-    {
-        {0x55, 0x2A},
-        {0xD5, 0xAA}
-    },
-    SCREEN_TEXT_WIDTH, // terminal_display_width
-    0                  // CHAR_ROM
-};
-
 #pragma code-name(push, "SHADOW_RAM2")
 
 /*-----------------------------------------------------------------------*/
@@ -75,6 +61,7 @@ uint8_t plat_core_get_status_x(void) {
 
 /*-----------------------------------------------------------------------*/
 void plat_core_init() {
+    uint8_t i;
     // Assign a character that is in both hires and text, good as a cursor
     atari.CHAR_ROM = (char *)(*((char *)0x02F4) * 256);
     global.view.cursor_char[0] = 95;
@@ -88,6 +75,11 @@ void plat_core_init() {
     _setcolor(4, 0xC, 0x7);  // border color
 
     plat_draw_splash_screen();
+
+    // Fill in the help text lengths
+    for(i = 0; i < atari.help_text_num_lines; i++) {
+        atari.help_text_len[i] = strlen(atari.help_text[i]);
+    }
     plat_draw_board();
 
 }
@@ -164,6 +156,8 @@ void plat_core_log_free_mem(char *mem) {
     UNUSED(mem);
 }
 
+#pragma code-name(pop)
+
 /*-----------------------------------------------------------------------*/
 char *plat_core_log_malloc(unsigned int size) {
     if (size == (80 * 23)) {
@@ -186,4 +180,3 @@ uint8_t plat_core_mouse_to_menu_item(void) {
 void plat_core_shutdown() {
 }
 
-#pragma code-name(pop)

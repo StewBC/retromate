@@ -27,6 +27,102 @@ uint8_t plat_mc2pc[9] = {
     0,  // MENU_COLOR_DISABLED
 };
 
+char *help_text0[] = {
+    "            RetroMate",
+    "",
+    "Chess board View:",
+    "ESC       - show/hide menu",
+    "CTRL+t/TAB- switch to terminal view",
+    "CTRL+s    - \"say\" to opponent",
+    "crsr/wasd - move cursor",
+    "enter     - select/deselect square",
+    "",
+    "Terminal View:",
+    "CTRL+t/TAB- switch to board view",
+    "Type commands to execute them",
+    "If terminal is in 40 cols:",
+    "CTRL+p    - show text to the right",
+    "CTRL+o    - show text to the left",
+    "",
+    "By S. Wessels and O. Schmidt, 2025"
+};
+
+char *help_text1[] = {
+    "Some terminal commands:",
+    "finger - view your login name",
+    "match <user> - challenge a user",
+    "games - list all active games",
+    "observe <game#> - watch a game",
+    "unobserve <game#> - stop watching",
+    "resign - resign game",
+    "abort - request game abort",
+    "say <text> - message opponent",
+    "sought - view active seeks",
+    "seek [params] - new game request",
+    "refresh - show FICS' status",
+    "help [subject] - view FICS' help",
+    "",
+    "Sometime it is neccesary to look at",
+    "the terminal.  RetroMate doesn't",
+    "handle all the incoming FICS text.",
+};
+
+uint8_t help_text_len0[] = {
+    0, // "            RetroMate",
+    0, // "",
+    0, // "Chess board View:",
+    0, // "ESC       - show/hide menu",
+    0, // "CTRL+t/TAB- switch to terminal view",
+    0, // "CTRL+s    - \"say\" to opponent",
+    0, // "crsr/wasd - move cursor",
+    0, // "enter     - select/deselect square",
+    0, // "",
+    0, // "Terminal View:",
+    0, // "CTRL+t/TAB- switch to board view",
+    0, // "Type commands to execute them",
+    0, // "If terminal is in 40 cols:",
+    0, // "CTRL+p    - show text to the right",
+    0, // "CTRL+o    - show text to the left",
+    0, // "",
+    0, // "By S. Wessels and O. Schmidt, 2025"
+};
+
+uint8_t help_text_len1[] = {
+    0, // "Some terminal commands:",
+    0, // "finger - view your login name",
+    0, // "match <user> - challenge a user",
+    0, // "games - list all active games",
+    0, // "observe <game#> - watch a game",
+    0, // "unobserve <game#> - stop watching",
+    0, // "resign - resign game",
+    0, // "abort - request game abort",
+    0, // "say <text> - message opponent",
+    0, // "sought - view active seeks",
+    0, // "seek [params] - new game request",
+    0, // "refresh - show FICS' status",
+    0, // "help [subject] - view FICS' help",
+    0, // "",
+    0, // "Sometime it is neccesary to look at",
+    0, // "the terminal.  RetroMate doesn't",
+    0, // "handle all the incoming FICS text.",
+};
+
+/*-----------------------------------------------------------------------*/
+apple2_t apple2 = {
+    {                   // rop_line
+        {0x00, 0x01, 0x03, 0x07, 0x0F, 0x1F, 0x3F},
+        {0x00, 0x40, 0x60, 0x70, 0x78, 0x7C, 0x7E}
+    },
+    {                   // rop_color - unused right now
+        {0x55, 0x2A},
+        {0xD5, 0xAA}
+    },
+    {help_text0, help_text1},
+    {help_text_len0, help_text_len1},
+    {AS(help_text_len0), AS(help_text_len1)},
+    SCREEN_TEXT_WIDTH, // terminal_display_width
+};
+
 #pragma code-name(push, "LC")
 
 /*-----------------------------------------------------------------------*/
@@ -230,6 +326,8 @@ void plat_draw_square(uint8_t position) {
                hires_pieces[(piece & 127) - 1][inv]);
 }
 
+#pragma code-name(pop)
+
 /*-----------------------------------------------------------------------*/
 void plat_draw_text(uint8_t x, uint8_t y, const char *text, uint8_t len) {
     if (global.view.terminal_active) {
@@ -247,8 +345,41 @@ void plat_draw_text(uint8_t x, uint8_t y, const char *text, uint8_t len) {
     }
 }
 
+
+/*-----------------------------------------------------------------------*/
+uint8_t plat_draw_ui_help_callback(menu_t *m, void *data) {
+    uint8_t i, line, h, s;
+    UNUSED(m);
+    UNUSED(data);
+
+    for(i = 0; i < 2; i++) {
+        h = apple2.help_text_num_lines[i] + 2;
+        s = (SCREEN_TEXT_HEIGHT - h) / 2;
+
+        // Clear background
+        plat_draw_rect(2, s, 37, h, 0);
+
+        // Draw a frame
+        hires_mask(2, s*CHARACTER_HEIGHT, 1, h*CHARACTER_HEIGHT+2, ROP_CONST(apple2.rop_line[0][2]));
+        hires_mask(38, s*CHARACTER_HEIGHT, 1, h*CHARACTER_HEIGHT+2, ROP_CONST(apple2.rop_line[1][2]));
+        hires_mask(2, s*CHARACTER_HEIGHT, 37, 2, ROP_WHITE);
+        hires_mask(2, (s+h)*CHARACTER_HEIGHT, 37, 2, ROP_WHITE);
+        s++;
+
+        // Show the text
+        for(line = 0; line < apple2.help_text_num_lines[i]; line++) {
+            plat_draw_text(3, s + line, apple2.help_text[i][line], apple2.help_text_len[i][line]);
+        }
+
+        plat_core_key_wait_any();
+    }
+    plat_draw_clrscr();
+    plat_draw_board();
+
+    return MENU_DRAW_REDRAW;
+}
+
 /*-----------------------------------------------------------------------*/
 void plat_draw_update() {
 }
 
-#pragma code-name(pop)

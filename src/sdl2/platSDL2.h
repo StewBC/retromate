@@ -66,6 +66,9 @@ typedef struct _sdl {
     SDL_Texture *piece_texture;
     uint32_t draw_color;
     uint32_t text_bg_color;
+    char **help_text[2];
+    uint8_t *help_text_len[2];
+    uint8_t help_text_num_lines[2];
 #ifdef _WIN32
     SOCKET sockfd;
 #else
