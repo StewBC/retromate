@@ -18,11 +18,14 @@ As of 10 July 2025, RetroMate runs on:
 [Watch Video on YouTube](https://youtu.be/-Jjvj0yIkgo)  
 
 ## 8-bit Requirements: Hardware / Emulators  
-The 8-bit versions use IP65, so you’ll need hardware or an emulator with IP65 support. Recommended emulators:
+The 8-bit versions use IP65, or SwiftLink/Turbo232, so you’ll need hardware, or an emulator with IP65 support. Recommended emulators for IP65:
 
 - Apple II: [AppleWin](https://github.com/AppleWin/AppleWin)  
 - Commodore 64: [VICE](https://vice-emu.sourceforge.io/)  
 - Atari XL: [Altirra](https://www.virtualdub.org/altirra.html)
+
+Recommended hardware for Swiftlink/Turb0232:
+- Commodore 64 : [TeensyROM](https://github.com/SensoriumEmbedded/TeensyROM) 
   
 For AppleWin and VICE to work on Windows, you will need npcap.  It can be downloaded from https://npcap.com/#download.  
 I have found many versions of VICE (I have 5 x64.exe's on my system right now), and with only 1 was I able to configure RRNet and get it working.  
