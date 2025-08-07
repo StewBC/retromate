@@ -159,6 +159,8 @@ Release | Title | Date
 --- | --- | ---
 Beta | Apple 2 | 6 June 2025  
 V1.00 | apple2 atarixl c64 sdl2 | 8 July 2025
+V1.01 | SwiftLink/Turbo232 | 23 July 2025
+V1.02 | CBM 1351 mouse | 7 August 2025
 
 ## Screenshots
 
