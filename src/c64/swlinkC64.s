@@ -2,7 +2,7 @@
 ; swlinkC64.s
 ; RetroMate
 ;
-; Created by Stefan Wessels, January 2025.
+; Created by Stefan Wessels, 2025.
 ; This is free and unencumbered software released into the public domain.
 ;
 ;
@@ -12,17 +12,6 @@
 
 .export _sw_init, _sw_send, _sw_shutdown, _plat_net_update
 .import _c64, _fics_tcp_recv, pusha, pushax
-
-    ; char rop_line[2][7];
-    ; char rop_color[2][2];
-    ; uint32_t draw_colors;
-    ; char **help_text[2];
-    ; uint8_t *help_text_len[2];
-    ; uint8_t help_text_num_lines[2];
-    ; uint8_t terminal_display_width;
-    ; char send_buffer[80];
-    ; char terminal_log_buffer[80 * 24];
-    ; char status_log_buffer[13 * 25];
 
 .struct c64_t
     rop_line               .res 2*7     ; 14 bytes

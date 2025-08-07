@@ -19,6 +19,7 @@
 /*-----------------------------------------------------------------------*/
 // Mouse support - install driver and cursor
 extern char mouse_setup(void);
+extern char mouse_shutdown(void);
 extern uint8_t mouse_move;
 char sprite_data[63] = {
     0xC0,0x00,0x00,
@@ -328,5 +329,7 @@ uint8_t plat_core_mouse_to_menu_item(void) {
 
 /*-----------------------------------------------------------------------*/
 void plat_core_shutdown() {
+    // Doesn't matter since a full reset will be done...
+    mouse_shutdown();
     __asm__("jmp 64738");
 }

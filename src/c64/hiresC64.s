@@ -2,7 +2,7 @@
 ; hiresC64.s
 ; RetroMate
 ;
-; Created by Stefan Wessels, January 2025.
+; Created by Stefan Wessels, 2025.
 ; Based on work by Oliver Schmidt, January 2020.
 ;
 ;

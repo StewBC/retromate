@@ -1,15 +1,24 @@
+;
+; mouse_drv.s
+; RetroMate
+;
+; Created by Stefan Wessels, 2025.
+; Based on work by Oliver Schmidt, January 2020.
+;
+;
+
 .include "c64.inc"
 
-.export _mouse_setup, _mouse_move
+.export _mouse_setup, _mouse_shutdown, _mouse_move
 
 xpos = SID_ADConv1
 ypos = SID_ADConv2
 
 .proc _mouse_setup
     lda xpos
-    cmp #$ff
+    cmp #$ff                ; if mouse is present this is not 255
     beq :+
-    lda IRQVec+1
+    lda IRQVec+1            ; only install once
     cmp #>mouse_irq
     beq :+
     sei
@@ -26,6 +35,20 @@ ypos = SID_ADConv2
 :   rts
 .endproc
 
+.proc _mouse_shutdown
+    lda IRQVec+1            ; only if installed
+    cmp #>mouse_irq
+    bne :+
+    sei
+    lda old_irq
+    sta IRQVec
+    lda old_irq+1
+    sta IRQVec+1
+    cli
+:   rts
+.endproc
+
+; Below pretty much from the 1351 user manual
 .proc mouse_irq
     cld
     lda xpos
@@ -45,7 +68,7 @@ ypos = SID_ADConv2
     jsr movchk
     sty old_ypos
     eor #$ff
-    sec
+    sec                 ; This wasn't in the manual - mouse tracked up always
     adc VIC_SPR0_Y
     sta VIC_SPR0_Y
     jmp (old_irq)
