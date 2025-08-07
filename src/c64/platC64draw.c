@@ -119,7 +119,12 @@ c64_t c64 = {
     {help_text0, help_text1},
     {help_text_len0, help_text_len1},
     {AS(help_text_len0), AS(help_text_len1)},
-    SCREEN_TEXT_WIDTH                  // terminal_display_width
+    SCREEN_TEXT_WIDTH,                 // terminal_display_width
+    0,                                 // prev_mod (mouse buttons)
+    0,                                 // tv_standard (0 = NTSC / 1 = PAL)
+    {},                                // send_buffer
+    {},                                // terminal_log_buffer
+    {}                                 // status_log_buffer
 };
 
 

@@ -22,7 +22,11 @@
 #define CHARACTER_HEIGHT        8
 #define SCREEN_DISPLAY_HEIGHT   (SCREEN_TEXT_HEIGHT * CHARACTER_HEIGHT)
 #define SQUARE_DISPLAY_HEIGHT   (SQUARE_TEXT_HEIGHT * CHARACTER_HEIGHT)
+#define SQUARE_DISPLAY_WIDTH    (SQUARE_TEXT_WIDTH * CHARACTER_HEIGHT)
+#define BOARD_DISPLAY_WIDTH     (SQUARE_DISPLAY_HEIGHT * 8)
 #define BOARD_DISPLAY_HEIGHT    (SQUARE_DISPLAY_HEIGHT * 8)
+#define BOARD_START_X           CHARACTER_WIDTH
+#define BOARD_START_Y           0
 
 #define VIC_BASE_RAM            (0xC000)
 #define BITMAP_OFFSET           (0x0000)
@@ -65,6 +69,8 @@ typedef struct _c64 {
     uint8_t *help_text_len[2];
     uint8_t help_text_num_lines[2];
     uint8_t terminal_display_width;
+    uint8_t prev_mod;
+    char tv_standard;
     char send_buffer[80];
     char terminal_log_buffer[80 * 24];
     char status_log_buffer[13 * 25];

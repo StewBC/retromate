@@ -60,6 +60,7 @@ set(C64_SOURCES
     ${SHARED_SOURCES}
     ${CMAKE_SOURCE_DIR}/src/c64/dataC64.c
     ${CMAKE_SOURCE_DIR}/src/c64/hiresC64.s
+    ${CMAKE_SOURCE_DIR}/src/c64/mouse_drv.s
     ${CMAKE_SOURCE_DIR}/src/c64/platC64core.c
     ${CMAKE_SOURCE_DIR}/src/c64/platC64draw.c
     ${CMAKE_SOURCE_DIR}/src/c64/platC64net.c

@@ -32,6 +32,8 @@
     help_text_len          .res 4
     help_text_num_lines    .res 2
     terminal_display_width .res 1
+    prev_mod               .res 1
+    tv_standard            .res 1
     send_buffer            .res 80*24   ; I need access to this buffer
     status_log_buffer      .res 13*25
 .endstruct
