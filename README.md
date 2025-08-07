@@ -96,9 +96,10 @@ Even when it’s not your turn, you can select a piece to prepare your move - us
 - Status updates (from e.g., say, resign, checkmate) appear below "Last:"
 
 ## Mouse Support  
-In the SDL2 version:
+In the SDL2 and C64 (1351 mouse supported) versions:
 - Left-click = `RETURN`  
 - Right-click = `ESC`
+The mouse appears not to work well under Vice, but it works very well on real hardware.
 
 ## Building RetroMate  
 RetroMate uses CMake.  Typically:
